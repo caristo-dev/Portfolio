@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://caristo-dev.github.io/portfolio/sitemap.xml

@@ -1,0 +1,1742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caristo Mulenga | Accountant & Front-End Developer</title>
+<meta name="description" content="Caristo Mulenga is an Assistant Accountant and self-taught front-end developer based in Ndola, Zambia, offering bookkeeping, Excel, payroll and reconciliation support, and practical web development.">
+<meta name="theme-color" content="#F7F3ED">
+<link rel="canonical" href="https://caristo-dev.github.io/portfolio/">
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Caristo Mulenga | Accountant & Front-End Developer">
+<meta property="og:description" content="Assistant Accountant and self-taught front-end developer based in Ndola, Zambia. Bookkeeping, Excel, payroll, reconciliation, and web development.">
+<meta property="og:image" content="images/caristo-profile.jpg">
+<meta property="og:url" content="https://caristo-dev.github.io/portfolio/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Caristo Mulenga | Accountant & Front-End Developer">
+<meta name="twitter:description" content="Assistant Accountant and self-taught front-end developer based in Ndola, Zambia. Bookkeeping, Excel, payroll, reconciliation, and web development.">
+<meta name="twitter:image" content="images/caristo-profile.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Caristo Mulenga",
+  "jobTitle": "Assistant Accountant & Front-End Developer",
+  "url": "https://caristo-dev.github.io/portfolio/",
+  "sameAs": [
+    "https://linkedin.com/in/caristo-mulenga-a5aba5205",
+    "https://github.com/caristo-dev"
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Ndola",
+    "addressCountry": "ZM"
+  },
+  "knowsAbout": ["HTML5", "CSS3", "JavaScript", "Firebase", "Bookkeeping", "Cost Accounting", "Payroll Systems", "Excel", "Financial Reconciliation", "Sage Pastel 50", "Dove Payroll", "QuickBooks"]
+}
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --ink:#0F0D0A;
+  --paper:#F7F3ED;
+  --copper:#A8490F;
+  --copper-light:#C96228;
+  --copper-pale:#F2E0D0;
+  --earth:#2B1A0C;
+  --mist:#E8E2D9;
+  --muted:#7A6E64;
+  --line:#D8D0C4;
+  --white:#FFFFFF;
+  --green:#1E4020;
+  --green-pale:#D6EDD8;
+}
+
+html{scroll-behavior:smooth}
+
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.6;
+  overflow-x:hidden;
+}
+
+/* ── GRAIN TEXTURE OVERLAY ── */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:999;
+  opacity:0.5;
+}
+
+/* ── SIDEBAR RULE ── */
+.sidebar-line{
+  position:fixed;
+  left:clamp(1.5rem,5vw,3.5rem);
+  top:0;
+  bottom:0;
+  width:1px;
+  background:var(--line);
+  z-index:10;
+  transform-origin:top;
+  animation:growLine 1.2s cubic-bezier(0.16,1,0.3,1) 0.3s both;
+}
+@keyframes growLine{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+
+/* ── NAVIGATION ── */
+nav{
+  position:fixed;
+  top:0;left:0;right:0;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:1.2rem clamp(2rem,6vw,5rem) 1.2rem clamp(3.5rem,8vw,7rem);
+  background:rgba(247,243,237,0.88);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+  animation:fadeDown 0.8s ease 0.5s both;
+}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+
+.nav-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.3rem;
+  font-weight:600;
+  color:var(--earth);
+  letter-spacing:0.02em;
+}
+.nav-name em{color:var(--copper);font-style:italic}
+
+.nav-links{
+  display:flex;
+  gap:2rem;
+  list-style:none;
+}
+.nav-links a{
+  font-size:0.73rem;
+  font-weight:500;
+  color:var(--muted);
+  text-decoration:none;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  transition:color 0.2s;
+}
+.nav-links a:hover{color:var(--copper)}
+
+/* ── NAV TOGGLE (mobile) ── */
+.nav-toggle{
+  display:none;
+  flex-direction:column;
+  justify-content:center;
+  gap:5px;
+  width:32px;
+  height:32px;
+  background:none;
+  border:none;
+  cursor:pointer;
+  padding:0;
+}
+.nav-toggle span{
+  display:block;
+  width:100%;
+  height:2px;
+  background:var(--earth);
+  transition:transform 0.25s ease, opacity 0.25s ease;
+}
+.nav-toggle[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-toggle[aria-expanded="true"] span:nth-child(2){opacity:0}
+.nav-toggle[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:8rem clamp(2rem,6vw,5rem) 5rem clamp(3.5rem,8vw,7rem);
+  position:relative;
+  overflow:hidden;
+}
+
+.hero-eyebrow{
+  font-family:'DM Mono',monospace;
+  font-size:0.7rem;
+  font-weight:400;
+  color:var(--copper);
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  margin-bottom:1.8rem;
+  display:flex;
+  align-items:center;
+  gap:0.8rem;
+  animation:fadeUp 0.8s ease 0.7s both;
+}
+.hero-eyebrow::before{content:'';display:block;width:32px;height:1px;background:var(--copper)}
+
+.hero h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(3.2rem,8vw,7rem);
+  font-weight:600;
+  line-height:1.0;
+  color:var(--earth);
+  margin-bottom:0.4rem;
+  animation:fadeUp 0.9s ease 0.85s both;
+}
+.hero h1 em{
+  color:var(--copper);
+  font-style:italic;
+}
+
+.hero-sub-name{
+  display:block;
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.8rem,4vw,3.5rem);
+  font-weight:400;
+  font-style:italic;
+  color:var(--muted);
+  margin-bottom:2.5rem;
+  animation:fadeUp 0.9s ease 0.95s both;
+}
+
+.hero-desc{
+  max-width:520px;
+  font-size:1rem;
+  font-weight:300;
+  color:var(--muted);
+  line-height:1.8;
+  margin-bottom:3rem;
+  animation:fadeUp 0.9s ease 1.05s both;
+}
+
+.hero-tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:0.5rem;
+  margin-bottom:3rem;
+  animation:fadeUp 0.9s ease 1.15s both;
+}
+.tag{
+  font-family:'DM Mono',monospace;
+  font-size:0.65rem;
+  color:var(--muted);
+  border:1px solid var(--line);
+  border-radius:2px;
+  padding:0.28rem 0.7rem;
+  letter-spacing:0.06em;
+}
+.tag.highlight{
+  background:var(--copper-pale);
+  border-color:var(--copper);
+  color:var(--copper);
+}
+
+.hero-cta{
+  display:flex;
+  gap:1rem;
+  flex-wrap:wrap;
+  animation:fadeUp 0.9s ease 1.25s both;
+}
+.btn{
+  font-size:0.75rem;
+  font-weight:600;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  padding:0.75rem 1.8rem;
+  border-radius:3px;
+  cursor:pointer;
+  text-decoration:none;
+  transition:all 0.2s;
+  border:none;
+  display:inline-block;
+}
+.btn-primary{background:var(--earth);color:var(--paper)}
+.btn-primary:hover{background:var(--copper)}
+.btn-outline{background:transparent;color:var(--earth);border:1px solid var(--earth)}
+.btn-outline:hover{background:var(--earth);color:var(--paper)}
+
+/* Large decorative number */
+.hero-deco{
+  position:absolute;
+  right:-2rem;
+  top:50%;
+  transform:translateY(-50%);
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(12rem,22vw,22rem);
+  font-weight:600;
+  color:var(--mist);
+  line-height:1;
+  pointer-events:none;
+  user-select:none;
+  animation:fadeIn 1.5s ease 1s both;
+}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ── SECTION COMMONS ── */
+section{
+  padding:6rem clamp(2rem,6vw,5rem) 6rem clamp(3.5rem,8vw,7rem);
+  border-top:1px solid var(--line);
+}
+
+.section-label{
+  font-family:'DM Mono',monospace;
+  font-size:0.65rem;
+  color:var(--copper);
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  margin-bottom:0.6rem;
+  display:flex;
+  align-items:center;
+  gap:0.7rem;
+}
+.section-label::before{content:'';display:block;width:24px;height:1px;background:var(--copper)}
+
+.section-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2rem,4vw,3.2rem);
+  font-weight:600;
+  color:var(--earth);
+  line-height:1.15;
+  margin-bottom:2.5rem;
+}
+.section-title em{color:var(--copper);font-style:italic}
+
+/* ── ABOUT / FOCUS ── */
+.about-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:4rem;
+  align-items:start;
+}
+.about-text p{
+  font-size:0.95rem;
+  color:var(--muted);
+  line-height:1.9;
+  margin-bottom:1.2rem;
+  font-weight:300;
+}
+.about-text p strong{color:var(--ink);font-weight:600}
+
+.about-stats{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+}
+.stat-box{
+  background:var(--paper);
+  padding:1.5rem;
+}
+.stat-box .num{
+  font-family:'Cormorant Garamond',serif;
+  font-size:2.8rem;
+  font-weight:600;
+  color:var(--copper);
+  line-height:1;
+  margin-bottom:0.3rem;
+}
+.stat-box .lbl{
+  font-size:0.72rem;
+  color:var(--muted);
+  font-weight:400;
+  line-height:1.4;
+}
+
+.tech-stack{
+  margin-top:2rem;
+}
+.tech-stack h3{
+  font-family:'DM Mono',monospace;
+  font-size:0.65rem;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:0.8rem;
+}
+.tech-pills{
+  display:flex;
+  flex-wrap:wrap;
+  gap:0.4rem;
+}
+.tech-pill{
+  font-family:'DM Mono',monospace;
+  font-size:0.68rem;
+  background:var(--mist);
+  color:var(--earth);
+  padding:0.3rem 0.7rem;
+  border-radius:2px;
+}
+.tech-pill.current{background:var(--copper-pale);color:var(--copper)}
+
+/* ── PROJECTS ── */
+.projects-intro{
+  max-width:580px;
+  font-size:0.95rem;
+  color:var(--muted);
+  line-height:1.8;
+  font-weight:300;
+  margin-bottom:4rem;
+}
+
+.project-card{
+  border:1px solid var(--line);
+  border-radius:4px;
+  overflow:hidden;
+  margin-bottom:3rem;
+  transition:border-color 0.3s, box-shadow 0.3s;
+}
+.project-card:hover{
+  border-color:var(--copper);
+  box-shadow:0 8px 40px rgba(168,73,15,0.08);
+}
+
+.project-header{
+  padding:2.5rem;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:2rem;
+  flex-wrap:wrap;
+  background:var(--white);
+}
+
+.project-number{
+  font-family:'Cormorant Garamond',serif;
+  font-size:4rem;
+  font-weight:600;
+  color:var(--mist);
+  line-height:1;
+  flex-shrink:0;
+  margin-top:-0.5rem;
+}
+
+.project-meta{flex:1;min-width:240px}
+
+.project-status{
+  font-family:'DM Mono',monospace;
+  font-size:0.62rem;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  margin-bottom:0.6rem;
+  display:inline-flex;
+  align-items:center;
+  gap:0.4rem;
+}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--copper);display:inline-block;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+.project-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2rem,3.5vw,2.8rem);
+  font-weight:600;
+  color:var(--earth);
+  line-height:1.1;
+  margin-bottom:0.5rem;
+}
+.project-name em{color:var(--copper);font-style:italic}
+
+.project-type{
+  font-size:0.78rem;
+  color:var(--muted);
+  font-weight:400;
+}
+
+.project-body{
+  padding:2.5rem;
+  border-top:1px solid var(--line);
+}
+
+.project-desc{
+  font-size:0.93rem;
+  color:var(--muted);
+  line-height:1.85;
+  font-weight:300;
+  margin-bottom:2rem;
+  max-width:680px;
+}
+.project-desc strong{color:var(--ink);font-weight:600}
+
+.features-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+  margin-bottom:2rem;
+}
+.feature-item{
+  background:var(--paper);
+  padding:1.1rem 1.3rem;
+}
+.feature-item .f-icon{
+  font-size:1.1rem;
+  margin-bottom:0.4rem;
+}
+.feature-item .f-title{
+  font-size:0.78rem;
+  font-weight:600;
+  color:var(--earth);
+  margin-bottom:0.2rem;
+}
+.feature-item .f-desc{
+  font-size:0.72rem;
+  color:var(--muted);
+  line-height:1.5;
+  font-weight:300;
+}
+
+.project-footer{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding-top:1.5rem;
+  border-top:1px solid var(--line);
+  flex-wrap:wrap;
+  gap:1rem;
+}
+.project-stack{
+  display:flex;
+  gap:0.4rem;
+  flex-wrap:wrap;
+}
+.stack-badge{
+  font-family:'DM Mono',monospace;
+  font-size:0.62rem;
+  background:var(--mist);
+  color:var(--earth);
+  padding:0.2rem 0.55rem;
+  border-radius:2px;
+}
+.stack-badge.future{
+  background:transparent;
+  border:1px dashed var(--line);
+  color:var(--muted);
+}
+
+.project-link{
+  font-size:0.72rem;
+  font-weight:600;
+  color:var(--copper);
+  text-decoration:none;
+  letter-spacing:0.05em;
+  display:flex;
+  align-items:center;
+  gap:0.3rem;
+  transition:gap 0.2s;
+}
+.project-link:hover{gap:0.6rem}
+
+.challenge-note{
+  border-left:3px solid var(--copper);
+  padding:1rem 1.3rem;
+  margin-bottom:2rem;
+  background:var(--copper-pale);
+}
+.challenge-note h4{
+  font-family:'DM Mono',monospace;
+  font-size:0.62rem;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--copper);
+  margin-bottom:0.5rem;
+}
+.challenge-note p{
+  font-size:0.85rem;
+  color:var(--earth);
+  line-height:1.7;
+  font-weight:300;
+}
+.project-card.carisave .challenge-note{
+  border-left-color:var(--green);
+  background:var(--green-pale);
+}
+.project-card.carisave .challenge-note h4{color:var(--green)}
+
+/* NyumbaNi card accent */
+.project-card.nyumbani .project-header{
+  background:linear-gradient(135deg,#2B1A0C 0%,#3D2410 100%);
+}
+.project-card.nyumbani .project-number{color:rgba(255,255,255,0.08)}
+.project-card.nyumbani .project-name{color:var(--paper)}
+.project-card.nyumbani .project-type{color:#C8B099}
+.project-card.nyumbani .project-status{color:#D4924A}
+.project-card.nyumbani .dot{background:#D4924A}
+
+/* CariSave card accent */
+.project-card.carisave .project-header{
+  background:var(--green-pale);
+}
+.project-card.carisave .project-name{color:var(--green)}
+.project-card.carisave .dot{background:var(--green)}
+.project-card.carisave .project-status{color:var(--green)}
+.project-card.carisave .stack-badge.future{border-color:#A8C8AA;color:var(--green)}
+
+/* SplitZK card accent */
+.project-card.splitzk .project-header{
+  background:linear-gradient(135deg,var(--copper) 0%,var(--copper-light) 100%);
+}
+.project-card.splitzk .project-number{color:rgba(255,255,255,0.15)}
+.project-card.splitzk .project-name{color:var(--paper)}
+.project-card.splitzk .project-type{color:var(--copper-pale)}
+.project-card.splitzk .project-status{color:var(--copper-pale)}
+.project-card.splitzk .dot{background:var(--copper-pale)}
+.project-card.splitzk .stack-badge.future{border-color:#E8C4A0;color:var(--copper-pale)}
+
+/* ── TIMELINE (EXPERIENCE) ── */
+.timeline{
+  max-width:720px;
+  border-left:1px solid var(--line);
+  padding-left:2.5rem;
+}
+.timeline-item{
+  position:relative;
+  margin-bottom:3rem;
+}
+.timeline-item:last-child{margin-bottom:0}
+.timeline-marker{
+  position:absolute;
+  left:-2.94rem;
+  top:0.3rem;
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:var(--copper);
+  box-shadow:0 0 0 4px var(--copper-pale);
+}
+.timeline-role{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.6rem;
+  font-weight:600;
+  color:var(--earth);
+  line-height:1.2;
+}
+.timeline-org{
+  font-family:'DM Mono',monospace;
+  font-size:0.7rem;
+  color:var(--copper);
+  letter-spacing:0.04em;
+  margin:0.4rem 0 1rem;
+}
+.timeline-desc{
+  font-size:0.92rem;
+  color:var(--muted);
+  line-height:1.8;
+  font-weight:300;
+  margin-bottom:1rem;
+  max-width:600px;
+}
+.timeline-desc strong{color:var(--ink);font-weight:600}
+.timeline-list{
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:0.7rem;
+}
+.timeline-list li{
+  position:relative;
+  padding-left:1.2rem;
+  font-size:0.85rem;
+  color:var(--muted);
+  line-height:1.7;
+  font-weight:300;
+}
+.timeline-list li::before{
+  content:'→';
+  position:absolute;
+  left:0;
+  color:var(--copper);
+}
+.timeline-list li strong{color:var(--ink);font-weight:600}
+
+/* ── STRENGTHS ── */
+.strengths-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:1.5rem;
+}
+.strength-card{
+  padding:2rem;
+  border:1px solid var(--line);
+  border-radius:3px;
+  transition:all 0.25s;
+  position:relative;
+  overflow:hidden;
+}
+.strength-card::before{
+  content:'';
+  position:absolute;
+  bottom:0;left:0;right:0;
+  height:3px;
+  background:var(--copper);
+  transform:scaleX(0);
+  transform-origin:left;
+  transition:transform 0.3s ease;
+}
+.strength-card:hover::before{transform:scaleX(1)}
+.strength-card:hover{border-color:var(--copper);box-shadow:0 4px 24px rgba(168,73,15,0.08)}
+
+.strength-icon{font-size:1.6rem;margin-bottom:1rem}
+.strength-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.3rem;
+  font-weight:600;
+  color:var(--earth);
+  margin-bottom:0.5rem;
+}
+.strength-desc{
+  font-size:0.8rem;
+  color:var(--muted);
+  line-height:1.7;
+  font-weight:300;
+}
+
+/* ── VISION ── */
+.vision-section{
+  background:var(--earth);
+  color:var(--paper);
+}
+.vision-section .section-label{color:#D4924A}
+.vision-section .section-label::before{background:#D4924A}
+.vision-section .section-title{color:var(--paper)}
+.vision-section .section-title em{color:#D4924A}
+
+.vision-quote{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.3rem,2.5vw,1.9rem);
+  font-weight:400;
+  font-style:italic;
+  color:#C8B099;
+  line-height:1.6;
+  max-width:720px;
+  border-left:3px solid var(--copper);
+  padding-left:2rem;
+  margin-bottom:3rem;
+}
+
+.vision-text{
+  max-width:640px;
+  font-size:0.92rem;
+  color:#A09080;
+  line-height:1.9;
+  font-weight:300;
+  margin-bottom:2.5rem;
+}
+.vision-text strong{color:var(--paper)}
+
+.vision-goals{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:1px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.08);
+  margin-bottom:3rem;
+}
+.goal-item{
+  background:var(--earth);
+  padding:1.3rem 1.5rem;
+  font-size:0.78rem;
+  color:#A09080;
+  display:flex;
+  align-items:flex-start;
+  gap:0.7rem;
+  font-weight:300;
+}
+.goal-item strong{display:block;color:var(--paper);margin-bottom:0.2rem;font-size:0.82rem;font-weight:600}
+.goal-arrow{color:var(--copper);flex-shrink:0;margin-top:2px}
+
+/* ── CONTACT STRIP ── */
+.contact-strip{
+  background:var(--copper);
+  padding:3rem clamp(2rem,6vw,5rem) 3rem clamp(3.5rem,8vw,7rem);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:1.5rem;
+}
+.contact-strip h2{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.4rem,3vw,2.2rem);
+  font-weight:600;
+  color:white;
+  line-height:1.2;
+}
+.contact-strip p{
+  font-size:0.82rem;
+  color:rgba(255,255,255,0.75);
+  margin-top:0.3rem;
+  font-weight:300;
+}
+.btn-white{
+  background:white;
+  color:var(--copper);
+  font-size:0.72rem;
+  font-weight:700;
+  padding:0.8rem 2rem;
+  border-radius:3px;
+  text-decoration:none;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  white-space:nowrap;
+  transition:all 0.2s;
+}
+.btn-white:hover{background:var(--earth);color:white}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--earth);
+  color:#5A4A3A;
+  padding:2rem clamp(2rem,6vw,5rem) 2rem clamp(3.5rem,8vw,7rem);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:1rem;
+  font-size:0.7rem;
+  font-family:'DM Mono',monospace;
+}
+footer a{color:#7A6A5A;text-decoration:none}
+footer a:hover{color:var(--copper)}
+
+/* ── PHOTO ── */
+.profile-photo-wrap{
+  margin-bottom:1.5rem;
+  position:relative;
+  display:inline-block;
+}
+.profile-photo{
+  width:160px;
+  height:160px;
+  border-radius:50%;
+  object-fit:cover;
+  object-position:center top;
+  border:3px solid var(--line);
+  display:block;
+  box-shadow:0 8px 32px rgba(43,26,12,0.15);
+}
+.profile-photo-wrap::after{
+  content:'';
+  position:absolute;
+  inset:-6px;
+  border-radius:50%;
+  border:1px solid var(--copper);
+  opacity:0.4;
+  pointer-events:none;
+}
+
+/* ── SCROLL REVEAL ── */
+.reveal{
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.in-view{
+  opacity:1;
+  transform:translateY(0);
+}
+.tech-pills .tech-pill{
+  transition:opacity 0.4s ease, transform 0.4s ease;
+}
+.reveal:not(.in-view) .tech-pills .tech-pill{opacity:0;transform:translateY(8px)}
+.tech-pills .tech-pill:nth-child(1){transition-delay:0ms}
+.tech-pills .tech-pill:nth-child(2){transition-delay:60ms}
+.tech-pills .tech-pill:nth-child(3){transition-delay:120ms}
+.tech-pills .tech-pill:nth-child(4){transition-delay:180ms}
+.tech-pills .tech-pill:nth-child(5){transition-delay:240ms}
+
+/* Project card lift on hover */
+.project-card{transform:translateY(0);transition:border-color 0.3s, box-shadow 0.3s, transform 0.3s;}
+.project-card:hover{transform:translateY(-4px)}
+
+/* Feature/strength icon micro-interaction */
+.feature-item .f-icon{transition:transform 0.25s ease}
+.feature-item:hover .f-icon{transform:scale(1.15)}
+
+/* Hero deco parallax target (transform set via JS) */
+.hero-deco{will-change:transform}
+
+/* ── REDUCED MOTION ── */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation:none!important;
+    transition:none!important;
+    scroll-behavior:auto!important;
+  }
+  .reveal{opacity:1!important;transform:none!important}
+  .reveal:not(.in-view) .tech-pills .tech-pill{opacity:1!important;transform:none!important}
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .sidebar-line{display:none}
+  nav{padding:1rem 1.5rem}
+  .nav-toggle{display:flex}
+  .nav-links{
+    display:flex;
+    position:absolute;
+    top:100%;
+    left:0;
+    right:0;
+    flex-direction:column;
+    gap:0;
+    background:var(--paper);
+    border-bottom:1px solid var(--line);
+    max-height:0;
+    overflow:hidden;
+    transition:max-height 0.3s ease;
+  }
+  .nav-links.open{max-height:340px}
+  .nav-links li{width:100%}
+  .nav-links a{
+    display:block;
+    padding:0.9rem 1.5rem;
+    border-top:1px solid var(--line);
+  }
+  .hero{padding:7rem 1.5rem 4rem 1.5rem}
+  .hero-deco{display:none}
+  section{padding:4rem 1.5rem}
+  .about-grid{grid-template-columns:1fr;gap:2.5rem}
+  .project-header{flex-direction:column}
+  .contact-strip{flex-direction:column;text-align:center}
+  footer{flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar-line"></div>
+
+<nav>
+  <div class="nav-name">Caristo <em>Mulenga</em></div>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#accounting">Accounting</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#vision">Vision</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle navigation menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero" id="top">
+  <div class="hero-deco">C</div>
+  <div class="hero-eyebrow">Front-End Developer × Accountant · Ndola, Zambia</div>
+  <h1>Caristo<span class="hero-sub-name">Mulenga</span></h1>
+  <p class="hero-desc">
+    I spend my days reconciling ledgers and my evenings writing code, and the overlap is the point. I build interfaces shaped by someone who has actually worked the numbers side of a business.
+  </p>
+  <div class="hero-tags">
+    <span class="tag highlight">HTML5</span>
+    <span class="tag highlight">CSS3</span>
+    <span class="tag highlight">JavaScript</span>
+    <span class="tag">Firebase</span>
+    <span class="tag">Git &amp; GitHub</span>
+  </div>
+  <div class="hero-cta">
+    <a href="#projects" class="btn btn-primary">View My Work</a>
+    <a href="#accounting" class="btn btn-outline">Accounting &amp; Bookkeeping</a>
+    <a href="assets/Caristo-Mulenga-Resume.pdf" class="btn btn-outline" download>Résumé</a>
+  </div>
+</section>
+
+<!-- ── ABOUT ── -->
+<section id="about">
+  <div class="section-label">Who I Am</div>
+  <h2 class="section-title">Discipline over shortcuts.<br><em>Understanding before speed.</em></h2>
+
+  <div class="about-grid reveal">
+    <div class="about-text">
+      <p>
+        I'm an <strong>Assistant Accountant at Ultimate Farms Ltd</strong> in Ndola, Zambia, and a self-taught front-end developer. Most days I'm reconciling payroll and cost data by hand, which is exactly why I build software the way I do: methodically, with an eye for where numbers, and code, quietly go wrong.
+      </p>
+      <p>
+        I chose the harder, more deliberate path into tech: <strong>learning by building</strong>, not by credential. I write every line manually, read documentation before watching tutorials, and don't move to the next step until I understand the current one. Every project here is designed to teach me something real and solve an actual problem, not fill space in a portfolio.
+      </p>
+
+      <div class="tech-stack">
+        <h3>Current Stack</h3>
+        <div class="tech-pills">
+          <span class="tech-pill current">HTML5</span>
+          <span class="tech-pill current">CSS3</span>
+          <span class="tech-pill current">JavaScript</span>
+          <span class="tech-pill current">Git + GitHub</span>
+          <span class="tech-pill">Firebase (planned)</span>
+          <span class="tech-pill">Flutter (planned)</span>
+          <span class="tech-pill">React (planned)</span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="profile-photo-wrap">
+        <img class="profile-photo" src="images/caristo-profile.jpg" width="160" height="160" loading="eager" alt="Caristo Mulenga" onerror="this.closest('.profile-photo-wrap').style.display='none'">
+      </div>
+      <div class="about-stats reveal">
+        <div class="stat-box">
+          <div class="num" data-target="2" data-suffix="">0</div>
+          <div class="lbl">Real-world projects<br>in active development</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">0</div>
+          <div class="lbl">Shortcuts taken.<br>Every line understood.</div>
+        </div>
+        <div class="stat-box">
+          <div class="num" data-target="100" data-suffix="%">0%</div>
+          <div class="lbl">Self-taught.<br>No traditional CS degree.</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">∞</div>
+          <div class="lbl">Commitment to<br>long-term growth.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── EXPERIENCE ── -->
+<section id="experience">
+  <div class="section-label">Where I Work</div>
+  <h2 class="section-title">The day job that<br><em>sharpens the code.</em></h2>
+
+  <div class="timeline">
+    <div class="timeline-item reveal">
+      <div class="timeline-marker"></div>
+      <div class="timeline-content">
+        <div class="timeline-role">Assistant Accountant</div>
+        <div class="timeline-org">Ultimate Farms Ltd · Ndola, Zambia · Nov 2023 — Present</div>
+        <p class="timeline-desc">
+          I handle payroll for roughly <strong>30 employees</strong>, plus cost accounting, bookkeeping, and cashbook management and reconciliation for a poultry farming business that also sells bananas, oranges, and vegetables. In practice the role runs wider than the title: I'm one of three people in the company's administrative management structure alongside the Managing Director and his wife, I supervise around <strong>26 employees</strong> at the farm directly, and when the Managing Director is unavailable I take on operational decisions, recommendations, and reporting in his place.
+        </p>
+        <ul class="timeline-list">
+          <li>Rebuilt roughly <strong>two years of backlogged company records</strong> after the position sat vacant, bringing 2023 and 2024 payroll, bookkeeping, petty cash, purchases, feed expenses, and statutory records (NAPSA, ZRA) up to date, then repeated the process for 2025.</li>
+          <li>Led a full calendar-year payroll reconciliation across three independent data sources (payroll register, cash book, and individual payslips), surfacing untagged entries and per-employee rollup errors.</li>
+          <li>Traced a cost-accounting sales discrepancy back to January 2023, correcting figures month by month across a 12-category audit of the workbook.</li>
+          <li>Currently pursuing the <strong>ZiCA Diploma in Accountancy</strong> as a self-study programme, with examinations planned for late 2027.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-marker"></div>
+      <div class="timeline-content">
+        <div class="timeline-role">Vice Secretary</div>
+        <div class="timeline-org">Sharing Cohorts Foundation · Community Charity</div>
+        <p class="timeline-desc">
+          Own documentation and administration for a community organisation: meeting minutes, financial reports, member registers, and governance records, produced to a consistent professional standard.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SKILLS ── -->
+<section id="skills">
+  <div class="section-label">Toolkit</div>
+  <h2 class="section-title">What I build with<br><em>today, and next.</em></h2>
+  <p class="projects-intro">
+    A working stack, not a wish list. Everything marked "current" is something I have shipped code with. Everything marked "learning" or "planned" is the next deliberate step on the roadmap, not a placeholder.
+  </p>
+
+  <div class="strengths-grid reveal">
+    <div class="strength-card">
+      <div class="strength-icon">💻</div>
+      <div class="strength-title">Core Languages</div>
+      <div class="tech-pills">
+        <span class="tech-pill current">HTML5</span>
+        <span class="tech-pill current">CSS3</span>
+        <span class="tech-pill current">JavaScript (ES6+)</span>
+      </div>
+    </div>
+    <div class="strength-card">
+      <div class="strength-icon">🛠️</div>
+      <div class="strength-title">Tools &amp; Workflow</div>
+      <div class="tech-pills">
+        <span class="tech-pill current">Git + GitHub</span>
+        <span class="tech-pill current">VS Code</span>
+        <span class="tech-pill current">Responsive / Mobile-First Design</span>
+        <span class="tech-pill current">Chrome DevTools</span>
+      </div>
+    </div>
+    <div class="strength-card">
+      <div class="strength-icon">📚</div>
+      <div class="strength-title">Currently Learning</div>
+      <div class="tech-pills">
+        <span class="tech-pill">React</span>
+      </div>
+    </div>
+    <div class="strength-card">
+      <div class="strength-icon">🗺️</div>
+      <div class="strength-title">Planned Next</div>
+      <div class="tech-pills">
+        <span class="tech-pill">Firebase + Firestore</span>
+        <span class="tech-pill">Flutter</span>
+        <span class="tech-pill">REST API Integration</span>
+        <span class="tech-pill">Cloud Deployment</span>
+      </div>
+    </div>
+    <div class="strength-card">
+      <div class="strength-icon">📊</div>
+      <div class="strength-title">Domain Knowledge</div>
+      <div class="tech-pills">
+        <span class="tech-pill current">Payroll &amp; Cost Accounting</span>
+        <span class="tech-pill current">Financial Reconciliation</span>
+        <span class="tech-pill current">Excel / Data Modeling</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ACCOUNTING & FINANCE ── -->
+<section id="accounting">
+  <div class="section-label">Where the Numbers Are Real</div>
+  <h2 class="section-title">Financial work built on<br><em>accuracy, not guesswork.</em></h2>
+  <p class="projects-intro">
+    Alongside development, I take on freelance and remote work in bookkeeping, accounting support, Excel, payroll, data entry, and administrative work. It's the same discipline shown in the case studies below, applied to your books. This work is separate from my full-time role; nothing here involves confidential employer data.
+  </p>
+
+  <!-- Case Study: Cost Accounting Audit -->
+  <div class="project-card reveal">
+    <div class="project-header">
+      <div class="project-number">01</div>
+      <div class="project-meta">
+        <div class="project-status">
+          <span class="dot"></span> Completed
+        </div>
+        <div class="project-name">Cost Accounting <em>Workbook Audit</em></div>
+        <div class="project-type">Full-Year Financial Workbook Audit · Excel &amp; Cost Accounting</div>
+      </div>
+    </div>
+    <div class="project-body">
+      <p class="project-desc">
+        The trigger was a mismatch between the number of sales recorded and the balances that should have resulted from them, discovered while reviewing the cost-accounting sheets we use ahead of bookkeeping. The gap traced back further than expected, so I had to go back to January 2023 and correct the figures systematically from there. Along the way, errors surfaced across twelve separate categories, the kind that compound quietly until closing balances stop making sense. I audited the entire workbook month by month, traced each error back to its source, and rebuilt it into a clean, reconciled file with verified closing balances.
+      </p>
+
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="f-icon">🔗</div>
+          <div class="f-title">Cross-Sheet References</div>
+          <div class="f-desc">Traced and repaired broken formula links between monthly sheets that had silently stopped updating.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">📉</div>
+          <div class="f-title">Cascading Errors</div>
+          <div class="f-desc">Identified a pricing mistake in one month that had been carrying forward and compounding across several others.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">🧾</div>
+          <div class="f-title">Missing Source Data</div>
+          <div class="f-desc">Located and reintegrated purchase records that had been left out of the original entries.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">✅</div>
+          <div class="f-title">Verified Closing Balances</div>
+          <div class="f-desc">Reconciled every month so the final balances could be trusted as the following period's opening figures.</div>
+        </div>
+      </div>
+
+      <div class="challenge-note">
+        <h4>The Hard Part</h4>
+        <p>
+          None of the twelve error categories existed in isolation. Several fed into each other across months, so fixing one in place without tracing its downstream effect would have just relocated the mistake. I was still new to accounting at the time, so the audit had to move chronologically, verifying each month was clean before trusting the next.
+        </p>
+      </div>
+
+      <div class="project-footer">
+        <div class="project-stack">
+          <span class="stack-badge">Excel</span>
+          <span class="stack-badge">Cost Accounting</span>
+          <span class="stack-badge">Reconciliation</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Case Study: Payroll Reconciliation -->
+  <div class="project-card reveal">
+    <div class="project-header">
+      <div class="project-number">02</div>
+      <div class="project-meta">
+        <div class="project-status">
+          <span class="dot"></span> Completed
+        </div>
+        <div class="project-name">Payroll <em>Reconciliation</em></div>
+        <div class="project-type">Full Calendar-Year Payroll Audit · Payroll &amp; Reconciliation</div>
+      </div>
+    </div>
+    <div class="project-body">
+      <p class="project-desc">
+        A full year of payroll needed to be checked across three independent sources (the payroll register, the cash book, and individual payslips) to confirm every employee had been paid correctly and every entry was properly tagged. Discrepancies between the three don't announce themselves; they have to be hunted down line by line.
+      </p>
+
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="f-icon">📋</div>
+          <div class="f-title">Three-Way Cross-Check</div>
+          <div class="f-desc">Matched payroll register, cash book, and payslips against each other for a full calendar year.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">🏷️</div>
+          <div class="f-title">Untagged Entries</div>
+          <div class="f-desc">Surfaced cash book entries that had never been properly categorized against payroll.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">👤</div>
+          <div class="f-title">Per-Employee Rollups</div>
+          <div class="f-desc">Corrected individual employee totals that had drifted from the source records over time.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">📆</div>
+          <div class="f-title">Full-Year Coverage</div>
+          <div class="f-desc">Verified every month, not a sample, so no quarter was assumed clean without being checked.</div>
+        </div>
+      </div>
+
+      <div class="challenge-note">
+        <h4>The Hard Part</h4>
+        <p>
+          Three sources rarely disagree in an obvious way. A mismatch usually shows up as a small rounding-looking gap that's actually a missed entry. Finding those meant reconciling employee by employee, month by month, rather than trusting that totals which looked close enough were actually correct.
+        </p>
+      </div>
+
+      <div class="challenge-note">
+        <h4>The Real Find</h4>
+        <p>
+          While cross-checking cash book entries against current staff, I found a salary payment that didn't match anyone on the active roster. Tracing it back showed an employee who had already left the company was still being paid. Confirming it took about three days of tracing transactions and checking names against employee records, and it's the clearest case for why payroll has to be checked against independent sources rather than trusted on its own.
+        </p>
+      </div>
+
+      <div class="project-footer">
+        <div class="project-stack">
+          <span class="stack-badge">Payroll</span>
+          <span class="stack-badge">Reconciliation</span>
+          <span class="stack-badge">Excel</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Case Study: Rebuilding Backlogged Records -->
+  <div class="project-card reveal">
+    <div class="project-header">
+      <div class="project-number">03</div>
+      <div class="project-meta">
+        <div class="project-status">
+          <span class="dot"></span> Completed
+        </div>
+        <div class="project-name">Rebuilding <em>Two Years of Records</em></div>
+        <div class="project-type">Backlog Recovery · Bookkeeping, Payroll &amp; Statutory Compliance</div>
+      </div>
+    </div>
+    <div class="project-body">
+      <p class="project-desc">
+        The Assistant Accountant position had sat vacant for roughly two years before I started, so the company's records were significantly behind on everything: payroll, bookkeeping, petty cash vouchers, purchases, feed expenses, and statutory payments like NAPSA and ZRA. I had never worked as an accountant before, so I started by working closely with the Managing Director while I learned the processes, then took the backlog on directly.
+      </p>
+
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="f-icon">🗂️</div>
+          <div class="f-title">2023–2024 Records</div>
+          <div class="f-desc">Brought two full years of backlogged payroll, bookkeeping, and statutory records up to date from scratch.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">⏱️</div>
+          <div class="f-title">6–7 Months</div>
+          <div class="f-desc">Time it took to bring the 2024 records current, given the volume of historical information to review and correct.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">📅</div>
+          <div class="f-title">2025 Records</div>
+          <div class="f-desc">A further 4–5 months to bring 2025 up to date; now largely complete, pending the auditors' review.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">🔄</div>
+          <div class="f-title">Ongoing Maintenance</div>
+          <div class="f-desc">2026 records are maintained and updated continuously as the business operates, so the backlog doesn't recur.</div>
+        </div>
+      </div>
+
+      <div class="challenge-note">
+        <h4>The Hard Part</h4>
+        <p>
+          I was learning accounting itself while clearing a two-year backlog under it, with no prior professional experience to fall back on. The two had to happen together: I couldn't wait to be fully trained before starting, and I couldn't fix the records without first understanding what correct looked like. Leaning on the Managing Director's guidance early on, and working through the volume systematically rather than rushing it, was what made the backlog closeable instead of just endless.
+        </p>
+      </div>
+
+      <div class="project-footer">
+        <div class="project-stack">
+          <span class="stack-badge">Bookkeeping</span>
+          <span class="stack-badge">Payroll</span>
+          <span class="stack-badge">Statutory Compliance</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="challenge-note" style="margin-top:-1rem;margin-bottom:3rem;">
+    <h4>Sample Templates: Coming Soon</h4>
+    <p>
+      Downloadable sample templates (a budget tracker, a payroll summary sheet, and a cost-accounting workbook) are in progress. They're built from scratch with fictional data, so they demonstrate the same skills shown above without touching real employer records.
+    </p>
+  </div>
+
+  <div class="strengths-grid reveal">
+    <div class="strength-card">
+      <div class="strength-icon">📚</div>
+      <div class="strength-title">Bookkeeping &amp; Reconciliation</div>
+      <div class="tech-pills">
+        <span class="tech-pill current">Bookkeeping</span>
+        <span class="tech-pill current">Financial Reconciliation</span>
+        <span class="tech-pill current">Cost Accounting</span>
+      </div>
+    </div>
+    <div class="strength-card">
+      <div class="strength-icon">📊</div>
+      <div class="strength-title">Excel &amp; Payroll</div>
+      <div class="tech-pills">
+        <span class="tech-pill current">Excel / Data Modeling</span>
+        <span class="tech-pill current">Payroll Administration</span>
+      </div>
+    </div>
+    <div class="strength-card">
+      <div class="strength-icon">🧮</div>
+      <div class="strength-title">Accounting Software</div>
+      <div class="tech-pills">
+        <span class="tech-pill current">Sage Pastel 50</span>
+        <span class="tech-pill current">Dove Payroll</span>
+        <span class="tech-pill">QuickBooks (in progress)</span>
+      </div>
+    </div>
+    <div class="strength-card">
+      <div class="strength-icon">🎓</div>
+      <div class="strength-title">Credentials</div>
+      <div class="tech-pills">
+        <span class="tech-pill current">ZiCA Diploma (in progress)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROJECTS ── -->
+<section id="projects">
+  <div class="section-label">Work in Progress</div>
+  <h2 class="section-title">Projects built to<br><em>solve real problems.</em></h2>
+  <p class="projects-intro">
+    One is finished and live. Two are in active development. All three are rooted in a real gap I've observed, in how people find housing, manage money, and untangle who-owes-who after a shared bill, not dummy apps built to fill a portfolio.
+  </p>
+
+  <!-- SplitZK -->
+  <div class="project-card splitzk reveal">
+    <div class="project-header">
+      <div class="project-number">01</div>
+      <div class="project-meta">
+        <div class="project-status">
+          <span class="dot"></span> Live &amp; Shipped
+        </div>
+        <div class="project-name">Split<em>ZK</em></div>
+        <div class="project-type">Shared Expense Splitter · Web Application</div>
+      </div>
+    </div>
+    <div class="project-body">
+      <p class="project-desc">
+        SplitZK exists because "just Mobile Money me back" breaks down the moment three or more people share a bill. It tracks who paid for what (rent, groceries, a trip) and reduces everyone's tangled IOUs down to <strong>the fewest possible payments</strong>, in Zambian Kwacha, with no spreadsheet required.
+      </p>
+      <p class="project-desc">
+        Unlike NyumbaNi and CariSave, this one is not a work-in-progress. It is <strong>finished and deployed</strong>: a deliberately small, fully-shipped tool built to prove I can take something from idea to live product without leaving it half-built.
+      </p>
+
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="f-icon">👥</div>
+          <div class="f-title">Multi-Person Splitting</div>
+          <div class="f-desc">Add anyone in the group and split any expense across exactly who was there.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">🧾</div>
+          <div class="f-title">Expense Ledger</div>
+          <div class="f-desc">Every bill logged with who paid, what it was for, and how it was split.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">⚖️</div>
+          <div class="f-title">Running Balances</div>
+          <div class="f-desc">See at a glance who is owed money and who owes it, updated instantly.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">🔁</div>
+          <div class="f-title">Settle-Up Optimizer</div>
+          <div class="f-desc">A greedy debtor-creditor match collapses every debt into the minimum number of payments.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">🇿🇲</div>
+          <div class="f-title">ZMW-Native</div>
+          <div class="f-desc">Amounts formatted in Kwacha from the ground up, not an afterthought retrofit.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">⚡</div>
+          <div class="f-title">Zero Dependencies</div>
+          <div class="f-desc">Vanilla HTML, CSS, and JavaScript. No framework, no build step, no bloat.</div>
+        </div>
+      </div>
+
+      <div class="challenge-note">
+        <h4>The Hard Part</h4>
+        <p>
+          Tracking who-paid-what is easy. Reducing a group's tangled debts to the fewest possible payments is not: it's a matching problem. SplitZK sorts everyone into debtors and creditors, then greedily pairs the largest debtor against the largest creditor until every balance clears, so three friends never end up making six payments when two would settle it.
+        </p>
+      </div>
+
+      <div class="project-footer">
+        <div class="project-stack">
+          <span class="stack-badge">HTML5</span>
+          <span class="stack-badge">CSS3</span>
+          <span class="stack-badge">JavaScript</span>
+        </div>
+        <div style="display:flex; gap:1.2rem; align-items:center;">
+          <a href="https://github.com/caristo-dev/splitzk" class="project-link" target="_blank" rel="noopener noreferrer">
+            View on GitHub →
+          </a>
+          <a href="https://caristo-dev.github.io/splitzk/" class="project-link" target="_blank" rel="noopener noreferrer">
+            Live Demo →
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NyumbaNi -->
+  <div class="project-card nyumbani reveal">
+    <div class="project-header">
+      <div class="project-number">02</div>
+      <div class="project-meta">
+        <div class="project-status">
+          <span class="dot"></span> Active Development
+        </div>
+        <div class="project-name">Nyumba<em>Ni</em></div>
+        <div class="project-type">Property Listing &amp; Rental Platform · Web Application</div>
+      </div>
+    </div>
+    <div class="project-body">
+      <p class="project-desc">
+        NyumbaNi is a <strong>direct-to-landlord housing platform</strong> designed specifically for the Zambian rental market. The platform eliminates property agents from the equation entirely, allowing tenants to browse listings freely and pay a flat <strong>K50 subscription</strong> to unlock landlord contact details directly.
+      </p>
+      <p class="project-desc">
+        In Zambia, the current system forces tenants through layers of agent fees: a <strong>K100 non-refundable viewing fee</strong> per property visit, and a <strong>K1,000+ commission</strong> if the tenant proceeds. NyumbaNi removes all of that. One subscription. Unlimited connections. No agents. Every successful contact saves a tenant approximately <strong>K1,100</strong>.
+      </p>
+
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="f-icon">🏘️</div>
+          <div class="f-title">Property Listings</div>
+          <div class="f-desc">Landlords post directly: photos, prices, locations, and descriptions, fully transparent.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">🔍</div>
+          <div class="f-title">Search &amp; Filtering</div>
+          <div class="f-desc">Filter by city, type, price range, and neighbourhood. Built for mobile-first Zambian users.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">🔒</div>
+          <div class="f-title">K50 Paywall Model</div>
+          <div class="f-desc">Browse freely. Pay only when ready to contact. One subscription covers all landlords.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">📱</div>
+          <div class="f-title">Mobile Money Payments</div>
+          <div class="f-desc">Airtel Money and MTN MoMo integration, the dominant payment methods in Zambia.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">🛡️</div>
+          <div class="f-title">Trust &amp; Verification</div>
+          <div class="f-desc">Bronze, Silver, and Gold landlord tiers. Report system. Listings auto-expire after 60 days.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">🏠</div>
+          <div class="f-title">Landlord Dashboard</div>
+          <div class="f-desc">Post and manage listings, track tenant enquiries, and upgrade verification tier.</div>
+        </div>
+      </div>
+
+      <div class="challenge-note">
+        <h4>The Hard Part</h4>
+        <p>
+          The paywall logic has to feel fair, not extractive: one payment must unlock every landlord, indefinitely, without turning into a subscription trap. That means designing the access-control state up front, before a single line of the payment integration exists, so the free-browse and paid-contact boundary stays airtight as the listing count grows.
+        </p>
+      </div>
+
+      <div class="project-footer">
+        <div class="project-stack">
+          <span class="stack-badge">HTML5</span>
+          <span class="stack-badge">CSS3</span>
+          <span class="stack-badge">JavaScript</span>
+          <span class="stack-badge future">Firebase →</span>
+          <span class="stack-badge future">Airtel Money API →</span>
+          <span class="stack-badge future">MTN MoMo API →</span>
+        </div>
+        <a href="https://github.com/caristo-dev/nyumbani" class="project-link" target="_blank" rel="noopener noreferrer">
+          View on GitHub →
+        </a>
+      </div>
+    </div>
+  </div>
+
+<!-- CariSave -->
+  <div class="project-card carisave reveal">
+    <div class="project-header">
+      <div class="project-number">03</div>
+      <div class="project-meta">
+        <div class="project-status">
+          <span class="dot" style="background:var(--green)"></span> In Planning &amp; Design
+        </div>
+        <div class="project-name"><em>Cari</em>Save</div>
+        <div class="project-type">Personal Finance App · Android &amp; iOS + Web Platform</div>
+      </div>
+    </div>
+    <div class="project-body">
+      <p class="project-desc">
+        CariSave began as an Excel-based financial tracking system, a personal tool built out of necessity. The goal now is to <strong>transform that logic into a full mobile application</strong> for Android and iOS, supported by a web platform, making personal financial management accessible to everyday Zambians regardless of their income level or smartphone capability.
+      </p>
+      <p class="project-desc">
+        The target users are students, workers, families, and small business owners: anyone who wants to <strong>track income, build saving habits, and make smarter purchasing decisions</strong>. CariSave is designed to be lightweight, practical, and usable even on low-end smartphones.
+      </p>
+
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="f-icon">📊</div>
+          <div class="f-title">Financial Dashboard</div>
+          <div class="f-desc">Live overview of income, expenses, savings progress, and monthly summaries in one place.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">📝</div>
+          <div class="f-title">Expense &amp; Income Tracking</div>
+          <div class="f-desc">Log transactions by category with full history. Understand exactly where money goes.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">🎯</div>
+          <div class="f-title">Savings Goals</div>
+          <div class="f-desc">Set targets, track progress, and receive reminders. Build financial discipline over time.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">🛒</div>
+          <div class="f-title">Supermarket Price Comparison</div>
+          <div class="f-desc">Compare product prices across stores. Search items. Make cost-effective decisions every shop.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">📈</div>
+          <div class="f-title">Reports &amp; Analytics</div>
+          <div class="f-desc">Monthly and yearly summaries with visual charts. Understand financial patterns over time.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">🔔</div>
+          <div class="f-title">Smart Notifications</div>
+          <div class="f-desc">Savings reminders, budget alerts, and price updates to keep users on track effortlessly.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">👥</div>
+          <div class="f-title">User Contribution System</div>
+          <div class="f-desc">Users can submit and correct product prices, keeping the comparison data accurate and current.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">🔐</div>
+          <div class="f-title">Security &amp; Privacy</div>
+          <div class="f-desc">Secure login, user profiles, cloud storage, and strong data privacy as a foundation, not an afterthought.</div>
+        </div>
+      </div>
+
+      <div class="challenge-note">
+        <h4>The Hard Part</h4>
+        <p>
+          Price comparison data is only useful if it stays accurate, and I don't control what any given supermarket charges tomorrow. The real design problem is the user-contribution and correction system: trust scoring, conflict resolution when two users submit different prices for the same item, and keeping stale entries from misleading someone's grocery budget.
+        </p>
+      </div>
+
+      <div class="project-footer">
+        <div class="project-stack">
+          <span class="stack-badge" style="background:#D6EDD8;color:var(--green)">Flutter</span>
+          <span class="stack-badge" style="background:#D6EDD8;color:var(--green)">Firebase</span>
+          <span class="stack-badge" style="background:#D6EDD8;color:var(--green)">Firestore</span>
+          <span class="stack-badge future" style="border-color:#A8C8AA;color:var(--green)">Multi-currency →</span>
+          <span class="stack-badge future" style="border-color:#A8C8AA;color:var(--green)">Offline mode →</span>
+        </div>
+        <span class="project-link" style="color:var(--green)">Coming Soon</span>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ── STRENGTHS ── -->
+<section id="strengths">
+  <div class="section-label">What I Bring</div>
+  <h2 class="section-title">Strengths built through<br><em>real effort.</em></h2>
+
+  <div class="strengths-grid reveal">
+    <div class="strength-card">
+      <div class="strength-icon">🧩</div>
+      <div class="strength-title">Problem-Solving Mindset</div>
+      <div class="strength-desc">I do not start with code. I start with the problem. NyumbaNi, CariSave, and SplitZK all exist because I observed genuine gaps and addressed them systematically.</div>
+    </div>
+    <div class="strength-card">
+      <div class="strength-icon">📱</div>
+      <div class="strength-title">Context-Aware Design</div>
+      <div class="strength-desc">I build for the Zambian context: mobile-first, mobile money integration, low-bandwidth awareness. My work is shaped by where it will actually be used.</div>
+    </div>
+    <div class="strength-card">
+      <div class="strength-icon">🌱</div>
+      <div class="strength-title">Long-Term Vision</div>
+      <div class="strength-desc">I'm not building a quick portfolio. I'm learning every layer of the stack deliberately, and positioning myself to contribute meaningfully to technology over years, not months.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── VISION ── -->
+<section id="vision" class="vision-section">
+  <div class="section-label">Looking Forward</div>
+  <h2 class="section-title">Growth that is<br><em>intentional.</em></h2>
+
+  <div class="vision-quote reveal">
+    "I am not in a hurry to call myself a developer. I am in a hurry to become one: properly, deeply, and without taking shortcuts I will regret later."
+  </div>
+
+  <p class="vision-text">
+    My ambition is to grow into a <strong>full-stack developer</strong> who can take a problem from concept to deployed product. The roadmap is deliberate: master HTML, CSS, and JavaScript fully, add backend capability through Firebase, then expand into React and Flutter. I bring both a technical perspective and real operational experience to any team I join, and I want to build products with <strong>tangible impact</strong>, in Zambia first.
+  </p>
+
+  <div class="vision-goals reveal">
+    <div class="goal-item">
+      <span class="goal-arrow">→</span>
+      <div><strong>Master the fundamentals:</strong> HTML, CSS, JavaScript, completely, not partially.</div>
+    </div>
+    <div class="goal-item">
+      <span class="goal-arrow">→</span>
+      <div><strong>Launch NyumbaNi and CariSave:</strong> from prototype and Excel logic to live products with real users.</div>
+    </div>
+    <div class="goal-item">
+      <span class="goal-arrow">→</span>
+      <div><strong>Grow into full-stack:</strong> Firebase, React, Flutter, one layer at a time.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<div class="contact-strip reveal" id="contact">
+  <div>
+    <h2>Let's build something<br>worth building.</h2>
+    <p>Open to freelance bookkeeping, Excel, and payroll support work, as well as collaborations and opportunities in front-end development.</p>
+  </div>
+  <a href="mailto:caristomulenga99@gmail.com" class="btn-white">Get in Touch</a>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div>© 2026 Caristo Mulenga · Ndola, Zambia</div>
+  <div>
+    <a href="https://github.com/caristo-dev" target="_blank" rel="noopener noreferrer">GitHub</a>
+    &nbsp;·&nbsp;
+    <a href="https://linkedin.com/in/caristo-mulenga-a5aba5205" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Mobile nav toggle
+  var toggle = document.getElementById('nav-toggle');
+  var links = document.getElementById('nav-links');
+  if(toggle && links){
+    toggle.addEventListener('click', function(){
+      var open = links.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    links.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){
+        links.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Scroll-reveal for sections/cards
+  var revealEls = document.querySelectorAll('.reveal');
+  if(reduceMotion || !('IntersectionObserver' in window)){
+    revealEls.forEach(function(el){ el.classList.add('in-view'); });
+  } else {
+    var revealObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach(function(el){ revealObserver.observe(el); });
+  }
+
+  // Count-up for numeric stats
+  var counters = document.querySelectorAll('.num[data-target]');
+  function animateCount(el){
+    var target = parseInt(el.getAttribute('data-target'), 10);
+    var suffix = el.getAttribute('data-suffix') || '';
+    if(reduceMotion){ el.textContent = target + suffix; return; }
+    var duration = 900;
+    var start = null;
+    function step(ts){
+      if(start === null) start = ts;
+      var progress = Math.min((ts - start) / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(eased * target) + suffix;
+      if(progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  if('IntersectionObserver' in window){
+    var countObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          animateCount(entry.target);
+          countObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.6 });
+    counters.forEach(function(el){ countObserver.observe(el); });
+  } else {
+    counters.forEach(animateCount);
+  }
+
+  // Subtle hero deco parallax
+  if(!reduceMotion){
+    var deco = document.querySelector('.hero-deco');
+    if(deco){
+      var ticking = false;
+      window.addEventListener('scroll', function(){
+        if(!ticking){
+          window.requestAnimationFrame(function(){
+            var offset = Math.min(window.scrollY * 0.08, 60);
+            deco.style.transform = 'translateY(calc(-50% + ' + offset + 'px))';
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, { passive: true });
+    }
+  }
+})();
+</script>
+
+</body>
+</html>
