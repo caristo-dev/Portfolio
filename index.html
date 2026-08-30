@@ -6,14 +6,14 @@
 <title>Caristo Mulenga | Accountant & Front-End Developer</title>
 <meta name="description" content="Caristo Mulenga is an Assistant Accountant and self-taught front-end developer based in Ndola, Zambia, offering bookkeeping, Excel, payroll and reconciliation support, and practical web development.">
 <meta name="theme-color" content="#F7F3ED">
-<link rel="canonical" href="https://caristo-dev.github.io/portfolio/">
+<link rel="canonical" href="https://caristo-dev.github.io/Portfolio/">
 <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Caristo Mulenga | Accountant & Front-End Developer">
 <meta property="og:description" content="Assistant Accountant and self-taught front-end developer based in Ndola, Zambia. Bookkeeping, Excel, payroll, reconciliation, and web development.">
 <meta property="og:image" content="images/caristo-profile.jpg">
-<meta property="og:url" content="https://caristo-dev.github.io/portfolio/">
+<meta property="og:url" content="https://caristo-dev.github.io/Portfolio/">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Caristo Mulenga | Accountant & Front-End Developer">
 <meta name="twitter:description" content="Assistant Accountant and self-taught front-end developer based in Ndola, Zambia. Bookkeeping, Excel, payroll, reconciliation, and web development.">
@@ -26,9 +26,9 @@
   "@type": "Person",
   "name": "Caristo Mulenga",
   "jobTitle": "Assistant Accountant & Front-End Developer",
-  "url": "https://caristo-dev.github.io/portfolio/",
+  "url": "https://caristo-dev.github.io/Portfolio/",
   "sameAs": [
-    "https://linkedin.com/in/caristo-mulenga-a5aba5205",
+    "https://www.linkedin.com/in/caristo-mulenga/",
     "https://github.com/caristo-dev"
   ],
   "address": {
@@ -793,6 +793,23 @@ section{
   transition:all 0.2s;
 }
 .btn-white:hover{background:var(--earth);color:white}
+.btn-white-outline{
+  background:transparent;
+  color:white;
+  border:1px solid rgba(255,255,255,0.6);
+  font-size:0.72rem;
+  font-weight:700;
+  padding:0.8rem 2rem;
+  border-radius:3px;
+  text-decoration:none;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  white-space:nowrap;
+  transition:all 0.2s;
+  display:inline-block;
+}
+.btn-white-outline:hover{background:rgba(255,255,255,0.15);border-color:white}
+.contact-cta{display:flex;gap:0.8rem;flex-wrap:wrap}
 
 /* ── FOOTER ── */
 footer{
@@ -834,6 +851,75 @@ footer a:hover{color:var(--copper)}
   border:1px solid var(--copper);
   opacity:0.4;
   pointer-events:none;
+}
+
+/* ── TEMPLATE DOWNLOADS ── */
+.template-downloads{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+  margin-bottom:3rem;
+}
+.template-card{
+  background:var(--paper);
+  padding:1.5rem;
+  display:flex;
+  flex-direction:column;
+  gap:0.6rem;
+}
+.template-card .t-icon{font-size:1.4rem}
+.template-card .t-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.2rem;
+  font-weight:600;
+  color:var(--earth);
+}
+.template-card .t-desc{
+  font-size:0.78rem;
+  color:var(--muted);
+  line-height:1.6;
+  font-weight:300;
+  flex-grow:1;
+}
+.template-card .t-download{
+  font-family:'DM Mono',monospace;
+  font-size:0.68rem;
+  font-weight:500;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  color:var(--copper);
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  gap:0.4rem;
+  transition:gap 0.2s;
+}
+.template-card .t-download:hover{gap:0.7rem}
+
+/* ── PROJECT SCREENSHOT ── */
+.project-screenshot{
+  margin:0 0 2rem;
+  border:1px solid var(--line);
+  border-radius:4px;
+  overflow:hidden;
+  box-shadow:0 8px 32px rgba(43,26,12,0.08);
+  background:var(--white);
+}
+.project-screenshot img{
+  display:block;
+  width:100%;
+  height:auto;
+}
+.screenshot-caption{
+  font-family:'DM Mono',monospace;
+  font-size:0.68rem;
+  color:var(--muted);
+  letter-spacing:0.03em;
+  padding:0.7rem 1rem;
+  border-top:1px solid var(--line);
+  background:var(--paper);
 }
 
 /* ── SCROLL REVEAL ── */
@@ -990,20 +1076,11 @@ footer a:hover{color:var(--copper)}
       </div>
       <div class="about-stats reveal">
         <div class="stat-box">
-          <div class="num" data-target="2" data-suffix="">0</div>
-          <div class="lbl">Real-world projects<br>in active development</div>
+          <div class="num" data-target="3" data-suffix="">0</div>
+          <div class="lbl">Real-world projects<br>shipped or in progress</div>
         </div>
         <div class="stat-box">
-          <div class="num">0</div>
-          <div class="lbl">Shortcuts taken.<br>Every line understood.</div>
-        </div>
-        <div class="stat-box">
-          <div class="num" data-target="100" data-suffix="%">0%</div>
-          <div class="lbl">Self-taught.<br>No traditional CS degree.</div>
-        </div>
-        <div class="stat-box">
-          <div class="num">∞</div>
-          <div class="lbl">Commitment to<br>long-term growth.</div>
+          <div class="lbl" style="font-size:0.8rem;line-height:1.5;">Learning software development outside a traditional CS degree, working through the fundamentals by building actual projects and solving problems along the way.</div>
         </div>
       </div>
     </div>
@@ -1020,15 +1097,15 @@ footer a:hover{color:var(--copper)}
       <div class="timeline-marker"></div>
       <div class="timeline-content">
         <div class="timeline-role">Assistant Accountant</div>
-        <div class="timeline-org">Ultimate Farms Ltd · Ndola, Zambia · Nov 2023 — Present</div>
+        <div class="timeline-org">Ultimate Farms Ltd · Ndola, Zambia · Nov 2024 - Present</div>
         <p class="timeline-desc">
-          I handle payroll for roughly <strong>30 employees</strong>, plus cost accounting, bookkeeping, and cashbook management and reconciliation for a poultry farming business that also sells bananas, oranges, and vegetables. In practice the role runs wider than the title: I'm one of three people in the company's administrative management structure alongside the Managing Director and his wife, I supervise around <strong>26 employees</strong> at the farm directly, and when the Managing Director is unavailable I take on operational decisions, recommendations, and reporting in his place.
+          I handle payroll for roughly <strong>30 employees</strong>, plus cost accounting, bookkeeping, and cashbook management and reconciliation for a <strong>13,500-bird layer (egg-production) operation</strong> that also sells bananas, oranges, and vegetables. In practice the role runs wider than the title: I'm one of three people in the company's administrative management structure alongside the Managing Director and his wife, I supervise around <strong>26 employees</strong> at the farm directly, and when the Managing Director is unavailable I take on operational decisions, recommendations, and reporting in his place.
         </p>
         <ul class="timeline-list">
           <li>Rebuilt roughly <strong>two years of backlogged company records</strong> after the position sat vacant, bringing 2023 and 2024 payroll, bookkeeping, petty cash, purchases, feed expenses, and statutory records (NAPSA, ZRA) up to date, then repeated the process for 2025.</li>
           <li>Led a full calendar-year payroll reconciliation across three independent data sources (payroll register, cash book, and individual payslips), surfacing untagged entries and per-employee rollup errors.</li>
           <li>Traced a cost-accounting sales discrepancy back to January 2023, correcting figures month by month across a 12-category audit of the workbook.</li>
-          <li>Currently pursuing the <strong>ZiCA Diploma in Accountancy</strong> as a self-study programme, with examinations planned for late 2027.</li>
+          <li>Currently pursuing the <strong>ZiCA Diploma in Accountancy</strong> as a self-study programme, running Jan 2026 to Dec 2028.</li>
         </ul>
       </div>
     </div>
@@ -1036,10 +1113,15 @@ footer a:hover{color:var(--copper)}
       <div class="timeline-marker"></div>
       <div class="timeline-content">
         <div class="timeline-role">Vice Secretary</div>
-        <div class="timeline-org">Sharing Cohorts Foundation · Community Charity</div>
+        <div class="timeline-org">Sharing Cohorts Foundation · Community Charity · Jul 2025 - Present</div>
         <p class="timeline-desc">
-          Own documentation and administration for a community organisation: meeting minutes, financial reports, member registers, and governance records, produced to a consistent professional standard.
+          I handle documentation and records for a community organisation of roughly <strong>90 members</strong>. We meet <strong>every two weeks</strong>, and I'm responsible for the member register, meeting minutes, and financial reports that go with each meeting. Reporting matters most in the run-up to an outreach: with one coming up in the next two weeks, that's when I prepare and present the financial and activity reports the organisation relies on before it goes ahead.
         </p>
+        <ul class="timeline-list">
+          <li>Maintain a register of roughly <strong>90 members</strong>, including names, birthdays, and the photo and video documentation gathered at outreach events.</li>
+          <li>Prepare and present financial reports and meeting minutes on a <strong>biweekly</strong> schedule.</li>
+          <li>Reporting intensifies ahead of each outreach, when the organisation needs an accurate picture of funds and member participation before committing to it.</li>
+        </ul>
       </div>
     </div>
   </div>
@@ -1267,7 +1349,7 @@ footer a:hover{color:var(--copper)}
         <div class="feature-item">
           <div class="f-icon">🔄</div>
           <div class="f-title">Ongoing Maintenance</div>
-          <div class="f-desc">2026 records are maintained and updated continuously as the business operates, so the backlog doesn't recur.</div>
+          <div class="f-desc">2026 records are currently accurate and maintained, with the usual year-end audit and finalisation process taking place before moving fully into next year's records.</div>
         </div>
       </div>
 
@@ -1288,11 +1370,30 @@ footer a:hover{color:var(--copper)}
     </div>
   </div>
 
-  <div class="challenge-note" style="margin-top:-1rem;margin-bottom:3rem;">
-    <h4>Sample Templates: Coming Soon</h4>
-    <p>
-      Downloadable sample templates (a budget tracker, a payroll summary sheet, and a cost-accounting workbook) are in progress. They're built from scratch with fictional data, so they demonstrate the same skills shown above without touching real employer records.
-    </p>
+  <div class="section-label" style="margin-top:-1.5rem;">Try It Yourself</div>
+  <h2 class="section-title" style="font-size:clamp(1.6rem,3vw,2.2rem);margin-bottom:1.5rem;">Sample templates,<br><em>built from scratch.</em></h2>
+  <p class="projects-intro" style="margin-bottom:2rem;">
+    Built with fictional data and no connection to real employer records, so you can see the structure and formulas behind the case studies above.
+  </p>
+
+  <div class="template-downloads reveal">
+    <div class="template-card">
+      <div class="t-icon">📊</div>
+      <div class="t-title">Budget Tracker</div>
+      <div class="t-desc">Dashboard, spending by category, and a savings goal tracker, built the same way as Budget Tracker Pro above. Full template available on request.</div>
+    </div>
+    <div class="template-card">
+      <div class="t-icon">🧾</div>
+      <div class="t-title">Payroll Summary Sheet</div>
+      <div class="t-desc">Ten fictional employees with NAPSA and PAYE calculated by formula from basic salary and allowances.</div>
+      <a href="templates/Payroll-Summary-Sample-Template.xlsx" class="t-download" download>Download .xlsx →</a>
+    </div>
+    <div class="template-card">
+      <div class="t-icon">📈</div>
+      <div class="t-title">Cost Accounting Workbook</div>
+      <div class="t-desc">Six months of category costs rolled up against sales, with a reconciliation check that flags the one month where cost exceeds revenue.</div>
+      <a href="templates/Cost-Accounting-Sample-Template.xlsx" class="t-download" download>Download .xlsx →</a>
+    </div>
   </div>
 
   <div class="strengths-grid reveal">
@@ -1337,7 +1438,7 @@ footer a:hover{color:var(--copper)}
   <div class="section-label">Work in Progress</div>
   <h2 class="section-title">Projects built to<br><em>solve real problems.</em></h2>
   <p class="projects-intro">
-    One is finished and live. Two are in active development. All three are rooted in a real gap I've observed, in how people find housing, manage money, and untangle who-owes-who after a shared bill, not dummy apps built to fill a portfolio.
+    One is live and still evolving through deliberate, tested phases. One is a working prototype that still needs a real backend. One exists today as a personal Excel tool with an app version planned for later, not built yet. All three are rooted in a real gap I've observed, in how people find housing, manage money, and untangle who-owes-who after a shared bill, not dummy apps built to fill a portfolio.
   </p>
 
   <!-- SplitZK -->
@@ -1346,10 +1447,10 @@ footer a:hover{color:var(--copper)}
       <div class="project-number">01</div>
       <div class="project-meta">
         <div class="project-status">
-          <span class="dot"></span> Live &amp; Shipped
+          <span class="dot"></span> Live &amp; Evolving
         </div>
         <div class="project-name">Split<em>ZK</em></div>
-        <div class="project-type">Shared Expense Splitter · Web Application</div>
+        <div class="project-type">Shared Expense Splitter · Installable Web App (PWA)</div>
       </div>
     </div>
     <div class="project-body">
@@ -1357,8 +1458,13 @@ footer a:hover{color:var(--copper)}
         SplitZK exists because "just Mobile Money me back" breaks down the moment three or more people share a bill. It tracks who paid for what (rent, groceries, a trip) and reduces everyone's tangled IOUs down to <strong>the fewest possible payments</strong>, in Zambian Kwacha, with no spreadsheet required.
       </p>
       <p class="project-desc">
-        Unlike NyumbaNi and CariSave, this one is not a work-in-progress. It is <strong>finished and deployed</strong>: a deliberately small, fully-shipped tool built to prove I can take something from idea to live product without leaving it half-built.
+        SplitZK shipped early on purpose, then kept growing through deliberate, verified phases rather than one big rewrite: real accounts replaced a simple device PIN lock, the navigation was rebuilt around Groups, Friends, and Activities, and the data model was hardened for a future where splits sync across a person's own devices. It's installable as an offline-first app, and the core calculation engine, the part that actually has to be correct, has stayed untouched and independently regression-tested through every one of those changes.
       </p>
+
+      <div class="project-screenshot">
+        <img src="images/splitzk-demo-screenshot.png" alt="SplitZK demo group showing three members, total expenses of K690, a settle-up balance owed to Mulenga, and a spending breakdown by category" loading="lazy">
+        <div class="screenshot-caption">SplitZK's demo group: running balances, settle-up status, and spending by category, live at the link below.</div>
+      </div>
 
       <div class="features-grid">
         <div class="feature-item">
@@ -1382,14 +1488,24 @@ footer a:hover{color:var(--copper)}
           <div class="f-desc">A greedy debtor-creditor match collapses every debt into the minimum number of payments.</div>
         </div>
         <div class="feature-item">
+          <div class="f-icon">🔐</div>
+          <div class="f-title">Real Accounts</div>
+          <div class="f-desc">Sign up/sign in per device, session timeout, and safe migration of old data into a new account.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">📴</div>
+          <div class="f-title">Offline-Installable</div>
+          <div class="f-desc">A proper PWA with a service worker, install it to a home screen and it keeps working without a connection.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">🎟️</div>
+          <div class="f-title">Free / Pro Groups</div>
+          <div class="f-desc">2 free active groups per account; a 30-day Free Pass unlocks unlimited groups plus Excel/PDF export. Self-serve for now, no payment gate built yet.</div>
+        </div>
+        <div class="feature-item">
           <div class="f-icon">🇿🇲</div>
           <div class="f-title">ZMW-Native</div>
           <div class="f-desc">Amounts formatted in Kwacha from the ground up, not an afterthought retrofit.</div>
-        </div>
-        <div class="feature-item">
-          <div class="f-icon">⚡</div>
-          <div class="f-title">Zero Dependencies</div>
-          <div class="f-desc">Vanilla HTML, CSS, and JavaScript. No framework, no build step, no bloat.</div>
         </div>
       </div>
 
@@ -1400,17 +1516,26 @@ footer a:hover{color:var(--copper)}
         </p>
       </div>
 
+      <div class="challenge-note">
+        <h4>Built to Survive a Future Sync Backend</h4>
+        <p>
+          Every record now carries real UUIDs instead of locally-unique strings, and deletes are soft, groups, expenses, and friends all get a status/tombstone field instead of actually disappearing, so the local data won't need restructuring the day a real multi-device sync layer gets built. None of that changes what the app does today; it's groundwork. The one rule through all of it: after every structural change, the same 10-test calculation harness has to still pass before the change counts as done.
+        </p>
+      </div>
+
       <div class="project-footer">
         <div class="project-stack">
           <span class="stack-badge">HTML5</span>
           <span class="stack-badge">CSS3</span>
           <span class="stack-badge">JavaScript</span>
+          <span class="stack-badge future">Sync Backend →</span>
+          <span class="stack-badge future">Payment Gate for Free Pass →</span>
         </div>
         <div style="display:flex; gap:1.2rem; align-items:center;">
-          <a href="https://github.com/caristo-dev/splitzk" class="project-link" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/caristo-dev/Portfolio/tree/main/splitzk" class="project-link" target="_blank" rel="noopener noreferrer">
             View on GitHub →
           </a>
-          <a href="https://caristo-dev.github.io/splitzk/" class="project-link" target="_blank" rel="noopener noreferrer">
+          <a href="https://caristo-dev.github.io/Portfolio/splitzk/" class="project-link" target="_blank" rel="noopener noreferrer">
             Live Demo →
           </a>
         </div>
@@ -1427,16 +1552,21 @@ footer a:hover{color:var(--copper)}
           <span class="dot"></span> Active Development
         </div>
         <div class="project-name">Nyumba<em>Ni</em></div>
-        <div class="project-type">Property Listing &amp; Rental Platform · Web Application</div>
+        <div class="project-type">Property Listings, Marketplace &amp; Price Comparison · Web Application</div>
       </div>
     </div>
     <div class="project-body">
       <p class="project-desc">
-        NyumbaNi is a <strong>direct-to-landlord housing platform</strong> designed specifically for the Zambian rental market. The platform eliminates property agents from the equation entirely, allowing tenants to browse listings freely and pay a flat <strong>K50 subscription</strong> to unlock landlord contact details directly.
+        NyumbaNi is a <strong>free, direct-from-owner property platform</strong> built for the Zambian rental market. It cuts property agents out entirely: landlords post listings themselves, and tenants browse and contact owners directly, at <strong>no cost, with no fee to unlock anything</strong>.
       </p>
       <p class="project-desc">
-        In Zambia, the current system forces tenants through layers of agent fees: a <strong>K100 non-refundable viewing fee</strong> per property visit, and a <strong>K1,000+ commission</strong> if the tenant proceeds. NyumbaNi removes all of that. One subscription. Unlimited connections. No agents. Every successful contact saves a tenant approximately <strong>K1,100</strong>.
+        In Zambia, the usual system runs tenants through a <strong>K100 non-refundable viewing fee</strong> per property visit, then a <strong>K1,000+ commission</strong> if they proceed. NyumbaNi removes all of it, no agent, no fee to NyumbaNi either. Every successful contact saves a tenant roughly <strong>K1,100</strong> outright.
       </p>
+
+      <div class="project-screenshot">
+        <img src="images/nyumbani-demo-screenshot.png" alt="NyumbaNi listings page showing six sample property listings across Lusaka, Ndola, and Livingstone, with a K0 platform fees stat and free contact-owner buttons" loading="lazy">
+        <div class="screenshot-caption">NyumbaNi's listings page: free contact-owner buttons, city and type filters, and the K0 platform fees stat up top.</div>
+      </div>
 
       <div class="features-grid">
         <div class="feature-item">
@@ -1447,34 +1577,41 @@ footer a:hover{color:var(--copper)}
         <div class="feature-item">
           <div class="f-icon">🔍</div>
           <div class="f-title">Search &amp; Filtering</div>
-          <div class="f-desc">Filter by city, type, price range, and neighbourhood. Built for mobile-first Zambian users.</div>
+          <div class="f-desc">Filter by city, type, and neighbourhood. Built mobile-first for Zambian users.</div>
         </div>
         <div class="feature-item">
-          <div class="f-icon">🔒</div>
-          <div class="f-title">K50 Paywall Model</div>
-          <div class="f-desc">Browse freely. Pay only when ready to contact. One subscription covers all landlords.</div>
+          <div class="f-icon">💸</div>
+          <div class="f-title">Completely Free</div>
+          <div class="f-desc">Browse and contact owners directly. No unlock fee, no subscription, nothing to pay NyumbaNi.</div>
         </div>
         <div class="feature-item">
-          <div class="f-icon">📱</div>
-          <div class="f-title">Mobile Money Payments</div>
-          <div class="f-desc">Airtel Money and MTN MoMo integration, the dominant payment methods in Zambia.</div>
+          <div class="f-icon">📊</div>
+          <div class="f-title">Price Compare</div>
+          <div class="f-desc">Compare rental prices by neighbourhood before committing to a search area.</div>
         </div>
         <div class="feature-item">
-          <div class="f-icon">🛡️</div>
-          <div class="f-title">Trust &amp; Verification</div>
-          <div class="f-desc">Bronze, Silver, and Gold landlord tiers. Report system. Listings auto-expire after 60 days.</div>
+          <div class="f-icon">🛒</div>
+          <div class="f-title">NyumbaNi Market</div>
+          <div class="f-desc">A separate buy/sell marketplace (electronics and more) alongside the housing listings. Sellers must submit NRC and business details before listing.</div>
         </div>
         <div class="feature-item">
-          <div class="f-icon">🏠</div>
-          <div class="f-title">Landlord Dashboard</div>
-          <div class="f-desc">Post and manage listings, track tenant enquiries, and upgrade verification tier.</div>
+          <div class="f-icon">🪪</div>
+          <div class="f-title">Verified Onboarding</div>
+          <div class="f-desc">Phone OTP plus NRC document upload for identity, with Bronze/Silver/Gold landlord trust tiers as verification deepens.</div>
         </div>
       </div>
 
       <div class="challenge-note">
-        <h4>The Hard Part</h4>
+        <h4>What's Actually Left</h4>
         <p>
-          The paywall logic has to feel fair, not extractive: one payment must unlock every landlord, indefinitely, without turning into a subscription trap. That means designing the access-control state up front, before a single line of the payment integration exists, so the free-browse and paid-contact boundary stays airtight as the listing count grows.
+          Everything you can click through today runs on sample data hard-coded into the page, there's no backend, no database, no real accounts yet. The real work left is a backend and database for users, listings, and market items; real phone-OTP delivery and session handling; secure, private storage for uploaded NRC documents with an admin review flow; and real image upload to replace the placeholder icons. The front end was the easy part; making all of it real is what's next.
+        </p>
+      </div>
+
+      <div class="challenge-note">
+        <h4>Why Free, Not Paywalled</h4>
+        <p>
+          I built the free-contact model without first knowing someone else had already built something close to it. A similar Zambian property app had launched a few months earlier and already picked up a real user base. Reading through its public reviews taught me more than any spec could have: people genuinely like dealing with the owner directly instead of an agent, and the loudest complaints were about listings that stay up long after a property's gone, and, by one account, a paid "AI agent" contact flow that kept repeating itself and handed over numbers that didn't connect. NyumbaNi's free-contact model answers the second problem directly: no paid step standing between a tenant and a real number. The first problem, expiring stale listings automatically, is now on my pre-launch checklist.
         </p>
       </div>
 
@@ -1483,96 +1620,111 @@ footer a:hover{color:var(--copper)}
           <span class="stack-badge">HTML5</span>
           <span class="stack-badge">CSS3</span>
           <span class="stack-badge">JavaScript</span>
-          <span class="stack-badge future">Firebase →</span>
-          <span class="stack-badge future">Airtel Money API →</span>
-          <span class="stack-badge future">MTN MoMo API →</span>
+          <span class="stack-badge future">Backend (Node or Django) →</span>
+          <span class="stack-badge future">Postgres →</span>
+          <span class="stack-badge future">SMS OTP Provider →</span>
         </div>
-        <a href="https://github.com/caristo-dev/nyumbani" class="project-link" target="_blank" rel="noopener noreferrer">
-          View on GitHub →
-        </a>
+        <div style="display:flex; gap:1.2rem; align-items:center;">
+          <a href="https://github.com/caristo-dev/nyumbani" class="project-link" target="_blank" rel="noopener noreferrer">
+            View on GitHub →
+          </a>
+          <a href="https://caristo-dev.github.io/Portfolio/nyumbani.html" class="project-link" target="_blank" rel="noopener noreferrer">
+            Live Demo →
+          </a>
+        </div>
       </div>
     </div>
   </div>
 
-<!-- CariSave -->
+<!-- Budget Tracker Pro -->
   <div class="project-card carisave reveal">
     <div class="project-header">
       <div class="project-number">03</div>
       <div class="project-meta">
         <div class="project-status">
-          <span class="dot" style="background:var(--green)"></span> In Planning &amp; Design
+          <span class="dot" style="background:var(--green)"></span> In Use (Excel) · App Not Started
         </div>
-        <div class="project-name"><em>Cari</em>Save</div>
-        <div class="project-type">Personal Finance App · Android &amp; iOS + Web Platform</div>
+        <div class="project-name">Budget Tracker <em>Pro</em></div>
+        <div class="project-type">Personal Finance Excel Tool · App version planned (working name: CariSave)</div>
       </div>
     </div>
     <div class="project-body">
       <p class="project-desc">
-        CariSave began as an Excel-based financial tracking system, a personal tool built out of necessity. The goal now is to <strong>transform that logic into a full mobile application</strong> for Android and iOS, supported by a web platform, making personal financial management accessible to everyday Zambians regardless of their income level or smartphone capability.
+        I wanted a proper budget tracker for my own finances, so I built one in Excel. It's grown into a full workbook: a dashboard, a transaction log, subcategory-level budgets (not just top-line categories), monthly spending trends, an annual summary, a multi-account view, and a side-hustle income log, with individual tracking sheets for every month across two full years. This is the tool I actually use, day to day, not a demo built to look good.
       </p>
       <p class="project-desc">
-        The target users are students, workers, families, and small business owners: anyone who wants to <strong>track income, build saving habits, and make smarter purchasing decisions</strong>. CariSave is designed to be lightweight, practical, and usable even on low-end smartphones.
+        The plan is to eventually turn this into a real app, tentatively called <strong>CariSave</strong>, but that work has not started yet. Right now this is entirely an Excel tool, not code. Turning the spreadsheet's logic into an actual app (picking a stack, structuring the data, handling state outside a spreadsheet) is a real jump I haven't made yet, and I'd rather say that plainly here than imply progress that isn't there.
       </p>
 
+      <div class="project-screenshot">
+        <img src="images/budget-tracker-screenshot.png" alt="Budget Tracker Pro Excel dashboard showing monthly income, expenses, spending breakdown by category, a savings goal tracker, and smart insights" loading="lazy">
+        <div class="screenshot-caption">Budget Tracker Pro in Excel: the dashboard I actually use, spending breakdown, savings goal tracker, and category insights.</div>
+      </div>
+
+      <p class="project-desc" style="font-style:italic;font-size:0.85rem;">Planned feature set. Items marked (Excel) already work in Budget Tracker Pro today; everything else is a future idea for the app version and hasn't been started.</p>
       <div class="features-grid">
         <div class="feature-item">
           <div class="f-icon">📊</div>
-          <div class="f-title">Financial Dashboard</div>
+          <div class="f-title">Financial Dashboard (Excel)</div>
           <div class="f-desc">Live overview of income, expenses, savings progress, and monthly summaries in one place.</div>
         </div>
         <div class="feature-item">
           <div class="f-icon">📝</div>
-          <div class="f-title">Expense &amp; Income Tracking</div>
+          <div class="f-title">Expense &amp; Income Tracking (Excel)</div>
           <div class="f-desc">Log transactions by category with full history. Understand exactly where money goes.</div>
         </div>
         <div class="feature-item">
           <div class="f-icon">🎯</div>
-          <div class="f-title">Savings Goals</div>
-          <div class="f-desc">Set targets, track progress, and receive reminders. Build financial discipline over time.</div>
+          <div class="f-title">Savings Goals (Excel)</div>
+          <div class="f-desc">Set targets and track progress toward them over time.</div>
+        </div>
+        <div class="feature-item">
+          <div class="f-icon">📈</div>
+          <div class="f-title">Reports &amp; Analytics (Excel)</div>
+          <div class="f-desc">Monthly and rolling annual summaries. Understand financial patterns over time.</div>
         </div>
         <div class="feature-item">
           <div class="f-icon">🛒</div>
           <div class="f-title">Supermarket Price Comparison</div>
-          <div class="f-desc">Compare product prices across stores. Search items. Make cost-effective decisions every shop.</div>
+          <div class="f-desc">Compare product prices across stores, starting with ShopRite. New, app-only feature, not yet started.</div>
         </div>
         <div class="feature-item">
-          <div class="f-icon">📈</div>
-          <div class="f-title">Reports &amp; Analytics</div>
-          <div class="f-desc">Monthly and yearly summaries with visual charts. Understand financial patterns over time.</div>
+          <div class="f-icon">🤖</div>
+          <div class="f-title">AI Suggestions</div>
+          <div class="f-desc">Spending suggestions based on tracked patterns. On the roadmap, well past the app-build stage, not yet started.</div>
         </div>
         <div class="feature-item">
           <div class="f-icon">🔔</div>
           <div class="f-title">Smart Notifications</div>
-          <div class="f-desc">Savings reminders, budget alerts, and price updates to keep users on track effortlessly.</div>
+          <div class="f-desc">Savings reminders and budget alerts. New, app-only feature, not yet started.</div>
         </div>
         <div class="feature-item">
           <div class="f-icon">👥</div>
           <div class="f-title">User Contribution System</div>
-          <div class="f-desc">Users can submit and correct product prices, keeping the comparison data accurate and current.</div>
+          <div class="f-desc">Users submit and correct product prices to keep comparison data accurate. New, app-only feature, not yet started.</div>
         </div>
         <div class="feature-item">
           <div class="f-icon">🔐</div>
           <div class="f-title">Security &amp; Privacy</div>
-          <div class="f-desc">Secure login, user profiles, cloud storage, and strong data privacy as a foundation, not an afterthought.</div>
+          <div class="f-desc">Secure login and data privacy as a foundation once the app has real user accounts. New, app-only feature, not yet started.</div>
         </div>
       </div>
 
       <div class="challenge-note">
-        <h4>The Hard Part</h4>
+        <h4>The Real Challenge Ahead</h4>
         <p>
-          Price comparison data is only useful if it stays accurate, and I don't control what any given supermarket charges tomorrow. The real design problem is the user-contribution and correction system: trust scoring, conflict resolution when two users submit different prices for the same item, and keeping stale entries from misleading someone's grocery budget.
+          The Excel version works because a spreadsheet's formulas do the heavy lifting invisibly: running balances, rollups, conditional tips. Turning that same logic into actual code, outside a spreadsheet, is the real challenge, and it's a step I haven't started yet. The price-comparison trust and conflict-resolution problem is a further design question on top of that, and it's even further out.
         </p>
       </div>
 
       <div class="project-footer">
         <div class="project-stack">
-          <span class="stack-badge" style="background:#D6EDD8;color:var(--green)">Flutter</span>
-          <span class="stack-badge" style="background:#D6EDD8;color:var(--green)">Firebase</span>
-          <span class="stack-badge" style="background:#D6EDD8;color:var(--green)">Firestore</span>
-          <span class="stack-badge future" style="border-color:#A8C8AA;color:var(--green)">Multi-currency →</span>
-          <span class="stack-badge future" style="border-color:#A8C8AA;color:var(--green)">Offline mode →</span>
+          <span class="stack-badge future" style="border-color:#A8C8AA;color:var(--green)">React →</span>
+          <span class="stack-badge future" style="border-color:#A8C8AA;color:var(--green)">Node.js/Python backend →</span>
+          <span class="stack-badge future" style="border-color:#A8C8AA;color:var(--green)">Flutter (mobile) →</span>
+          <span class="stack-badge future" style="border-color:#A8C8AA;color:var(--green)">Price comparison API →</span>
         </div>
-        <span class="project-link" style="color:var(--green)">Coming Soon</span>
+        <span class="project-link" style="color:var(--green)">Excel version in use today</span>
       </div>
     </div>
   </div>
@@ -1588,17 +1740,17 @@ footer a:hover{color:var(--copper)}
     <div class="strength-card">
       <div class="strength-icon">🧩</div>
       <div class="strength-title">Problem-Solving Mindset</div>
-      <div class="strength-desc">I do not start with code. I start with the problem. NyumbaNi, CariSave, and SplitZK all exist because I observed genuine gaps and addressed them systematically.</div>
+      <div class="strength-desc">Accounting taught me the difference between recording a transaction and actually reconciling a balance. That thinking shaped how I approached SplitZK: not just showing who owes whom, but reducing everyone's balances down to the fewest real payments, the same way individual entries have to add up to a balance that makes sense as a whole.</div>
     </div>
     <div class="strength-card">
       <div class="strength-icon">📱</div>
       <div class="strength-title">Context-Aware Design</div>
-      <div class="strength-desc">I build for the Zambian context: mobile-first, mobile money integration, low-bandwidth awareness. My work is shaped by where it will actually be used.</div>
+      <div class="strength-desc">I design for the Zambian context: mobile-first layouts built around how people actually search for housing here, price comparison by neighbourhood, direct owner contact with no middleman fee, and identity verification via NRC rather than assuming a Western-style ID system. My work is shaped by where it will actually be used.</div>
     </div>
     <div class="strength-card">
       <div class="strength-icon">🌱</div>
       <div class="strength-title">Long-Term Vision</div>
-      <div class="strength-desc">I'm not building a quick portfolio. I'm learning every layer of the stack deliberately, and positioning myself to contribute meaningfully to technology over years, not months.</div>
+      <div class="strength-desc">SplitZK shipped early on purpose, then kept growing through deliberate, verified phases, accounts, a nav rebuild, schema hardening, rather than one big rewrite. Every phase re-runs the same calculation test harness to confirm the core numbers never moved. NyumbaNi is the harder, longer build I'm working through the same way right now. The Budget Tracker's app version is next, once NyumbaNi is far enough along to make room for it.</div>
     </div>
   </div>
 </section>
@@ -1608,12 +1760,8 @@ footer a:hover{color:var(--copper)}
   <div class="section-label">Looking Forward</div>
   <h2 class="section-title">Growth that is<br><em>intentional.</em></h2>
 
-  <div class="vision-quote reveal">
-    "I am not in a hurry to call myself a developer. I am in a hurry to become one: properly, deeply, and without taking shortcuts I will regret later."
-  </div>
-
   <p class="vision-text">
-    My ambition is to grow into a <strong>full-stack developer</strong> who can take a problem from concept to deployed product. The roadmap is deliberate: master HTML, CSS, and JavaScript fully, add backend capability through Firebase, then expand into React and Flutter. I bring both a technical perspective and real operational experience to any team I join, and I want to build products with <strong>tangible impact</strong>, in Zambia first.
+    My ambition is to grow into a <strong>full-stack developer</strong> who can take a problem from concept to deployed product. I'm working through the fundamentals deliberately, then backend and frontend frameworks, one layer at a time, while applying what I already know from running real financial operations.
   </p>
 
   <div class="vision-goals reveal">
@@ -1638,7 +1786,10 @@ footer a:hover{color:var(--copper)}
     <h2>Let's build something<br>worth building.</h2>
     <p>Open to freelance bookkeeping, Excel, and payroll support work, as well as collaborations and opportunities in front-end development.</p>
   </div>
-  <a href="mailto:caristomulenga99@gmail.com" class="btn-white">Get in Touch</a>
+  <div class="contact-cta">
+    <a href="mailto:caristomulenga99@gmail.com" class="btn-white">Get in Touch</a>
+    <a href="https://wa.me/260973947575" class="btn-white-outline" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+  </div>
 </div>
 
 <!-- ── FOOTER ── -->
@@ -1647,7 +1798,7 @@ footer a:hover{color:var(--copper)}
   <div>
     <a href="https://github.com/caristo-dev" target="_blank" rel="noopener noreferrer">GitHub</a>
     &nbsp;·&nbsp;
-    <a href="https://linkedin.com/in/caristo-mulenga-a5aba5205" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    <a href="https://www.linkedin.com/in/caristo-mulenga/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
   </div>
 </footer>
 

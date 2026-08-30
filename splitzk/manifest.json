@@ -1,0 +1,18 @@
+{
+  "name": "SplitZK — Split bills, not friendships",
+  "short_name": "SplitZK",
+  "description": "Offline-first bill splitting. Record shared expenses, calculate who owes whom, and settle with the fewest possible payments.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "id": "/splitzk/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#F7F3ED",
+  "theme_color": "#2B1A0C",
+  "categories": ["finance", "utilities"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

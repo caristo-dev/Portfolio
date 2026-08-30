@@ -1,0 +1,2820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>SplitZK | Split bills, not friendships</title>
+<meta name="description" content="Offline-first bill splitting. Record shared expenses, calculate who owes whom, settle with the fewest payments.">
+<meta name="theme-color" content="#2B1A0C">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SplitZK">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --ink:#0F0D0A;
+  --paper:#F7F3ED;
+  --copper:#A8490F;
+  --copper-light:#C96228;
+  --copper-pale:#F2E0D0;
+  --earth:#2B1A0C;
+  --mist:#E8E2D9;
+  --muted:#7A6E64;
+  --line:#D8D0C4;
+  --white:#FFFFFF;
+  --green:#1E4020;
+  --green-pale:#D6EDD8;
+  --red:#8A2E1F;
+  --red-pale:#F2DAD2;
+}
+
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.6;
+  padding-bottom:2rem;
+}
+button,input,select,textarea{font-family:inherit;}
+
+.wrap{
+  max-width:920px;
+  margin:0 auto;
+  padding:3.5rem 1.5rem 6rem;
+}
+
+/* ── HEADER ── */
+.eyebrow{
+  font-family:'DM Mono',monospace;
+  font-size:0.7rem;
+  color:var(--copper);
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  margin-bottom:1rem;
+  display:flex;
+  align-items:center;
+  gap:0.8rem;
+}
+.eyebrow::before{content:'';display:block;width:28px;height:1px;background:var(--copper)}
+
+h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2.4rem,6vw,3.6rem);
+  font-weight:600;
+  color:var(--earth);
+  line-height:1.05;
+  margin-bottom:0.6rem;
+}
+h1 em{color:var(--copper);font-style:italic}
+
+.subtitle{
+  max-width:520px;
+  color:var(--muted);
+  font-weight:300;
+  font-size:0.98rem;
+  margin-bottom:2rem;
+}
+
+.split-name-row{
+  display:flex;align-items:center;gap:0.7rem;flex-wrap:wrap;margin-bottom:2.5rem;
+}
+.split-name-input{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.4rem;font-weight:600;font-style:italic;
+  color:var(--copper);
+  border:none;background:transparent;border-bottom:1px solid var(--line);
+  padding:0.2rem 0;min-width:180px;flex:1;
+}
+.split-name-input:focus{outline:none;border-bottom-color:var(--copper)}
+.currency-select{
+  font-family:'DM Mono',monospace;font-size:0.72rem;
+  border:1px solid var(--line);border-radius:3px;background:var(--white);
+  padding:0.4rem 0.5rem;color:var(--muted);
+}
+
+/* dashboard summary */
+.dash-row{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--line);border:1px solid var(--line);margin-bottom:2rem;
+}
+@media(max-width:560px){ .dash-row{grid-template-columns:repeat(2,1fr);} }
+.dash-cell{background:var(--white);padding:0.9rem 1.1rem;}
+.dash-num{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:600;color:var(--copper);line-height:1.1;}
+.dash-label{font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-top:0.3rem;}
+
+/* ── PANELS ── */
+.panel{
+  background:var(--white);
+  border:1px solid var(--line);
+  border-radius:4px;
+  padding:1.8rem 2rem;
+  margin-bottom:1.8rem;
+}
+.panel-head-row{display:flex;align-items:center;justify-content:space-between;gap:0.8rem;margin-bottom:1rem;}
+.panel-label{
+  font-family:'DM Mono',monospace;
+  font-size:0.62rem;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--copper);
+  margin-bottom:1rem;
+  display:flex;
+  align-items:center;
+  gap:0.6rem;
+}
+.panel-head-row .panel-label{margin-bottom:0;}
+.panel-label::before{content:'';display:block;width:18px;height:1px;background:var(--copper)}
+
+/* ── PEOPLE ── */
+.people-row{
+  display:flex;
+  gap:0.6rem;
+  flex-wrap:wrap;
+  margin-bottom:1.2rem;
+}
+.chip{
+  font-family:'DM Mono',monospace;
+  font-size:0.75rem;
+  background:var(--mist);
+  color:var(--earth);
+  padding:0.45rem 0.6rem 0.45rem 0.9rem;
+  border-radius:20px;
+  display:flex;
+  align-items:center;
+  gap:0.5rem;
+}
+.chip.archived{opacity:0.5;}
+.chip.archived .chip-name{text-decoration:line-through;}
+.chip button{
+  background:none;
+  border:none;
+  color:var(--muted);
+  cursor:pointer;
+  font-size:0.9rem;
+  line-height:1;
+  padding:0;
+}
+.chip button:hover{color:var(--red)}
+
+.add-row{display:flex;gap:0.6rem}
+input, select, textarea{
+  font-family:'Outfit',sans-serif;
+  font-size:0.88rem;
+  color:var(--ink);
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:3px;
+  padding:0.65rem 0.9rem;
+}
+input:focus, select:focus, textarea:focus{outline:2px solid var(--copper-light);outline-offset:1px}
+.add-row input{flex:1}
+.field-error{color:var(--red);font-family:'DM Mono',monospace;font-size:0.7rem;margin-top:0.5rem;}
+
+.btn{
+  font-family:'Outfit',sans-serif;
+  font-size:0.78rem;
+  font-weight:600;
+  letter-spacing:0.03em;
+  padding:0.65rem 1.3rem;
+  border-radius:3px;
+  border:none;
+  cursor:pointer;
+  background:var(--earth);
+  color:var(--paper);
+  transition:background 0.2s;
+  white-space:nowrap;
+}
+.btn:hover{background:var(--copper)}
+.btn:disabled{background:var(--line);color:var(--muted);cursor:not-allowed}
+.btn-ghost{
+  background:transparent;
+  color:var(--earth);
+  border:1px solid var(--line);
+}
+.btn-ghost:hover{background:var(--mist);color:var(--earth)}
+.btn-sm{padding:0.45rem 0.85rem;font-size:0.7rem;}
+.btn-block{width:100%;text-align:center;}
+.btn-danger{background:var(--red);}
+.btn-danger:hover{background:#6E2418;}
+
+/* ── EXPENSE FORM ── */
+.form-grid{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr 1.2fr;
+  gap:0.8rem;
+  margin-bottom:1rem;
+}
+.field label{
+  display:block;
+  font-family:'DM Mono',monospace;
+  font-size:0.6rem;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:0.4rem;
+}
+.field input, .field select, .field textarea{width:100%}
+.field.full{grid-column:1/-1;}
+
+.method-tabs{display:flex;gap:0.4rem;margin-bottom:1rem;flex-wrap:wrap;}
+.method-tab{
+  font-family:'DM Mono',monospace;font-size:0.66rem;letter-spacing:0.04em;
+  border:1px solid var(--line);background:var(--paper);color:var(--muted);
+  border-radius:20px;padding:0.4rem 0.9rem;cursor:pointer;text-transform:uppercase;
+}
+.method-tab.active{background:var(--earth);border-color:var(--earth);color:var(--paper);}
+
+.split-among{
+  margin-bottom:1.2rem;
+}
+.split-among label.title{
+  display:block;
+  font-family:'DM Mono',monospace;
+  font-size:0.6rem;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:0.6rem;
+}
+.split-list{display:flex;flex-direction:column;gap:0.4rem}
+.split-check{
+  display:flex;
+  align-items:center;
+  gap:0.6rem;
+  font-size:0.85rem;
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:0.5rem 0.9rem;
+}
+.split-check.checked{border-color:var(--copper);background:var(--copper-pale);color:var(--copper)}
+.split-check .name{flex:1;cursor:pointer;}
+.split-check input[type=checkbox]{width:auto;padding:0;}
+.split-check .valinput{width:100px;padding:0.35rem 0.55rem;font-family:'DM Mono',monospace;font-size:0.8rem;text-align:right;}
+.split-check .equal-amt{width:100px;text-align:right;font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--muted);}
+.split-total-check{
+  margin-top:0.7rem;font-family:'DM Mono',monospace;font-size:0.72rem;
+  padding:0.6rem 0.8rem;border-radius:3px;background:var(--mist);color:var(--muted);
+}
+.split-total-check.ok{background:var(--green-pale);color:var(--green);}
+.split-total-check.bad{background:var(--red-pale);color:var(--red);}
+
+/* ── LEDGER ── */
+.ledger-row{
+  display:grid;
+  grid-template-columns:1fr auto auto;
+  gap:1rem;
+  align-items:center;
+  padding:0.9rem 0;
+  border-bottom:1px solid var(--line);
+}
+.ledger-row:last-child{border-bottom:none}
+.ledger-desc{font-size:0.9rem;color:var(--ink)}
+.ledger-meta{
+  font-family:'DM Mono',monospace;
+  font-size:0.68rem;
+  color:var(--muted);
+  margin-top:0.2rem;
+  display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;
+}
+.cat-badge{
+  background:var(--mist);border-radius:10px;padding:0.1rem 0.5rem;
+  text-transform:uppercase;letter-spacing:0.04em;font-size:0.6rem;
+}
+.due-badge{
+  border-radius:10px;padding:0.1rem 0.5rem;font-size:0.6rem;
+  text-transform:uppercase;letter-spacing:0.04em;background:var(--mist);
+}
+.due-badge.due-today{background:#F4E3B2;color:#6E4E00;}
+.due-badge.overdue{background:var(--red);color:var(--paper);}
+.comment-count{color:var(--muted);}
+.ledger-amount{
+  font-family:'DM Mono',monospace;
+  font-size:0.92rem;
+  color:var(--earth);
+  font-weight:500;
+  white-space:nowrap;
+}
+.ledger-actions{display:flex;gap:0.3rem;}
+.ledger-actions button{
+  background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.85rem;padding:0.2rem;
+}
+.ledger-actions button:hover{color:var(--copper)}
+
+.empty-note{
+  color:var(--muted);
+  font-size:0.85rem;
+  font-weight:300;
+  padding:0.5rem 0;
+}
+
+/* ── COMMENTS & NOTIFICATIONS ── */
+.comment-list{display:flex;flex-direction:column;gap:0.5rem;margin-top:0.4rem;}
+.comment-row{
+  background:var(--mist);border-radius:6px;padding:0.5rem 0.7rem;
+}
+.comment-author{font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.04em;text-transform:uppercase;color:var(--copper);}
+.comment-text{font-size:0.85rem;margin-top:0.15rem;}
+.comment-time{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);margin-top:0.2rem;}
+.notif-list{display:flex;flex-direction:column;gap:0.4rem;}
+.notif-row{
+  border-bottom:1px solid var(--line);padding:0.5rem 0.1rem;
+  display:flex;justify-content:space-between;gap:0.6rem;align-items:baseline;
+}
+.notif-row.unread{border-left:3px solid var(--copper);padding-left:0.5rem;}
+.notif-msg{font-size:0.85rem;}
+.notif-time{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);white-space:nowrap;}
+.nav-badge{
+  background:var(--red);color:var(--paper);border-radius:8px;font-size:0.55rem;
+  padding:0.05rem 0.3rem;margin-left:0.2rem;vertical-align:top;
+}
+.pro-badge{
+  background:var(--copper);color:var(--paper);border-radius:8px;font-size:0.55rem;
+  padding:0.1rem 0.4rem;letter-spacing:0.04em;font-family:'DM Mono',monospace;vertical-align:middle;
+}
+
+/* ── BALANCES ── */
+.balance-legend{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--muted);margin-bottom:0.8rem;display:flex;gap:1rem;flex-wrap:wrap;}
+.balance-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+  margin-bottom:0.5rem;
+}
+.balance-cell{
+  background:var(--white);
+  padding:1rem 1.2rem;
+}
+.balance-name{font-size:0.85rem;color:var(--muted);margin-bottom:0.3rem}
+.balance-sub{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);opacity:0.75;margin-top:0.3rem;}
+.balance-value{
+  font-family:'DM Mono',monospace;
+  font-size:1.15rem;
+  font-weight:500;
+}
+.balance-value.positive{color:var(--green)}
+.balance-value.negative{color:var(--red)}
+.balance-value.zero{color:var(--muted)}
+
+/* ── SETTLE UP (signature element) ── */
+.settle-panel{
+  background:var(--earth);
+  border:none;
+}
+.settle-panel .panel-label{color:#D4924A}
+.settle-panel .panel-label::before{background:#D4924A}
+.settle-tabs{display:flex;gap:0.5rem;margin-bottom:1rem;}
+.settle-tab{
+  font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.06em;text-transform:uppercase;
+  background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(247,243,237,0.6);
+  border-radius:20px;padding:0.35rem 0.8rem;cursor:pointer;
+}
+.settle-tab.active{background:var(--copper);border-color:var(--copper);color:var(--paper);}
+.settle-list{display:flex;flex-direction:column;gap:0}
+.settle-item{
+  display:flex;
+  align-items:baseline;
+  gap:0.7rem;
+  padding:0.85rem 0;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  font-size:0.95rem;
+  color:var(--paper);
+  flex-wrap:wrap;
+}
+.settle-item:last-child{border-bottom:none}
+.settle-item .who{font-weight:500}
+.settle-item .arrow{color:var(--copper-light);font-family:'DM Mono',monospace}
+.settle-item .amt{
+  margin-left:auto;
+  font-family:'DM Mono',monospace;
+  color:#D4924A;
+  font-weight:500;
+}
+.settle-item .paid-tag{
+  margin-left:auto;font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--green-pale);
+  display:flex;align-items:center;gap:0.4rem;
+}
+.settle-item .mark-paid-btn{
+  font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.03em;text-transform:uppercase;
+  background:var(--copper);color:var(--paper);border:none;border-radius:3px;padding:0.4rem 0.7rem;cursor:pointer;
+}
+.settle-item .mark-paid-btn:hover{background:var(--copper-light);}
+.settle-empty{
+  color:#A09080;
+  font-size:0.85rem;
+  font-weight:300;
+}
+.settle-count-note{
+  font-family:'DM Mono',monospace;font-size:0.68rem;color:#A09080;margin-top:0.9rem;text-align:center;
+}
+
+/* ── SHARE / EXPORT ── */
+.share-preview{
+  font-family:'DM Mono',monospace;font-size:0.75rem;line-height:1.7;white-space:pre-wrap;
+  background:var(--paper);border:1px solid var(--line);border-radius:3px;padding:1rem;margin-bottom:1rem;
+}
+.btn-row{display:flex;gap:0.6rem;flex-wrap:wrap;}
+
+/* ── WARN BANNER ── */
+.warn-banner{
+  background:var(--red-pale);border:1px solid var(--red);color:var(--red);
+  border-radius:3px;padding:0.9rem 1rem;font-size:0.82rem;margin-bottom:1rem;
+}
+.warn-banner b{display:block;margin-bottom:0.3rem;font-family:'DM Mono',monospace;font-size:0.68rem;text-transform:uppercase;letter-spacing:0.04em;}
+
+footer{
+  text-align:center;
+  font-family:'DM Mono',monospace;
+  font-size:0.68rem;
+  color:var(--muted);
+  letter-spacing:0.05em;
+  margin-top:2rem;
+}
+
+/* ── MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(15,13,10,0.5);
+  display:flex;align-items:flex-end;justify-content:center;z-index:100;
+}
+@media(min-width:640px){.modal-overlay{align-items:center;padding:1.2rem;}}
+.modal{
+  background:var(--paper);width:100%;max-width:600px;max-height:92vh;overflow-y:auto;
+  border-radius:6px 6px 0 0;
+}
+@media(min-width:640px){.modal{border-radius:6px;}}
+.modal-head{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:1.2rem 1.6rem;border-bottom:1px solid var(--line);
+  position:sticky;top:0;background:var(--paper);
+}
+.modal-head h3{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--earth);}
+.modal-body{padding:1.4rem 1.6rem 1.8rem;}
+.close-x{
+  background:none;border:none;font-size:1.1rem;color:var(--muted);cursor:pointer;
+}
+.close-x:hover{color:var(--copper);}
+
+@media (max-width:640px){
+  .form-grid{grid-template-columns:1fr}
+  .balance-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+}
+
+/* ── SPLIT SWITCHER / TOP BAR ── */
+.top-bar{display:flex;align-items:center;justify-content:space-between;gap:0.8rem;flex-wrap:wrap;margin-bottom:0.8rem;}
+.status-row{display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;}
+.status-pill{
+  font-family:'DM Mono',monospace;font-size:0.66rem;letter-spacing:0.04em;text-transform:uppercase;
+  display:inline-flex;align-items:center;gap:0.4rem;color:var(--muted);
+  border:1px solid var(--line);border-radius:20px;padding:0.3rem 0.7rem;background:var(--white);
+}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);display:inline-block;}
+.status-pill.online .status-dot{background:var(--green);}
+.status-pill.offline .status-dot{background:var(--copper);}
+.split-switch-btn{
+  font-family:'DM Mono',monospace;font-size:0.68rem;letter-spacing:0.03em;
+  background:var(--white);border:1px solid var(--line);border-radius:20px;color:var(--earth);
+  padding:0.35rem 0.8rem;cursor:pointer;
+}
+.split-switch-btn:hover{border-color:var(--copper);color:var(--copper);}
+.install-btn{
+  font-family:'DM Mono',monospace;font-size:0.68rem;letter-spacing:0.03em;
+  background:var(--copper);border:1px solid var(--copper);border-radius:20px;color:var(--paper);
+  padding:0.35rem 0.8rem;cursor:pointer;
+}
+.install-btn:hover{background:var(--copper-light);}
+.splits-list{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1rem;}
+.split-row{
+  display:flex;align-items:center;gap:0.6rem;border:1px solid var(--line);border-radius:4px;
+  padding:0.7rem 0.9rem;
+}
+.split-row.current{border-color:var(--copper);background:var(--copper-pale);}
+.split-row .sname{flex:1;font-size:0.9rem;color:var(--ink);cursor:pointer;}
+.split-row .smeta{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);}
+.split-row-actions{display:flex;gap:0.2rem;}
+.split-row-actions button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.85rem;padding:0.2rem;}
+.split-row-actions button:hover{color:var(--copper);}
+.archived-toggle{
+  font-family:'DM Mono',monospace;font-size:0.66rem;color:var(--muted);background:none;border:none;
+  cursor:pointer;text-decoration:underline;margin-top:0.4rem;padding:0;
+}
+
+/* ── YOUR BALANCE / GROUP STATUS ── */
+.you-panel{
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.8rem;
+  background:var(--copper-pale);border:1px solid var(--copper);border-radius:4px;
+  padding:1.1rem 1.4rem;margin-bottom:1.2rem;
+}
+.you-panel .you-label{font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--copper);margin-bottom:0.3rem;}
+.you-panel .you-value{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;color:var(--earth);}
+.you-panel select{background:var(--white);}
+.group-status{
+  font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:0.03em;text-transform:uppercase;
+  display:flex;align-items:center;gap:0.5rem;color:var(--muted);margin-bottom:1.2rem;
+}
+.group-status.settled{color:var(--green);}
+.group-status.owing{color:var(--copper);}
+
+/* ── WHERE THE MONEY WENT ── */
+.cat-bar-row{display:flex;align-items:center;gap:0.8rem;margin-bottom:0.6rem;}
+.cat-bar-label{width:110px;flex-shrink:0;font-size:0.8rem;color:var(--muted);}
+.cat-bar-track{flex:1;background:var(--mist);border-radius:3px;height:10px;overflow:hidden;}
+.cat-bar-fill{background:var(--copper);height:100%;border-radius:3px;}
+.cat-bar-amt{width:80px;flex-shrink:0;text-align:right;font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--earth);}
+
+/* ── RECENT EXPENSES ── */
+.recent-row{display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0;border-bottom:1px solid var(--line);}
+.recent-row:last-child{border-bottom:none;}
+.recent-desc{font-size:0.85rem;color:var(--ink);}
+.recent-meta{font-family:'DM Mono',monospace;font-size:0.66rem;color:var(--muted);margin-top:0.15rem;}
+.recent-amt{font-family:'DM Mono',monospace;font-size:0.85rem;color:var(--earth);}
+.view-all-link{
+  display:block;text-align:center;margin-top:0.8rem;font-family:'DM Mono',monospace;font-size:0.68rem;
+  letter-spacing:0.04em;text-transform:uppercase;color:var(--copper);background:none;border:none;cursor:pointer;
+  width:100%;padding:0.4rem 0;
+}
+.view-all-link:hover{text-decoration:underline;}
+
+/* ── RECONCILE BANNER ── */
+.recon-ok{
+  background:var(--green-pale);border:1px solid var(--green);color:var(--green);
+  border-radius:3px;padding:0.6rem 0.9rem;font-family:'DM Mono',monospace;font-size:0.7rem;
+  letter-spacing:0.03em;margin-bottom:1.2rem;text-transform:uppercase;
+}
+.recon-bad{
+  background:var(--red-pale);border:1px solid var(--red);color:var(--red);
+  border-radius:3px;padding:0.8rem 1rem;font-size:0.8rem;margin-bottom:1.2rem;
+}
+.recon-bad b{display:block;margin-bottom:0.3rem;font-family:'DM Mono',monospace;font-size:0.68rem;text-transform:uppercase;letter-spacing:0.04em;}
+
+/* ── ME TOGGLE ── */
+.chip .me-star{background:none;border:none;color:var(--copper);cursor:pointer;font-size:0.85rem;padding:0;line-height:1;}
+.chip.is-me{border:1px solid var(--copper);background:var(--copper-pale);}
+
+.privacy-note{
+  font-family:'DM Mono',monospace;font-size:0.64rem;color:var(--muted);text-align:center;margin-top:0.6rem;
+}
+
+/* ── SCREEN NAV ── */
+.screen-title{
+  font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:600;color:var(--earth);margin-bottom:1.2rem;
+}
+.app-nav{
+  position:fixed;left:0;right:0;bottom:0;z-index:80;
+  display:flex;justify-content:space-around;
+  background:var(--white);border-top:1px solid var(--line);
+  padding:0.3rem 0.4rem calc(0.3rem + env(safe-area-inset-bottom,0px));
+}
+.nav-tab{
+  flex:1;max-width:110px;display:flex;flex-direction:column;align-items:center;gap:0.15rem;
+  background:none;border:none;color:var(--muted);cursor:pointer;padding:0.4rem 0.2rem;border-radius:4px;
+}
+.nav-tab .nav-icon{font-size:1.05rem;line-height:1;}
+.nav-tab .nav-label{font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.03em;text-transform:uppercase;}
+.nav-tab.active{color:var(--copper);}
+.nav-tab:hover{color:var(--copper-light);}
+@media(min-width:760px){
+  .app-nav{
+    position:static;justify-content:flex-start;gap:0.4rem;background:transparent;border:none;border-bottom:1px solid var(--line);
+    padding:0 0 1rem;margin-bottom:1.6rem;
+  }
+  .nav-tab{flex:none;max-width:none;flex-direction:row;padding:0.5rem 0.9rem;border:1px solid var(--line);border-radius:20px;}
+  .nav-tab.active{background:var(--earth);border-color:var(--earth);color:var(--paper);}
+}
+
+/* ── AUTH / ACCOUNT ── */
+.icon-btn{
+  font-size:0.85rem;background:var(--white);border:1px solid var(--line);border-radius:20px;
+  padding:0.3rem 0.6rem;cursor:pointer;line-height:1;
+}
+.icon-btn:hover{border-color:var(--copper);}
+.lock-screen{max-width:360px;margin:4rem auto 0;text-align:center;}
+.pin-input{
+  width:100%;text-align:center;font-family:'DM Mono',monospace;font-size:1.5rem;letter-spacing:0.5em;
+  padding:0.9rem 0.5rem;margin-top:1.4rem;
+}
+.home-options{display:flex;flex-direction:column;gap:0.7rem;margin-top:1.6rem;}
+.account-picker{display:flex;flex-direction:column;margin-top:0.4rem;}
+.account-pill{
+  font-family:'DM Mono',monospace;font-size:0.68rem;letter-spacing:0.03em;color:var(--muted);
+  padding:0.3rem 0.2rem;white-space:nowrap;
+}
+
+/* ── DEMO DATA ── */
+.demo-banner{
+  font-family:'DM Mono',monospace;font-size:0.68rem;letter-spacing:0.04em;text-transform:uppercase;
+  background:var(--copper-pale);color:var(--copper);border:1px solid var(--copper);border-radius:3px;
+  padding:0.6rem 0.9rem;margin-bottom:1.2rem;
+}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="app"><p style="font-family:'DM Mono',monospace;font-size:0.75rem;color:#7A6E64;padding:3rem 0;text-align:center;">Loading SplitZK…</p></div>
+<div id="toast" style="position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%);background:var(--earth);color:var(--paper);padding:0.65rem 1.2rem;border-radius:20px;font-family:'DM Mono',monospace;font-size:0.72rem;z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;"></div>
+
+<script>
+/* =========================================================
+   SplitZK — state, persistence, calculation engine
+   ========================================================= */
+const LEGACY_STORAGE_KEY = 'splitzk_state_v2'; // old single-split localStorage key, migrated on first run
+const CATEGORIES = ['Food','Groceries','Transport','Accommodation','Utilities','Entertainment','Shopping','Other'];
+const CURRENCIES = {ZMW:'K', USD:'$', GBP:'£', EUR:'€'};
+const CALC_MODEL_VERSION = '1.1'; // matches SplitZK Excel Calculation Reference Model V1.1
+
+function uid(){
+  // A real UUID v4 — not just locally unique. This matters the moment two devices
+  // generate IDs independently and their records need to merge later.
+  if(window.crypto && window.crypto.randomUUID) return crypto.randomUUID();
+  if(window.crypto && window.crypto.getRandomValues){
+    const b = crypto.getRandomValues(new Uint8Array(16));
+    b[6] = (b[6] & 0x0f) | 0x40; b[8] = (b[8] & 0x3f) | 0x80;
+    const h = Array.from(b).map(x=>x.toString(16).padStart(2,'0'));
+    return `${h[0]}${h[1]}${h[2]}${h[3]}-${h[4]}${h[5]}-${h[6]}${h[7]}-${h[8]}${h[9]}-${h[10]}${h[11]}${h[12]}${h[13]}${h[14]}${h[15]}`;
+  }
+  // Extremely old browsers without SubtleCrypto/getRandomValues — best-effort fallback.
+  return Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-4) + Math.random().toString(36).slice(2,6);
+}
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+
+function defaultState(accountId){
+  return {
+    id: uid(),
+    accountId: accountId || null,
+    splitName: 'Weekend Trip',
+    currency: 'ZMW',
+    people: [],
+    expenses: [],
+    settlements: [],
+    youId: null,
+    archived: false,
+    status: 'active',        // 'active' | 'deleted' — soft delete, so a future sync layer can tell "removed" from "never existed"
+    deletedAt: null,
+    freePass: null,          // {activatedAt, expiresAt} — Pro features for this group, 30 days at a time
+    createdAt: todayISO(),
+    updatedAt: todayISO()
+  };
+}
+
+/* =========================================================
+   Free Pass — Pro features shared with everyone in a group for
+   30 days. No payment system exists yet, so this is the only way
+   a group currently gets Pro perks. Expenses are never limited,
+   on Free or Pro — only the number of concurrent free groups and
+   the export formats available are gated.
+   ========================================================= */
+const FREE_GROUP_LIMIT = 2;
+const FREE_PASS_DAYS = 30;
+function isGroupPro(split){
+  return !!(split.freePass && split.freePass.expiresAt > new Date().toISOString());
+}
+function nonProActiveGroupCount(accountId){
+  return splitsCache.filter(s=> s.accountId===accountId && !s.archived && !isGroupPro(s)).length;
+}
+function canCreateNewGroup(){
+  if(!currentAccount || currentAccount.id==='local' || currentAccount.isDemo) return true;
+  return nonProActiveGroupCount(currentAccount.id) < FREE_GROUP_LIMIT;
+}
+async function activateFreePass(){
+  if(isGroupPro(state)){ showToast('This group already has an active Free Pass'); return; }
+  const now = new Date();
+  const expires = new Date(now.getTime() + FREE_PASS_DAYS*24*60*60*1000);
+  state.freePass = { activatedAt: now.toISOString(), expiresAt: expires.toISOString() };
+  saveState();
+  await addNotification('free_pass_activated', `Free Pass activated for "${state.splitName}" — Pro features for everyone in this group for 30 days.`);
+  showToast('Free Pass activated — Pro unlocked for this group for 30 days');
+  render();
+}
+
+/* =========================================================
+   Local-first persistence — IndexedDB (with localStorage fallback)
+   Every split is a self-contained record. Data never leaves this device.
+   ========================================================= */
+const DB_NAME = 'splitzk_db';
+const DB_VERSION = 3;
+const STORE_SPLITS = 'splits';
+const STORE_META = 'meta';
+const STORE_ACCOUNTS = 'accounts';
+const STORE_FRIENDS = 'friends';
+const STORE_NOTIFICATIONS = 'notifications';
+let dbReady = false;
+
+function openDB(){
+  return new Promise((resolve, reject)=>{
+    if(typeof indexedDB === 'undefined'){ reject(new Error('no-indexeddb')); return; }
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = (e)=>{
+      const db = e.target.result;
+      if(!db.objectStoreNames.contains(STORE_SPLITS)) db.createObjectStore(STORE_SPLITS, {keyPath:'id'});
+      if(!db.objectStoreNames.contains(STORE_META)) db.createObjectStore(STORE_META, {keyPath:'key'});
+      if(!db.objectStoreNames.contains(STORE_ACCOUNTS)) db.createObjectStore(STORE_ACCOUNTS, {keyPath:'id'});
+      if(!db.objectStoreNames.contains(STORE_FRIENDS)) db.createObjectStore(STORE_FRIENDS, {keyPath:'id'});
+      if(!db.objectStoreNames.contains(STORE_NOTIFICATIONS)) db.createObjectStore(STORE_NOTIFICATIONS, {keyPath:'id'});
+    };
+    req.onsuccess = ()=> resolve(req.result);
+    req.onerror = ()=> reject(req.error);
+  });
+}
+let dbPromise = openDB().catch(()=>null);
+
+function idbAll(store){
+  return dbPromise.then(db=>{
+    if(!db) return [];
+    return new Promise((resolve)=>{
+      const tx = db.transaction(store,'readonly');
+      const req = tx.objectStore(store).getAll();
+      req.onsuccess = ()=> resolve(req.result||[]);
+      req.onerror = ()=> resolve([]);
+    });
+  });
+}
+function idbPut(store, value){
+  return dbPromise.then(db=>{
+    if(!db) return false;
+    return new Promise((resolve)=>{
+      const tx = db.transaction(store,'readwrite');
+      tx.objectStore(store).put(value);
+      tx.oncomplete = ()=> resolve(true);
+      tx.onerror = ()=> resolve(false);
+    });
+  });
+}
+function idbDelete(store, key){
+  return dbPromise.then(db=>{
+    if(!db) return false;
+    return new Promise((resolve)=>{
+      const tx = db.transaction(store,'readwrite');
+      tx.objectStore(store).delete(key);
+      tx.oncomplete = ()=> resolve(true);
+      tx.onerror = ()=> resolve(false);
+    });
+  });
+}
+function idbGetMeta(key){
+  return dbPromise.then(db=>{
+    if(!db) return undefined;
+    return new Promise((resolve)=>{
+      const tx = db.transaction(STORE_META,'readonly');
+      const req = tx.objectStore(STORE_META).get(key);
+      req.onsuccess = ()=> resolve(req.result ? req.result.value : undefined);
+      req.onerror = ()=> resolve(undefined);
+    });
+  });
+}
+function idbSetMeta(key, value){ return idbPut(STORE_META, {key, value}); }
+
+/* =========================================================
+   Accounts — six-digit PIN sign in / sign up, local to this device.
+   The PIN itself is never stored or transmitted; only a SHA-256
+   hash of it lives in IndexedDB (or localStorage as a fallback
+   when IndexedDB is unavailable). Each split belongs to exactly
+   one account via its accountId field.
+   ========================================================= */
+async function hashPin(pin){
+  const payload = 'splitzk-pin:' + pin;
+  if(window.crypto && window.crypto.subtle){
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(payload));
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+  // Fallback for browsers without SubtleCrypto — still not plaintext.
+  let h = 0;
+  for(let i=0;i<payload.length;i++){ h = (Math.imul(31,h) + payload.charCodeAt(i)) | 0; }
+  return 'fnv' + (h>>>0).toString(16);
+}
+function idbAllAccounts(){ return idbAll(STORE_ACCOUNTS); }
+
+/* =========================================================
+   Friends — a personal contacts list per account. Purely local:
+   no other device or account is notified when you add one.
+   ========================================================= */
+let friendsCache = [];   // this account's friends
+
+async function loadAccountFriends(accountId){
+  if(!dbReady) return [];
+  const all = await idbAll(STORE_FRIENDS);
+  return all.filter(f=>f.accountId===accountId && !f.deletedAt).sort((a,b)=> a.name.localeCompare(b.name));
+}
+async function addFriendHandler(name){
+  ui.friendError = '';
+  name = (name||'').trim();
+  if(!name){ ui.friendError = 'Enter a name.'; render(); return; }
+  if(friendsCache.some(f=>f.name.toLowerCase()===name.toLowerCase())){
+    ui.friendError = `${name} is already in your friends list.`; render(); return;
+  }
+  const now = new Date().toISOString();
+  const friend = {id: uid(), accountId: currentAccount.id, name, deletedAt: null, createdAt: now, updatedAt: now};
+  if(dbReady) await idbPut(STORE_FRIENDS, friend);
+  friendsCache.push(friend);
+  friendsCache.sort((a,b)=> a.name.localeCompare(b.name));
+  await addNotification('friend_added', `You added ${name} as a friend.`);
+  showToast(`${name} added to friends`);
+  render();
+}
+async function removeFriendHandler(id){
+  // Soft delete — tombstoned, not erased, so a future sync layer can tell
+  // "removed here" apart from "never existed on another device".
+  const f = friendsCache.find(x=>x.id===id);
+  if(!f) return;
+  f.deletedAt = new Date().toISOString();
+  f.updatedAt = f.deletedAt;
+  if(dbReady) await idbPut(STORE_FRIENDS, f);
+  friendsCache = friendsCache.filter(x=>x.id!==id);
+  showToast(`${f.name} removed from friends`);
+  render();
+}
+// Keeps the Friends list in sync when someone is added straight from inside a group.
+async function ensureFriendExists(name){
+  if(!currentAccount || currentAccount.isDemo) return;
+  if(friendsCache.some(f=>f.name.toLowerCase()===name.toLowerCase())) return;
+  const now = new Date().toISOString();
+  const friend = {id: uid(), accountId: currentAccount.id, name, deletedAt: null, createdAt: now, updatedAt: now};
+  if(dbReady) await idbPut(STORE_FRIENDS, friend);
+  friendsCache.push(friend);
+  friendsCache.sort((a,b)=> a.name.localeCompare(b.name));
+}
+
+/* =========================================================
+   Notifications — a local in-app log, not OS push notifications.
+   Fires on group/friend/expense activity so the Account tab can
+   show "what happened" even offline, on this one device.
+   ========================================================= */
+let notificationsCache = [];  // this account's notifications, newest first
+
+async function loadAccountNotifications(accountId){
+  if(!dbReady) return [];
+  const all = await idbAll(STORE_NOTIFICATIONS);
+  return all.filter(n=>n.accountId===accountId).sort((a,b)=> b.createdAt.localeCompare(a.createdAt));
+}
+async function addNotification(type, message){
+  if(!currentAccount || currentAccount.isDemo) return;
+  const note = {id: uid(), accountId: currentAccount.id, type, message, createdAt: new Date().toISOString(), read: false};
+  notificationsCache.unshift(note);
+  if(notificationsCache.length > 200) notificationsCache.length = 200; // keep the log bounded
+  if(dbReady) await idbPut(STORE_NOTIFICATIONS, note);
+}
+function unreadNotificationCount(){ return notificationsCache.filter(n=>!n.read).length; }
+async function markAllNotificationsRead(){
+  const unread = notificationsCache.filter(n=>!n.read);
+  if(unread.length===0) return;
+  unread.forEach(n=> n.read = true);
+  if(dbReady){ for(const n of unread){ await idbPut(STORE_NOTIFICATIONS, n); } }
+}
+async function checkDueExpenseNotifications(){
+  if(!currentAccount || currentAccount.isDemo || !dbReady) return;
+  const notifiedKey = 'dueNotified_'+currentAccount.id;
+  const already = (await idbGetMeta(notifiedKey)) || [];
+  const today = todayISO();
+  const all = await idbAll(STORE_SPLITS);
+  const mine = all.filter(s=>s.accountId===currentAccount.id);
+  const newlyDue = [];
+  mine.forEach(split=>{
+    (split.expenses||[]).forEach(e=>{
+      if(e.dueDate && e.dueDate <= today && !already.includes(e.id)){
+        newlyDue.push(e);
+        already.push(e.id);
+      }
+    });
+  });
+  for(const e of newlyDue){ await addNotification('expense_due', `"${e.description}" is due.`); }
+  if(newlyDue.length) await idbSetMeta(notifiedKey, already);
+}
+async function checkMonthlySummaryNotification(){
+  if(!currentAccount || currentAccount.isDemo || !dbReady) return;
+  const key = 'monthlySummary_'+currentAccount.id;
+  const thisMonth = todayISO().slice(0,7); // YYYY-MM
+  const lastRun = await idbGetMeta(key);
+  if(lastRun === thisMonth) return;
+  const prevMonth = (()=>{ const d=new Date(); d.setDate(1); d.setMonth(d.getMonth()-1); return d.toISOString().slice(0,7); })();
+  const all = await idbAll(STORE_SPLITS);
+  const mine = all.filter(s=>s.accountId===currentAccount.id);
+  let total = 0, count = 0;
+  mine.forEach(split=> (split.expenses||[]).forEach(e=>{ if((e.date||'').startsWith(prevMonth)){ total += e.amount; count++; } }));
+  if(lastRun && count>0){ // skip the very first run so a brand-new account doesn't get a "0 expenses" summary
+    await addNotification('monthly_summary', `Last month you logged ${count} expense${count===1?'':'s'} totalling ${CURRENCIES[mine[0]?.currency||'ZMW']}${total.toFixed(2)}.`);
+  }
+  await idbSetMeta(key, thisMonth);
+}
+
+const SESSION_TIMEOUT_MS = 5 * 60 * 1000; // auto sign-out after 5 minutes idle
+const DEMO_ACCOUNT_ID = 'demo-account';
+const DEMO_SPLIT_ID = 'demo-split';
+
+let currentAccount = null;     // signed-in account {id,name,pinHash,...}, or {id,name,isDemo:true} for the demo, or null when signed out
+let accountsCache = [];        // every local account on this device, for the sign-in picker
+let authScreen = 'homepage';   // 'homepage' | 'signin' | 'signup' — shown whenever currentAccount is null
+let authError = '';
+let signInSelectedAccountId = null;
+let lastActivityAt = Date.now();
+let activityWriteTimer = null;
+
+function touchActivityNow(){
+  lastActivityAt = Date.now();
+  if(dbReady) idbSetMeta('lastActivityAt', lastActivityAt);
+}
+function scheduleActivityWrite(){
+  lastActivityAt = Date.now();
+  if(activityWriteTimer) return;
+  activityWriteTimer = setTimeout(()=>{
+    activityWriteTimer = null;
+    if(dbReady) idbSetMeta('lastActivityAt', lastActivityAt);
+  }, 15000);
+}
+async function checkSessionExpiry(){
+  if(!currentAccount) return;
+  if(Date.now() - lastActivityAt > SESSION_TIMEOUT_MS) await signOut('inactivity');
+}
+function startActivityTracking(){
+  ['mousedown','keydown','touchstart','scroll'].forEach(evt=>{
+    document.addEventListener(evt, ()=>{ if(currentAccount) scheduleActivityWrite(); }, {passive:true});
+  });
+  document.addEventListener('visibilitychange', ()=>{
+    if(document.hidden){
+      if(currentAccount && dbReady) idbSetMeta('lastActivityAt', Date.now());
+    } else if(currentAccount){
+      checkSessionExpiry();
+    }
+  });
+  window.addEventListener('beforeunload', ()=>{ if(currentAccount && dbReady) idbSetMeta('lastActivityAt', Date.now()); });
+  setInterval(checkSessionExpiry, 20000);
+}
+
+async function loadAccountSplits(accountId){
+  const all = dbReady ? await idbAll(STORE_SPLITS) : splitsCache;
+  let mine = all.filter(s=>s.accountId===accountId && s.status!=='deleted');
+  if(mine.length===0){
+    const fresh = defaultState(accountId);
+    if(dbReady) await idbPut(STORE_SPLITS, fresh);
+    mine = [fresh];
+  }
+  return mine;
+}
+
+async function performSignUp(name, pin, pinConfirm){
+  authError = '';
+  if(!name){ authError = 'Enter your name.'; render(); return; }
+  if(!/^\d{6}$/.test(pin)){ authError = 'PIN must be exactly 6 digits.'; render(); return; }
+  if(pin !== pinConfirm){ authError = 'PINs do not match.'; render(); return; }
+  accountsCache = dbReady ? await idbAllAccounts() : accountsCache;
+  if(accountsCache.some(a=>a.name.toLowerCase()===name.toLowerCase())){
+    authError = `An account named "${name}" already exists on this device — try Sign In instead.`;
+    render(); return;
+  }
+  const account = {id: uid(), name, pinHash: await hashPin(pin), createdAt: todayISO()};
+  if(dbReady){ await idbPut(STORE_ACCOUNTS, account); accountsCache = await idbAllAccounts(); }
+  else accountsCache.push(account);
+
+  // Adopt any splits already on this device (from before accounts existed) so nothing is lost.
+  let mySplits = [];
+  if(dbReady){
+    const all = await idbAll(STORE_SPLITS);
+    const orphans = all.filter(s=>!s.accountId && s.status!=='deleted');
+    if(orphans.length){
+      for(const s of orphans){ s.accountId = account.id; await idbPut(STORE_SPLITS, s); }
+      mySplits = orphans;
+    } else {
+      try{
+        const raw = localStorage.getItem(LEGACY_STORAGE_KEY);
+        if(raw){
+          const parsed = JSON.parse(raw);
+          const migrated = Object.assign(defaultState(account.id), parsed, {id: uid(), accountId: account.id, archived:false, status:'active', deletedAt:null});
+          await idbPut(STORE_SPLITS, migrated);
+          mySplits = [migrated];
+        }
+      }catch(e){ /* ignore malformed legacy data */ }
+    }
+  }
+  if(mySplits.length===0){
+    const fresh = defaultState(account.id);
+    if(dbReady) await idbPut(STORE_SPLITS, fresh);
+    mySplits = [fresh];
+  }
+
+  splitsCache = mySplits;
+  state = splitsCache[0];
+  currentAccount = account;
+  if(dbReady){ await idbSetMeta('currentSplitId_'+account.id, state.id); await idbSetMeta('currentAccountId', account.id); }
+  friendsCache = await loadAccountFriends(account.id);
+  notificationsCache = await loadAccountNotifications(account.id);
+  await checkMonthlySummaryNotification();
+  touchActivityNow();
+  authScreen = 'homepage'; authError = '';
+  showToast(`Welcome, ${name}!`);
+  render();
+}
+
+async function performSignIn(accountId, pin){
+  authError = '';
+  const acct = accountsCache.find(a=>a.id===accountId);
+  if(!acct){ authError = 'Choose an account.'; render(); return; }
+  if(!/^\d{4,6}$/.test(pin)){ authError = 'Enter your PIN.'; render(); return; }
+  const h = await hashPin(pin);
+  if(h !== acct.pinHash){ authError = 'Incorrect PIN.'; render(); return; }
+
+  splitsCache = await loadAccountSplits(acct.id);
+  const savedSplitId = dbReady ? await idbGetMeta('currentSplitId_'+acct.id) : null;
+  state = splitsCache.find(s=>s.id===savedSplitId && !s.archived) || splitsCache.find(s=>!s.archived) || splitsCache[0];
+  currentAccount = acct;
+  if(dbReady){ await idbSetMeta('currentSplitId_'+acct.id, state.id); await idbSetMeta('currentAccountId', acct.id); }
+  friendsCache = await loadAccountFriends(acct.id);
+  notificationsCache = await loadAccountNotifications(acct.id);
+  await checkDueExpenseNotifications();
+  await checkMonthlySummaryNotification();
+  touchActivityNow();
+  authScreen = 'homepage'; authError = ''; signInSelectedAccountId = null;
+  showToast(`Welcome back, ${acct.name}!`);
+  render();
+}
+
+async function enterDemo(){
+  currentAccount = {id: DEMO_ACCOUNT_ID, name: 'Demo', isDemo: true};
+  const demoSplit = defaultState(DEMO_ACCOUNT_ID);
+  demoSplit.id = DEMO_SPLIT_ID;
+  demoSplit.splitName = 'Demo — Mulenga, Chanda, Bwalya';
+  demoSplit.isDemo = true;
+  seedExample(demoSplit);
+  if(dbReady) await idbPut(STORE_SPLITS, demoSplit);
+  splitsCache = [demoSplit];
+  state = demoSplit;
+  friendsCache = []; notificationsCache = [];
+  touchActivityNow();
+  authScreen = 'homepage'; authError = '';
+  ui.activeScreen = 'group-detail';
+  showToast('Exploring the demo — nothing here is tied to an account');
+  render();
+}
+
+async function signOut(reason){
+  const wasDemo = !!(currentAccount && currentAccount.isDemo);
+  currentAccount = null;
+  splitsCache = []; friendsCache = []; notificationsCache = [];
+  state = defaultState(null);
+  authScreen = 'homepage'; authError = ''; signInSelectedAccountId = null;
+  ui.activeScreen = 'groups';
+  if(dbReady) await idbSetMeta('currentAccountId', null);
+  if(reason==='inactivity') showToast('Signed out after 5 minutes of inactivity');
+  else if(!wasDemo) showToast('Signed out');
+  render();
+}
+
+let state = defaultState();       // the currently-open split
+let splitsCache = [];             // lightweight list of the signed-in account's splits, kept in sync for the switcher
+
+function seedExample(split){
+  const now = new Date().toISOString();
+  const mulenga = {id: uid(), name:'Mulenga', archived:false, createdAt: now, updatedAt: now};
+  const chanda = {id: uid(), name:'Chanda', archived:false, createdAt: now, updatedAt: now};
+  const bwalya = {id: uid(), name:'Bwalya', archived:false, createdAt: now, updatedAt: now};
+  split.people = [mulenga, chanda, bwalya];
+  split.youId = mulenga.id;
+  const mk = (fields)=> Object.assign({
+    id: uid(), groupId: split.id, createdBy: 'Demo', status: 'active',
+    dueDate: '', category: '', note: '', comments: [], createdAt: now, updatedAt: now
+  }, fields);
+  split.expenses = [
+    mk({description:'Groceries', amount:450, currency:'ZMW', date: todayISO(), category:'Groceries', paidBy: mulenga.id, participants:[mulenga.id,chanda.id,bwalya.id], splitMethod:'equal', splitDetails:{[mulenga.id]:1,[chanda.id]:1,[bwalya.id]:1}}),
+    mk({description:'Data Bundle', amount:150, currency:'ZMW', date: todayISO(), category:'Utilities', paidBy: chanda.id, participants:[mulenga.id,chanda.id,bwalya.id], splitMethod:'equal', splitDetails:{[mulenga.id]:1,[chanda.id]:1,[bwalya.id]:1}}),
+    mk({description:'Taxi to Town', amount:90, currency:'ZMW', date: todayISO(), category:'Transport', paidBy: bwalya.id, participants:[mulenga.id,bwalya.id], splitMethod:'equal', splitDetails:{[mulenga.id]:1,[bwalya.id]:1}})
+  ];
+  return split;
+}
+
+async function initApp(){
+  try{
+    const db = await dbPromise;
+    if(!db) throw new Error('indexeddb-unavailable');
+    dbReady = true;
+  }catch(e){ dbReady = false; }
+
+  if(!dbReady){
+    // IndexedDB unavailable (very old browser / private mode restrictions) — fall back to
+    // a single local split with no account system, so the app still works fully offline.
+    try{
+      const raw = localStorage.getItem(LEGACY_STORAGE_KEY);
+      state = raw ? Object.assign(defaultState(), JSON.parse(raw)) : defaultState();
+    }catch(e){ state = defaultState(); }
+    splitsCache = [state];
+    currentAccount = {id:'local', name:'', isDemo:false};
+    ui.activeScreen = 'group-detail';
+    startActivityTracking();
+    render();
+    return;
+  }
+
+  accountsCache = await idbAllAccounts();
+  const savedAccountId = await idbGetMeta('currentAccountId');
+  if(savedAccountId){
+    const acct = accountsCache.find(a=>a.id===savedAccountId);
+    const savedLastActivity = await idbGetMeta('lastActivityAt');
+    const expired = !savedLastActivity || (Date.now() - savedLastActivity) > SESSION_TIMEOUT_MS;
+    if(acct && !expired){
+      splitsCache = await loadAccountSplits(acct.id);
+      const savedSplitId = await idbGetMeta('currentSplitId_'+acct.id);
+      state = splitsCache.find(s=>s.id===savedSplitId && !s.archived) || splitsCache.find(s=>!s.archived) || splitsCache[0];
+      currentAccount = acct;
+      friendsCache = await loadAccountFriends(acct.id);
+      notificationsCache = await loadAccountNotifications(acct.id);
+      await checkDueExpenseNotifications();
+      await checkMonthlySummaryNotification();
+      touchActivityNow();
+    } else {
+      await idbSetMeta('currentAccountId', null);
+    }
+  }
+
+  startActivityTracking();
+  render();
+}
+
+/* ---------- Demo data (explicit, opt-in) ---------- */
+function loadDemoData(){
+  seedExample(state);
+  state.isDemo = true;
+  if(!state.splitName || state.splitName === 'Weekend Trip' || state.splitName === 'New Split'){
+    state.splitName = 'Demo — Mulenga, Chanda, Bwalya';
+  }
+  saveState(); showToast('Demo data loaded'); render();
+}
+async function createDemoSplit(){
+  if(!canCreateNewGroup()){
+    showToast(`Free limit reached (${FREE_GROUP_LIMIT} groups). Activate a Free Pass on an existing group to make room, or archive one.`);
+    return;
+  }
+  const fresh = defaultState(currentAccount.id);
+  fresh.splitName = 'Demo — Mulenga, Chanda, Bwalya';
+  fresh.isDemo = true;
+  seedExample(fresh);
+  if(dbReady){ await idbPut(STORE_SPLITS, fresh); await refreshSplitsCache(); }
+  else splitsCache.push(fresh);
+  await switchToSplit(fresh.id);
+  await addNotification('group_added', `You created the group "${fresh.splitName}".`);
+  showToast('Demo group created');
+}
+
+function saveState(){
+  state.updatedAt = todayISO();
+  if(dbReady){
+    idbPut(STORE_SPLITS, state).catch(()=>{});
+    const idx = splitsCache.findIndex(s=>s.id===state.id);
+    if(idx>=0) splitsCache[idx] = state; else splitsCache.push(state);
+  } else {
+    localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(state));
+  }
+}
+
+async function refreshSplitsCache(){
+  if(!dbReady) return;
+  const all = await idbAll(STORE_SPLITS);
+  splitsCache = all.filter(s=>s.accountId===currentAccount.id && s.status!=='deleted');
+}
+async function switchToSplit(id){
+  const target = splitsCache.find(s=>s.id===id);
+  if(!target) return;
+  state = target;
+  ui.activeScreen = 'group-detail';
+  if(dbReady) await idbSetMeta('currentSplitId_'+currentAccount.id, state.id);
+  render();
+}
+async function createNewSplit(){
+  if(!canCreateNewGroup()){
+    showToast(`Free limit reached (${FREE_GROUP_LIMIT} groups). Activate a Free Pass on an existing group to make room, or archive one.`);
+    return;
+  }
+  const fresh = defaultState(currentAccount.id);
+  fresh.splitName = 'New Group';
+  if(dbReady){ await idbPut(STORE_SPLITS, fresh); await refreshSplitsCache(); }
+  else splitsCache.push(fresh);
+  await switchToSplit(fresh.id);
+  await addNotification('group_added', `You created the group "${fresh.splitName}".`);
+  showToast('New group created');
+}
+async function duplicateSplit(id){
+  const orig = splitsCache.find(s=>s.id===id);
+  if(!orig) return;
+  const copy = JSON.parse(JSON.stringify(orig));
+  copy.id = uid(); copy.splitName = orig.splitName + ' (copy)'; copy.archived = false;
+  copy.status = 'active'; copy.deletedAt = null;
+  copy.createdAt = todayISO(); copy.updatedAt = todayISO();
+  if(dbReady){ await idbPut(STORE_SPLITS, copy); await refreshSplitsCache(); }
+  else splitsCache.push(copy);
+  showToast('Group duplicated');
+  render();
+}
+async function archiveSplitToggle(id, archived){
+  const s = splitsCache.find(x=>x.id===id);
+  if(!s) return;
+  if(!archived && !isGroupPro(s) && nonProActiveGroupCount(s.accountId) >= FREE_GROUP_LIMIT){
+    showToast(`Free limit reached (${FREE_GROUP_LIMIT} groups). Activate a Free Pass on an active group first, or restore this one once you have room.`);
+    return;
+  }
+  s.archived = archived;
+  if(dbReady){ await idbPut(STORE_SPLITS, s); await refreshSplitsCache(); }
+  if(state.id===id) state.archived = archived;
+  showToast(archived ? 'Group archived' : 'Group restored');
+  render();
+}
+async function deleteSplitPermanently(id){
+  // Soft delete — tombstoned, not erased, so a future sync layer can tell
+  // "deleted here" apart from "never existed on another device".
+  const s = splitsCache.find(x=>x.id===id);
+  if(s){
+    s.status = 'deleted'; s.deletedAt = new Date().toISOString(); s.updatedAt = s.deletedAt;
+    if(dbReady) await idbPut(STORE_SPLITS, s);
+  }
+  await refreshSplitsCache();
+  if(state.id===id){
+    const next = splitsCache.find(s=>!s.archived) || splitsCache[0];
+    if(next) await switchToSplit(next.id);
+    else await createNewSplit();
+  }
+  showToast('Group deleted');
+  render();
+}
+
+/* ---------- Money (cent-safe) ---------- */
+function toCents(n){ return Math.round(n * 100); }
+function fromCents(c){ return c / 100; }
+function round2(n){ return Math.round(n*100)/100; }
+function fmt(n){
+  const sym = CURRENCIES[state.currency] || 'K';
+  const sign = n < 0 ? '-' : '';
+  return sign + sym + Math.abs(n).toFixed(2);
+}
+function distributeCents(totalCents, weights){
+  const sumW = weights.reduce((a,b)=>a+b,0);
+  if(sumW <= 0) return weights.map(()=>0);
+  const raw = weights.map(w => (w/sumW) * totalCents);
+  const floors = raw.map(Math.floor);
+  let remainder = totalCents - floors.reduce((a,b)=>a+b,0);
+  const order = raw.map((r,i)=>({i, frac: r - floors[i]})).sort((a,b)=> b.frac - a.frac);
+  const result = floors.slice();
+  for(let k=0;k<remainder;k++){ result[order[k % order.length].i] += 1; }
+  return result;
+}
+
+/* ---------- People ---------- */
+function activePeople(){ return state.people.filter(p=>!p.archived); }
+function activeExpenses(list){ return (list || state.expenses).filter(e=> e.status !== 'deleted'); }
+function personById(id){ return state.people.find(p=>p.id===id); }
+function personHasHistory(id){ return state.expenses.some(e => e.paidBy===id || e.participants.includes(id)); }
+function nameExists(name, excludeId){
+  const n = name.trim().toLowerCase();
+  return state.people.some(p => p.id!==excludeId && p.name.trim().toLowerCase()===n);
+}
+
+/* ---------- Expense shares ----------
+   Matches the SplitZK Excel Calculation Reference Model V1.1 (SPLITS sheet):
+   each participant's base share is rounded to the cent independently, then
+   the leftover cent(s) from that rounding are assigned entirely to the
+   LAST participant in the expense's participant list (Excel's "Last Row"
+   rule) rather than spread across whichever participants have the largest
+   remainder. This is a deliberate reference-model rule, not an error — see
+   SPLITZK_CALCULATION_SPECIFICATION.md, "Rounding". */
+function computeShares(expense){
+  const amountCents = toCents(expense.amount);
+  const parts = expense.participants;
+  const n = parts.length;
+  if(n === 0) return {};
+  const baseCents = {};
+  if(expense.splitMethod === 'equal'){
+    const each = Math.round(amountCents / n);
+    parts.forEach(pid => baseCents[pid] = each);
+  } else if(expense.splitMethod === 'custom'){
+    parts.forEach(pid => baseCents[pid] = toCents(Number(expense.splitDetails[pid]) || 0));
+  } else if(expense.splitMethod === 'percentage'){
+    parts.forEach(pid => baseCents[pid] = Math.round(amountCents * (Number(expense.splitDetails[pid]) || 0) / 100));
+  } else if(expense.splitMethod === 'shares'){
+    const totalShares = parts.reduce((a,pid)=> a + (Number(expense.splitDetails[pid]) || 0), 0);
+    parts.forEach(pid => baseCents[pid] = totalShares > 0 ? Math.round(amountCents * (Number(expense.splitDetails[pid]) || 0) / totalShares) : 0);
+  } else {
+    parts.forEach(pid => baseCents[pid] = 0);
+  }
+  const sumBaseCents = parts.reduce((a,pid)=> a + baseCents[pid], 0);
+  const residualCents = amountCents - sumBaseCents;
+  const lastId = parts[parts.length - 1];
+  baseCents[lastId] += residualCents;
+  const out = {};
+  parts.forEach(pid => out[pid] = fromCents(baseCents[pid]));
+  return out;
+}
+
+/* ---------- Balances ---------- */
+function computeBalances(){
+  const paid = {}, share = {};
+  state.people.forEach(p => { paid[p.id]=0; share[p.id]=0; });
+  state.expenses.filter(e => e.status !== 'deleted').forEach(e => {
+    paid[e.paidBy] = (paid[e.paidBy]||0) + e.amount;
+    Object.entries(computeShares(e)).forEach(([pid, amt]) => { share[pid] = (share[pid]||0) + amt; });
+  });
+  const balances = {};
+  state.people.forEach(p=>{
+    balances[p.id] = { paid: paid[p.id]||0, share: share[p.id]||0, balance: round2((paid[p.id]||0) - (share[p.id]||0)) };
+  });
+  return balances;
+}
+function computeEffectiveBalances(){
+  const balances = computeBalances();
+  const eff = {};
+  Object.keys(balances).forEach(id => eff[id] = balances[id].balance);
+  state.settlements.forEach(s=>{
+    eff[s.from] = round2((eff[s.from]||0) + s.amount);
+    eff[s.to] = round2((eff[s.to]||0) - s.amount);
+  });
+  return eff;
+}
+function computeSettlementPlan(effBalances){
+  const creditors = [], debtors = [];
+  Object.entries(effBalances).forEach(([id, bal])=>{
+    const c = toCents(bal);
+    if(c > 0) creditors.push({id, cents:c});
+    else if(c < 0) debtors.push({id, cents:-c});
+  });
+  creditors.sort((a,b)=>b.cents-a.cents);
+  debtors.sort((a,b)=>b.cents-a.cents);
+  const txns = [];
+  let i=0, j=0;
+  while(i<debtors.length && j<creditors.length){
+    const d = debtors[i], c = creditors[j];
+    const amt = Math.min(d.cents, c.cents);
+    if(amt > 0){ txns.push({ from: d.id, to: c.id, amount: fromCents(amt) }); d.cents -= amt; c.cents -= amt; }
+    if(d.cents===0) i++;
+    if(c.cents===0) j++;
+  }
+  return txns;
+}
+
+/* =========================================================
+   Reference test suite — reproduces SplitZK Excel Calculation
+   Reference Model V1.1, sheet "TEST CASES" (TC001-TC010), as
+   structured data, and runs it against this file's own
+   computeShares / computeBalances / computeSettlementPlan.
+   Not part of the normal user experience — see runReferenceTests()
+   and the ?dev=1 developer validation panel below.
+   ========================================================= */
+const REFERENCE_TEST_CASES = [
+  { id:'TC001', name:'Basic equal split',
+    people:['A','B','C'],
+    expenses:[{amount:300, paidBy:'A', participants:['A','B','C'], splitMethod:'equal', splitDetails:{}}],
+    expectedBalances:{A:200, B:-100, C:-100},
+    expectedSettlements:[{from:'B',to:'A',amount:100},{from:'C',to:'A',amount:100}] },
+  { id:'TC002', name:'Multiple payers',
+    people:['A','B','C'],
+    expenses:[
+      {amount:300, paidBy:'A', participants:['A','B','C'], splitMethod:'equal', splitDetails:{}},
+      {amount:150, paidBy:'B', participants:['A','B','C'], splitMethod:'equal', splitDetails:{}}
+    ],
+    expectedBalances:{A:150, B:0, C:-150},
+    expectedSettlements:[{from:'C',to:'A',amount:150}] },
+  { id:'TC003', name:'Partial participation',
+    people:['A','B','C','D','E'],
+    expenses:[{amount:100, paidBy:'A', participants:['A','B'], splitMethod:'equal', splitDetails:{}}],
+    expectedBalances:{A:50, B:-50, C:0, D:0, E:0},
+    expectedSettlements:[{from:'B',to:'A',amount:50}] },
+  { id:'TC004', name:'Custom split (valid)',
+    people:['A','B','C'],
+    expenses:[{amount:1000, paidBy:'A', participants:['A','B','C'], splitMethod:'custom', splitDetails:{A:400,B:350,C:250}}],
+    expectedBalances:{A:600, B:-350, C:-250},
+    expectedSettlements:[{from:'B',to:'A',amount:350},{from:'C',to:'A',amount:250}] },
+  { id:'TC005', name:'Percentage split (100%)',
+    people:['A','B','C'],
+    expenses:[{amount:1000, paidBy:'A', participants:['A','B','C'], splitMethod:'percentage', splitDetails:{A:40,B:35,C:25}}],
+    expectedBalances:{A:600, B:-350, C:-250},
+    expectedSettlements:[{from:'B',to:'A',amount:350},{from:'C',to:'A',amount:250}] },
+  { id:'TC006', name:'Shares split',
+    people:['A','B','C'],
+    expenses:[{amount:800, paidBy:'A', participants:['A','B','C'], splitMethod:'shares', splitDetails:{A:2,B:1,C:1}}],
+    expectedBalances:{A:400, B:-200, C:-200},
+    expectedSettlements:[{from:'B',to:'A',amount:200},{from:'C',to:'A',amount:200}] },
+  { id:'TC007', name:'Rounding (K100 / 3)',
+    people:['A','B','C'],
+    expenses:[{amount:100, paidBy:'A', participants:['A','B','C'], splitMethod:'equal', splitDetails:{}}],
+    expectedShares:{A:33.33, B:33.33, C:33.34},
+    expectedBalances:{A:66.67, B:-33.33, C:-33.34},
+    expectedSettlements:[{from:'C',to:'A',amount:33.34},{from:'B',to:'A',amount:33.33}] },
+  { id:'TC008', name:'Multiple expenses, multiple payers',
+    people:['Mulenga','Chanda','Bwalya'],
+    expenses:[
+      {amount:450, paidBy:'Mulenga', participants:['Mulenga','Chanda','Bwalya'], splitMethod:'equal', splitDetails:{}},
+      {amount:150, paidBy:'Chanda', participants:['Mulenga','Chanda','Bwalya'], splitMethod:'equal', splitDetails:{}},
+      {amount:90, paidBy:'Bwalya', participants:['Mulenga','Bwalya'], splitMethod:'equal', splitDetails:{}}
+    ],
+    expectedBalances:{Mulenga:205, Chanda:-50, Bwalya:-155},
+    expectedSettlements:[{from:'Bwalya',to:'Mulenga',amount:155},{from:'Chanda',to:'Mulenga',amount:50}] },
+  { id:'TC009', name:'Everyone settled',
+    people:['A','B'],
+    expenses:[
+      {amount:100, paidBy:'A', participants:['A','B'], splitMethod:'equal', splitDetails:{}},
+      {amount:100, paidBy:'B', participants:['A','B'], splitMethod:'equal', splitDetails:{}}
+    ],
+    expectedBalances:{A:0, B:0},
+    expectedSettlements:[] },
+  { id:'TC010', name:'Settlement status (built-in sample)',
+    people:['Mulenga','Chanda','Bwalya'],
+    expenses:[
+      {amount:450, paidBy:'Mulenga', participants:['Mulenga','Chanda','Bwalya'], splitMethod:'equal', splitDetails:{}},
+      {amount:150, paidBy:'Chanda', participants:['Mulenga','Chanda','Bwalya'], splitMethod:'equal', splitDetails:{}},
+      {amount:90, paidBy:'Bwalya', participants:['Mulenga','Bwalya'], splitMethod:'equal', splitDetails:{}}
+    ],
+    expectedBalances:{Mulenga:205, Chanda:-50, Bwalya:-155},
+    expectedSettlements:[{from:'Bwalya',to:'Mulenga',amount:155},{from:'Chanda',to:'Mulenga',amount:50}] }
+];
+
+function runReferenceTests(){
+  const results = REFERENCE_TEST_CASES.map(tc => {
+    const testState = { people: tc.people.map(name=>({id:name,name,archived:false})), expenses: tc.expenses.map(e=>({...e})), settlements: [] };
+    const savedState = state; state = testState;
+    let balances, effBalances, settlePlan, sharesOk = true;
+    try{
+      balances = computeBalances();
+      effBalances = computeEffectiveBalances();
+      settlePlan = computeSettlementPlan(effBalances);
+      if(tc.expectedShares){
+        const shares = computeShares(tc.expenses[0]);
+        sharesOk = Object.keys(tc.expectedShares).every(pid => Math.abs((shares[pid]||0) - tc.expectedShares[pid]) < 0.001);
+      }
+    } finally { state = savedState; }
+    const balancesOk = Object.keys(tc.expectedBalances).every(pid => Math.abs((balances[pid]?.balance||0) - tc.expectedBalances[pid]) < 0.001);
+    const settleSorted = arr => [...arr].map(t=>`${t.from}>${t.to}:${round2(t.amount)}`).sort();
+    const settlementsOk = settleSorted(settlePlan).join('|') === settleSorted(tc.expectedSettlements).join('|');
+    const pass = balancesOk && settlementsOk && sharesOk;
+    return { id: tc.id, name: tc.name, pass, balancesOk, settlementsOk, sharesOk, actualBalances: balances, actualSettlements: settlePlan };
+  });
+  const passed = results.filter(r=>r.pass).length;
+  return { modelVersion: CALC_MODEL_VERSION, total: results.length, passed, failed: results.length - passed, results };
+}
+
+/* =========================================================
+   Rendering
+   ========================================================= */
+const appEl = document.getElementById('app');
+let ui = {
+  activeScreen: 'groups',
+  activitiesTab: 'expenses',
+  expenseTab: 'equal',
+  showExpenseModal: false,
+  editingExpenseId: null,
+  detailExpenseId: null,
+  settleFilter: 'outstanding',
+  pendingRemovePerson: null,
+  formError: '',
+  peopleError: '',
+  friendError: '',
+  commentDraft: '',
+  showArchivedSplits: false
+};
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.opacity = '1';
+  clearTimeout(showToast._h);
+  showToast._h = setTimeout(()=> t.style.opacity = '0', 2200);
+}
+
+function render(){
+  if(!currentAccount){ renderAuthShell(); return; }
+
+  const balances = computeBalances();
+  const effBalances = computeEffectiveBalances();
+  const settlePlan = computeSettlementPlan(effBalances);
+  const totalExpenses = state.expenses.reduce((a,e)=>a+e.amount,0);
+  const recon = reconcile(balances, totalExpenses);
+
+  ['expenseModalOverlay','detailModalOverlay','removeModalOverlay'].forEach(id=>{
+    const el = document.getElementById(id); if(el) el.remove();
+  });
+
+  let screenHtml;
+  if(ui.activeScreen==='group-detail') screenHtml = renderGroupDetailScreen(balances, settlePlan, totalExpenses, recon);
+  else if(ui.activeScreen==='friends') screenHtml = renderFriendsScreen();
+  else if(ui.activeScreen==='activities') screenHtml = renderActivitiesScreen(balances, settlePlan, totalExpenses);
+  else if(ui.activeScreen==='account') screenHtml = renderAccountScreen();
+  else screenHtml = renderGroupsScreen();
+
+  const isDemo = !!currentAccount.isDemo;
+  const unread = unreadNotificationCount();
+  appEl.innerHTML = `
+    <div class="top-bar">
+      <div class="eyebrow" style="margin-bottom:0;">Shared Expenses · ${state.currency}</div>
+      <div class="status-row">
+        ${deferredInstallPrompt ? `<button class="install-btn" id="installBtn">Install App</button>` : ''}
+        ${currentAccount.id!=='local' ? `<span class="account-pill">${isDemo ? '◌ Demo' : '● '+escapeHtml(currentAccount.name||'')}</span>
+        <button class="icon-btn" id="signOutBtn" title="Sign out">⏻</button>` : ''}
+        ${renderStatusPill()}
+      </div>
+    </div>
+
+    ${isDemo ? `<div class="demo-banner">⚠ Exploring the Demo — this data isn't tied to an account. <button class="btn btn-sm" id="demoSignUpBtn" style="margin-left:0.6rem;">Create an Account to Save</button></div>` : ''}
+
+    ${renderNav(unread)}
+
+    ${screenHtml}
+
+    ${isDevMode() ? renderDevValidationPanel() : ''}
+
+    <p class="privacy-note">Your SplitZK data stays on this device unless you choose to export or share it.</p>
+    <footer>SPLITZK · A SMALL TOOL, FULLY SHIPPED</footer>
+  `;
+  bindEvents(balances, settlePlan, totalExpenses);
+  if(ui.showExpenseModal) renderExpenseModal();
+  if(ui.detailExpenseId) renderDetailModal();
+  if(ui.pendingRemovePerson) renderRemoveConfirmModal();
+}
+
+/* ---------- Navigation ---------- */
+const NAV_TABS = [
+  {id:'groups', label:'Groups', icon:'▤'},
+  {id:'friends', label:'Friends', icon:'☺'},
+  {id:'activities', label:'Activities', icon:'≈'},
+  {id:'account', label:'Account', icon:'⚙'}
+];
+function renderNav(unread){
+  return `<nav class="app-nav">
+    ${NAV_TABS.map(t=>{
+      const isActive = ui.activeScreen===t.id || (t.id==='groups' && ui.activeScreen==='group-detail');
+      const badge = (t.id==='account' && unread>0) ? `<span class="nav-badge">${unread>9?'9+':unread}</span>` : '';
+      return `<button class="nav-tab ${isActive?'active':''}" data-nav="${t.id}">
+      <span class="nav-icon">${t.icon}${badge}</span><span class="nav-label">${t.label}</span>
+    </button>`;
+    }).join('')}
+  </nav>`;
+}
+
+/* ---------- Screens ---------- */
+function renderGroupsScreen(){
+  const visible = splitsCache.filter(s=>s.status!=='deleted');
+  const active = visible.filter(s=>!s.archived).sort((a,b)=> (b.updatedAt||'').localeCompare(a.updatedAt||''));
+  const archived = visible.filter(s=>s.archived).sort((a,b)=> (b.updatedAt||'').localeCompare(a.updatedAt||''));
+  const rowHtml = (s)=>`
+    <div class="split-row ${s.id===state.id?'current':''}">
+      <div class="sname" data-open-group="${s.id}">
+        ${escapeHtml(s.splitName)} ${isGroupPro(s) ? `<span class="pro-badge">PRO</span>` : ''}
+        <div class="smeta">${s.people.length} member${s.people.length===1?'':'s'} · ${activeExpenses(s.expenses).length} expense${activeExpenses(s.expenses).length===1?'':'s'}</div>
+      </div>
+      <div class="split-row-actions">
+        <button data-dup-split="${s.id}" title="Duplicate">⧉</button>
+        <button data-archive-split="${s.id}" data-archived="${s.archived?'1':'0'}" title="${s.archived?'Restore':'Archive'}">${s.archived?'↺':'🗄'}</button>
+        <button data-delete-split="${s.id}" title="Delete permanently">✕</button>
+      </div>
+    </div>`;
+  const usedFree = nonProActiveGroupCount(currentAccount.id);
+  return `
+    <h1>Group<em>s</em></h1>
+    <p class="subtitle">Create a group for every set of people splitting expenses together — a trip, a flat, a night out.</p>
+    ${currentAccount.id!=='local' && !currentAccount.isDemo ? `<p class="empty-note">${usedFree}/${FREE_GROUP_LIMIT} free group slots used${usedFree>=FREE_GROUP_LIMIT ? ' — activate a Free Pass on a group to make room for more' : ''}.</p>` : ''}
+    <div class="btn-row" style="margin-bottom:1.2rem;">
+      <button class="btn" id="newSplitBtn">+ New Group</button>
+      <button class="btn btn-ghost" id="newDemoSplitBtn">+ New Demo Group</button>
+    </div>
+    <div class="splits-list">${active.length ? active.map(rowHtml).join('') : `<p class="empty-note">No groups yet. Create one to get started.</p>`}</div>
+    ${archived.length ? `
+      <button class="archived-toggle" id="toggleArchivedSplits">${ui.showArchivedSplits?'Hide':'Show'} archived groups (${archived.length})</button>
+      ${ui.showArchivedSplits ? `<div class="splits-list" style="margin-top:0.6rem;">${archived.map(rowHtml).join('')}</div>` : ''}
+    ` : ''}
+  `;
+}
+
+function renderFreePassPanel(){
+  const pro = isGroupPro(state);
+  const daysLeft = pro ? Math.max(1, Math.ceil((new Date(state.freePass.expiresAt) - new Date())/(24*60*60*1000))) : 0;
+  return `
+  <div class="panel">
+    <div class="panel-label">Free Pass ${pro ? `<span class="pro-badge">PRO</span>` : ''}</div>
+    ${pro
+      ? `<p class="empty-note">Everyone in this group has Pro features (Excel &amp; PDF export) for ${daysLeft} more day${daysLeft===1?'':'s'}.</p>`
+      : `<p class="empty-note">Activate a free 30-day pass to unlock Excel &amp; PDF export for this group, and free it from your ${FREE_GROUP_LIMIT}-group free limit.</p>
+         <button class="btn btn-sm" id="activateFreePassBtn">Activate 30-Day Free Pass</button>`}
+  </div>`;
+}
+
+function renderGroupDetailScreen(balances, settlePlan, totalExpenses, recon){
+  return `
+    <button class="btn-ghost btn btn-sm" id="backToGroupsBtn" style="margin-bottom:1rem;">← All Groups</button>
+    <div class="split-name-row">
+      <input class="split-name-input" id="splitNameInput" value="${escapeAttr(state.splitName)}" placeholder="Name this group…" />
+      <select class="currency-select" id="currencySelect">
+        ${Object.keys(CURRENCIES).map(c=>`<option value="${c}" ${c===state.currency?'selected':''}>${c}</option>`).join('')}
+      </select>
+    </div>
+
+    ${state.isDemo ? `<div class="demo-banner">⚠ Demo data — for exploring SplitZK, not a real group</div>` : ''}
+
+    <div class="dash-row">
+      <div class="dash-cell"><div class="dash-num">${fmt(totalExpenses)}</div><div class="dash-label">Total expenses</div></div>
+      <div class="dash-cell"><div class="dash-num">${activePeople().length}</div><div class="dash-label">Members</div></div>
+      <div class="dash-cell"><div class="dash-num">${activeExpenses().length}</div><div class="dash-label">Expenses</div></div>
+      <div class="dash-cell"><div class="dash-num">${settlePlan.length}</div><div class="dash-label">${settlePlan.length===1?'Payment':'Payments'} needed</div></div>
+    </div>
+
+    ${renderYouPanel(balances)}
+    ${renderGroupStatus(settlePlan)}
+    ${recon.ok ? `<div class="recon-ok">✓ Everything reconciles</div>` : `<div class="recon-bad"><b>⚠ Reconciliation required</b>${recon.issues.map(i=>escapeHtml(i)).join('<br>')}</div>`}
+
+    ${renderCategoryPanel(totalExpenses)}
+    ${renderMembersPanel()}
+    ${!state.isDemo ? renderFreePassPanel() : ''}
+
+    <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:0.6rem;">
+      <button class="btn" id="goToActivitiesBtn">Go to Activities →</button>
+      <button class="btn-ghost btn" id="resetBtn">Reset This Group</button>
+    </div>
+  `;
+}
+
+function renderFriendsScreen(){
+  return `
+    <h1>Friend<em>s</em></h1>
+    <p class="subtitle">Keep a list of people you regularly split expenses with, so they're one tap away when you build a new group.</p>
+    <div class="panel">
+      <div class="panel-label">Your Friends</div>
+      <div class="people-row">
+        ${friendsCache.length ? friendsCache.map(f=>`
+          <div class="chip">
+            <span class="chip-name">${escapeHtml(f.name)}</span>
+            <button data-remove-friend="${f.id}" title="Remove ${escapeAttr(f.name)}">✕</button>
+          </div>`).join('') : `<p class="empty-note">No friends added yet.</p>`}
+      </div>
+      <div class="add-row">
+        <input type="text" id="friendNameInput" placeholder="Add a friend's name" maxlength="24">
+        <button class="btn" id="addFriendBtn">Add Friend</button>
+      </div>
+      ${ui.friendError ? `<div class="field-error">${escapeHtml(ui.friendError)}</div>` : ''}
+    </div>
+  `;
+}
+
+function renderActivitiesScreen(balances, settlePlan, totalExpenses){
+  const tab = ui.activitiesTab || 'expenses';
+  return `
+    <h1>Activit<em>ies</em></h1>
+    <p class="subtitle">${escapeHtml(state.splitName)}</p>
+    <div class="method-tabs" style="margin-bottom:1rem;">
+      <button class="method-tab ${tab==='expenses'?'active':''}" data-activities-tab="expenses">Expenses</button>
+      <button class="method-tab ${tab==='balances'?'active':''}" data-activities-tab="balances">Balances</button>
+      <button class="method-tab ${tab==='settle'?'active':''}" data-activities-tab="settle">Settle Up</button>
+    </div>
+    ${tab==='expenses' ? `${renderAddExpensePanel()}${renderRecentExpensesPanel()}${renderLedgerPanel()}` : ''}
+    ${tab==='balances' ? renderBalancesPanel(balances) : ''}
+    ${tab==='settle' ? `${renderSettlePanel(settlePlan)}${renderSharePanel(settlePlan, totalExpenses)}` : ''}
+  `;
+}
+
+function renderNotificationsList(){
+  if(notificationsCache.length===0) return `<p class="empty-note">No notifications yet — group, friend and expense activity will show up here.</p>`;
+  const rows = notificationsCache.slice(0,25).map(n=>`
+    <div class="notif-row ${n.read?'':'unread'}">
+      <div class="notif-msg">${escapeHtml(n.message)}</div>
+      <div class="notif-time">${formatDate(n.createdAt.slice(0,10))}</div>
+    </div>`).join('');
+  return `
+    ${unreadNotificationCount()>0 ? `<button class="btn btn-ghost btn-sm" id="markAllReadBtn" style="margin-bottom:0.8rem;">Mark all as read</button>` : ''}
+    <div class="notif-list">${rows}</div>
+  `;
+}
+
+function renderAccountScreen(){
+  return `
+    <h1>Account</h1>
+    <div class="panel">
+      <div class="panel-label">Signed In As</div>
+      <p class="empty-note">${currentAccount.isDemo ? 'Demo mode — not a real account.' : escapeHtml(currentAccount.name)}</p>
+      ${!currentAccount.isDemo ? `<button class="btn btn-ghost btn-sm" id="acctSignOutBtn">Sign Out</button>` : `<button class="btn btn-sm" id="acctSignUpBtn">Create an Account to Save</button>`}
+    </div>
+    <div class="panel">
+      <div class="panel-label">Notifications</div>
+      ${renderNotificationsList()}
+    </div>
+    ${renderExportPanel()}
+  `;
+}
+
+function isDevMode(){
+  try{ return new URLSearchParams(window.location.search).get('dev') === '1'; }catch(e){ return false; }
+}
+function renderDevValidationPanel(){
+  const report = runReferenceTests();
+  const rows = report.results.map(r=>
+    `<div style="display:flex; justify-content:space-between; padding:.2rem 0; font-family:'DM Mono',monospace; font-size:.8rem;">
+      <span>${r.id} ${escapeHtml(r.name)}</span>
+      <span style="color:${r.pass?'var(--green)':'var(--red)'}">${r.pass ? 'PASS' : 'FAIL'}</span>
+    </div>`).join('');
+  return `<div class="panel" style="border:1px dashed var(--copper); margin-top:1.5rem;">
+    <div class="eyebrow">Developer Validation — SplitZK Calculation Model ${escapeHtml(report.modelVersion)}</div>
+    <p style="font-family:'DM Mono',monospace; font-size:.85rem; margin:.4rem 0;">Reference Tests: ${report.total} &nbsp; Passed: ${report.passed} &nbsp; Failed: ${report.failed}</p>
+    ${rows}
+  </div>`;
+}
+function renderStatusPill(){
+  const online = navigator.onLine;
+  return `<span class="status-pill ${online?'online':'offline'}"><span class="status-dot"></span>${online ? 'Online' : 'Offline'} — saved on this device</span>`;
+}
+
+/* ---------- Reconciliation ---------- */
+function reconcile(balances, totalExpenses){
+  const issues = [];
+  const tol = 0.01;
+  const totalPaid = Object.values(balances).reduce((a,b)=>a+b.paid,0);
+  const totalShare = Object.values(balances).reduce((a,b)=>a+b.share,0);
+  const sumBalances = Object.values(balances).reduce((a,b)=>a+b.balance,0);
+  const posSum = Object.values(balances).reduce((a,b)=> a + (b.balance>0?b.balance:0), 0);
+  const negSum = Object.values(balances).reduce((a,b)=> a + (b.balance<0?-b.balance:0), 0);
+  if(Math.abs(totalPaid - totalExpenses) > tol) issues.push(`Total paid (${fmt(totalPaid)}) does not match total expenses (${fmt(totalExpenses)}).`);
+  if(Math.abs(totalShare - totalExpenses) > tol) issues.push(`Total allocated shares (${fmt(totalShare)}) does not match total expenses (${fmt(totalExpenses)}).`);
+  if(Math.abs(sumBalances) > tol) issues.push(`Balances do not sum to zero (off by ${fmt(sumBalances)}).`);
+  if(Math.abs(posSum - negSum) > tol) issues.push(`Amount owed (${fmt(posSum)}) does not match amount owing (${fmt(negSum)}).`);
+  return { ok: issues.length===0, issues };
+}
+
+/* ---------- Your balance ---------- */
+function renderYouPanel(balances){
+  const people = state.people.filter(p=>!p.archived);
+  if(people.length===0) return '';
+  if(!state.youId || !balances[state.youId]){
+    return `
+    <div class="you-panel">
+      <div><div class="you-label">Your Balance</div><div class="you-value" style="font-size:1rem;color:var(--muted);font-style:normal;font-family:'Outfit',sans-serif;">Which one is you?</div></div>
+      <select id="youIdSelect">
+        <option value="">Select your name…</option>
+        ${people.map(p=>`<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}
+      </select>
+    </div>`;
+  }
+  const b = balances[state.youId].balance;
+  const me = personById(state.youId);
+  let msg;
+  if(Math.abs(b) < 0.005) msg = 'You are settled';
+  else if(b > 0) msg = `You are owed ${fmt(b)}`;
+  else msg = `You owe ${fmt(-b)}`;
+  return `
+  <div class="you-panel">
+    <div><div class="you-label">Your Balance · ${escapeHtml(me?.name||'')}</div><div class="you-value">${msg}</div></div>
+    <select id="youIdSelect">
+      ${people.map(p=>`<option value="${p.id}" ${p.id===state.youId?'selected':''}>${escapeHtml(p.name)}</option>`).join('')}
+    </select>
+  </div>`;
+}
+
+function renderGroupStatus(settlePlan){
+  if(state.people.length===0) return '';
+  if(settlePlan.length===0) return `<div class="group-status settled">✓ Everyone is settled</div>`;
+  const outstanding = settlePlan.reduce((a,t)=>a+t.amount,0);
+  return `<div class="group-status owing">${settlePlan.length} payment${settlePlan.length===1?'':'s'} needed · ${fmt(outstanding)} outstanding</div>`;
+}
+
+/* ---------- Where the money went ---------- */
+function renderCategoryPanel(totalExpenses){
+  const expenses = activeExpenses();
+  if(expenses.length===0) return '';
+  const totals = {};
+  expenses.forEach(e=>{ const c = e.category || 'Other'; totals[c] = (totals[c]||0) + e.amount; });
+  const rows = Object.entries(totals).sort((a,b)=>b[1]-a[1]);
+  const max = Math.max(...rows.map(r=>r[1]), 1);
+  return `
+  <div class="panel">
+    <div class="panel-label">Where The Money Went</div>
+    ${rows.map(([cat,amt])=>`
+      <div class="cat-bar-row">
+        <div class="cat-bar-label">${escapeHtml(cat)}</div>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:${Math.max(4,(amt/max)*100)}%"></div></div>
+        <div class="cat-bar-amt">${fmt(amt)}</div>
+      </div>`).join('')}
+  </div>`;
+}
+
+/* ---------- Recent expenses ---------- */
+function renderRecentExpensesPanel(){
+  const expenses = activeExpenses();
+  if(expenses.length===0) return '';
+  const recent = [...expenses].sort((a,b)=> b.date.localeCompare(a.date) || b.id.localeCompare(a.id)).slice(0,5);
+  return `
+  <div class="panel">
+    <div class="panel-label">Recent Expenses</div>
+    ${recent.map(e=>`
+      <div class="recent-row">
+        <div>
+          <div class="recent-desc">${escapeHtml(e.description)}</div>
+          <div class="recent-meta">${escapeHtml(personById(e.paidBy)?.name||'—')} · ${formatDate(e.date)}</div>
+        </div>
+        <div class="recent-amt">${fmt(e.amount)}</div>
+      </div>`).join('')}
+    <button class="view-all-link" id="viewAllExpensesBtn">View all expenses</button>
+  </div>`;
+}
+
+function renderMembersPanel(){
+  const people = state.people;
+  return `
+  <div class="panel">
+    <div class="panel-label">Members Of This Group</div>
+    <div class="people-row">
+      ${people.length ? people.map(p=>`
+        <div class="chip ${p.archived?'archived':''} ${p.id===state.youId?'is-me':''}">
+          ${!p.archived ? `<button class="me-star" data-toggle-me="${p.id}" title="${p.id===state.youId?'This is you':'Mark as you'}">${p.id===state.youId?'★':'☆'}</button>` : ''}
+          <span class="chip-name">${escapeHtml(p.name)}</span>
+          ${!p.archived
+            ? `<button data-remove-person="${p.id}" title="Remove ${escapeAttr(p.name)}">✕</button>`
+            : `<button data-restore-person="${p.id}" title="Restore ${escapeAttr(p.name)}">↺</button>`}
+        </div>`).join('') : `<p class="empty-note"><b>Start your group</b><br>Add everyone who's sharing the expenses.</p>
+        ${activeExpenses().length===0 ? `<button class="btn btn-ghost btn-sm" id="loadDemoDataBtn" style="margin-top:0.6rem;">Load demo data</button>` : ''}`}
+    </div>
+    <div class="add-row">
+      <input type="text" id="nameInput" placeholder="Add a name, e.g. Chanda" maxlength="24" list="friendsDatalist">
+      <button class="btn" id="addPersonBtn">Add Member</button>
+    </div>
+    <datalist id="friendsDatalist">${friendsCache.map(f=>`<option value="${escapeAttr(f.name)}">`).join('')}</datalist>
+    ${ui.peopleError ? `<div class="field-error">${ui.peopleError}</div>` : ''}
+  </div>`;
+}
+
+function renderAddExpensePanel(){
+  const disabled = activePeople().length < 1;
+  return `
+  <div class="panel">
+    <div class="panel-label">Log An Expense</div>
+    ${disabled ? `<p class="empty-note">Add at least one person before recording an expense.</p>
+      ${state.people.length===0 && activeExpenses().length===0 ? `<button class="btn btn-ghost btn-sm" id="loadDemoDataBtn" style="margin-top:0.6rem;">Load demo data</button>` : ''}` :
+      `<button class="btn btn-block" id="openAddExpenseBtn">+ Add Expense</button>`}
+  </div>`;
+}
+
+function renderLedgerPanel(){
+  const expenses = [...activeExpenses()].sort((a,b)=> b.date.localeCompare(a.date) || b.id.localeCompare(a.id));
+  return `
+  <div class="panel" id="ledgerPanel">
+    <div class="panel-label">Expense Ledger</div>
+    <div>
+      ${expenses.length===0 ? `<p class="empty-note">No expenses yet. Add the first expense to start calculating balances.</p>` :
+        expenses.map(e=>renderLedgerRow(e)).join('')}
+    </div>
+  </div>`;
+}
+function renderLedgerRow(e){
+  const payer = personById(e.paidBy);
+  const methodLabel = {equal:'equal split', custom:'custom amounts', percentage:'percentage split', shares:'by shares'}[e.splitMethod];
+  const today = todayISO();
+  let dueBadge = '';
+  if(e.dueDate){
+    const overdue = e.dueDate < today;
+    const dueToday = e.dueDate === today;
+    dueBadge = `<span class="due-badge ${overdue?'overdue':dueToday?'due-today':''}">${overdue?'⚠ Overdue':dueToday?'Due today':'Due '+formatDate(e.dueDate)}</span>`;
+  }
+  const commentCount = (e.comments||[]).length;
+  return `
+  <div class="ledger-row">
+    <div>
+      <div class="ledger-desc">${escapeHtml(e.description)}</div>
+      <div class="ledger-meta">
+        <span>${formatDate(e.date)}</span>
+        <span>· Paid by ${escapeHtml(payer?payer.name:'—')}</span>
+        <span>· split ${e.participants.length} way${e.participants.length>1?'s':''}, ${methodLabel}</span>
+        ${e.category ? `<span class="cat-badge">${e.category}</span>` : ''}
+        ${dueBadge}
+        ${commentCount ? `<span class="comment-count">💬 ${commentCount}</span>` : ''}
+      </div>
+    </div>
+    <div class="ledger-amount">${fmt(e.amount)}</div>
+    <div class="ledger-actions">
+      <button data-view-expense="${e.id}" title="View">⋯</button>
+      <button data-edit-expense="${e.id}" title="Edit">✎</button>
+      <button data-dup-expense="${e.id}" title="Duplicate">⧉</button>
+      <button data-del-expense="${e.id}" title="Remove">✕</button>
+    </div>
+  </div>`;
+}
+
+function renderBalancesPanel(balances){
+  const rows = state.people.map(p => ({p, b: balances[p.id]})).sort((a,b)=> b.b.balance - a.b.balance);
+  return `
+  <div class="panel">
+    <div class="panel-label">Running Balances</div>
+    ${rows.length===0 ? `<p class="empty-note">Balances appear once you add people and expenses.</p>` : `
+    <div class="balance-legend">
+      <span>Positive — they're owed money</span>
+      <span>Negative — they owe</span>
+      <span>Zero — settled</span>
+    </div>
+    <div class="balance-grid">
+      ${rows.map(({p,b})=>{
+        const cls = b.balance > 0.005 ? 'positive' : (b.balance < -0.005 ? 'negative' : 'zero');
+        return `<div class="balance-cell">
+          <div class="balance-name">${escapeHtml(p.name)}${p.archived?' (archived)':''}</div>
+          <div class="balance-value ${cls}">${cls==='zero'?fmt(0):(b.balance>0?'+':'')+fmt(b.balance)}</div>
+          <div class="balance-sub">PAID ${fmt(b.paid)} · SHARE ${fmt(b.share)}</div>
+        </div>`;
+      }).join('')}
+    </div>
+    `}
+  </div>`;
+}
+
+function renderSettlePanel(settlePlan){
+  const history = [...state.settlements].sort((a,b)=> b.paidAt.localeCompare(a.paidAt));
+  const filter = ui.settleFilter;
+  return `
+  <div class="panel settle-panel">
+    <div class="panel-head-row">
+      <div class="panel-label">Settle Up: Fewest Payments</div>
+    </div>
+    <div class="settle-tabs">
+      <button class="settle-tab ${filter==='outstanding'?'active':''}" data-settle-tab="outstanding">Outstanding</button>
+      <button class="settle-tab ${filter==='history'?'active':''}" data-settle-tab="history">History (${history.length})</button>
+    </div>
+    <div class="settle-list">
+      ${filter==='outstanding' ? renderOutstandingSettle(settlePlan) : renderSettleHistory(history)}
+    </div>
+    ${filter==='outstanding' && settlePlan.length>0 ? `<div class="settle-count-note">${settlePlan.length} payment${settlePlan.length===1?'':'s'} needed to settle everyone</div>` : ''}
+  </div>`;
+}
+function renderOutstandingSettle(settlePlan){
+  if(settlePlan.length===0) return `<p class="settle-empty">Everyone is settled up. No payments needed.</p>`;
+  return settlePlan.map(t=>`
+    <div class="settle-item">
+      <span class="who">${escapeHtml(personById(t.from)?.name||'?')}</span>
+      <span class="arrow">pays →</span>
+      <span class="who">${escapeHtml(personById(t.to)?.name||'?')}</span>
+      <span class="amt">${fmt(t.amount)}</span>
+      <button class="mark-paid-btn" data-mark-paid data-from="${t.from}" data-to="${t.to}" data-amount="${t.amount}">Mark as Paid</button>
+    </div>`).join('');
+}
+function renderSettleHistory(history){
+  if(history.length===0) return `<p class="settle-empty">No settlements confirmed yet.</p>`;
+  return history.map(s=>`
+    <div class="settle-item">
+      <span class="who">${escapeHtml(personById(s.from)?.name||'?')}</span>
+      <span class="arrow">→</span>
+      <span class="who">${escapeHtml(personById(s.to)?.name||'?')}</span>
+      <span class="paid-tag">✓ Paid ${fmt(s.amount)} · ${formatDate(s.paidAt)}</span>
+    </div>`).join('');
+}
+
+function renderSharePanel(settlePlan, totalExpenses){
+  const lines = [];
+  lines.push(`${state.splitName} — SplitZK`);
+  lines.push('');
+  lines.push(`Total expenses: ${fmt(totalExpenses)}`);
+  lines.push('');
+  if(settlePlan.length){
+    lines.push('Settlement:');
+    settlePlan.forEach(t=> lines.push(`- ${personById(t.from)?.name} → ${personById(t.to)?.name}: ${fmt(t.amount)}`));
+    lines.push('');
+    lines.push(`${settlePlan.length} payment${settlePlan.length===1?'':'s'} needed to settle everyone.`);
+  } else {
+    lines.push('Everyone is settled up. No payments needed.');
+  }
+  const text = lines.join('\n');
+  return `
+  <div class="panel">
+    <div class="panel-label">Share Settlement</div>
+    <div class="share-preview" id="sharePreviewText">${escapeHtml(text)}</div>
+    <div class="btn-row">
+      <button class="btn btn-ghost btn-sm" id="copyShareBtn">Copy Summary</button>
+      <button class="btn btn-ghost btn-sm" id="nativeShareBtn">Share</button>
+    </div>
+  </div>`;
+}
+
+function renderExportPanel(){
+  const pro = isGroupPro(state) || (currentAccount && (currentAccount.id==='local' || currentAccount.isDemo));
+  return `
+  <div class="panel">
+    <div class="panel-label">Export</div>
+    <div class="btn-row">
+      <button class="btn btn-ghost btn-sm" id="exportCsvBtn">CSV</button>
+      <button class="btn btn-ghost btn-sm" id="exportXlsxBtn" ${pro?'':'disabled title="Requires Pro — activate a Free Pass on this group"'}>Excel ${pro?'':'🔒'}</button>
+      <button class="btn btn-ghost btn-sm" id="exportPdfBtn" ${pro?'':'disabled title="Requires Pro — activate a Free Pass on this group"'}>PDF ${pro?'':'🔒'}</button>
+    </div>
+    ${!pro ? `<p class="empty-note" style="margin-top:0.4rem;">Excel &amp; PDF export need Pro — activate this group's Free Pass to unlock them for 30 days.</p>` : ''}
+  </div>
+  <div class="panel">
+    <div class="panel-label">Backup &amp; Restore</div>
+    <p class="empty-note" style="margin-bottom:0.9rem;">A full JSON backup of this group — members, expenses and settlement history — that you can restore later, even offline.</p>
+    <div class="btn-row">
+      <button class="btn btn-ghost btn-sm" id="exportJsonBtn">Download Backup (JSON)</button>
+      <button class="btn btn-ghost btn-sm" id="importJsonBtn">Import Backup</button>
+      <input type="file" id="importJsonFile" accept="application/json" style="display:none;">
+    </div>
+  </div>`;
+}
+
+/* =========================================================
+   Modals
+   ========================================================= */
+function renderExpenseModal(){
+  const editing = ui.editingExpenseId ? state.expenses.find(e=>e.id===ui.editingExpenseId) : null;
+  const basePeople = activePeople();
+  const extra = editing ? state.people.filter(p=>p.archived && (p.id===editing.paidBy || editing.participants.includes(p.id))) : [];
+  const uniquePeople = [...new Map(basePeople.concat(extra).map(p=>[p.id,p])).values()];
+  const method = ui.expenseTab;
+  const draft = ui.expenseDraft || {
+    description: editing?.description || '',
+    amount: editing?.amount ?? '',
+    date: editing?.date || todayISO(),
+    dueDate: editing?.dueDate || '',
+    category: editing?.category || '',
+    paidBy: editing?.paidBy || (uniquePeople[0]?.id || ''),
+    participants: editing?.participants || uniquePeople.map(p=>p.id),
+    note: editing?.note || '',
+    splitDetails: editing?.splitDetails ? Object.assign({}, editing.splitDetails) : {}
+  };
+  ui.expenseDraft = draft;
+  if(editing && !ui.expenseTabSetOnce){ ui.expenseTab = editing.splitMethod; ui.expenseTabSetOnce = true; }
+
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.id = 'expenseModalOverlay';
+  overlay.innerHTML = `
+    <div class="modal">
+      <div class="modal-head">
+        <h3>${editing ? 'Edit Expense' : 'Log An Expense'}</h3>
+        <button class="close-x" id="closeExpenseModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="field full">
+            <label>What was it for</label>
+            <input type="text" id="f_description" value="${escapeAttr(draft.description)}" placeholder="e.g. Groceries" maxlength="40" />
+          </div>
+          <div class="field">
+            <label>Amount (${CURRENCIES[state.currency]})</label>
+            <input type="number" id="f_amount" step="0.01" min="0.01" value="${draft.amount}" placeholder="0.00" />
+          </div>
+          <div class="field">
+            <label>Date</label>
+            <input type="date" id="f_date" value="${draft.date}" />
+          </div>
+          <div class="field">
+            <label>Due Date (optional)</label>
+            <input type="date" id="f_dueDate" value="${draft.dueDate}" />
+          </div>
+          <div class="field">
+            <label>Category</label>
+            <select id="f_category">
+              <option value="">None</option>
+              ${CATEGORIES.map(c=>`<option value="${c}" ${draft.category===c?'selected':''}>${c}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field">
+            <label>Paid by</label>
+            <select id="f_paidBy">
+              ${uniquePeople.map(p=>`<option value="${p.id}" ${draft.paidBy===p.id?'selected':''}>${escapeHtml(p.name)}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+
+        <div class="method-tabs">
+          ${['equal','custom','percentage','shares'].map(m=>`
+            <button type="button" class="method-tab ${method===m?'active':''}" data-method-tab="${m}">${
+              {equal:'Equal',custom:'Custom amounts',percentage:'Percentage',shares:'Shares'}[m]
+            }</button>`).join('')}
+        </div>
+
+        <div class="split-among">
+          <label class="title">Split among ${method==='equal'?'':(method==='percentage'?'— must total 100%':method==='shares'?'— enter shares':'— must total the amount')}</label>
+          <div class="split-list">${renderParticipantRows(uniquePeople, draft, method)}</div>
+          <div id="splitTotalCheck"></div>
+        </div>
+
+        <div class="field full">
+          <label>Note (optional)</label>
+          <textarea id="f_note" rows="2" placeholder="Anything worth remembering">${escapeHtml(draft.note)}</textarea>
+        </div>
+
+        ${ui.formError ? `<div class="field-error">${ui.formError}</div>` : ''}
+        <button class="btn btn-block" id="saveExpenseBtn">${editing ? 'Save Changes' : 'Add Expense'}</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  updateSplitTotalCheck();
+
+  overlay.addEventListener('click', (e)=>{ if(e.target===overlay) closeExpenseModal(); });
+  document.getElementById('closeExpenseModal').onclick = closeExpenseModal;
+  overlay.querySelectorAll('[data-method-tab]').forEach(btn=>{
+    btn.onclick = ()=>{ captureDraftFromForm(); ui.expenseTab = btn.dataset.methodTab; rerenderExpenseModal(); };
+  });
+  document.getElementById('f_paidBy').onchange = (e)=>{ draft.paidBy = e.target.value; };
+  overlay.querySelectorAll('[data-participant-toggle]').forEach(cb=>{
+    cb.onchange = (e)=>{
+      const pid = e.target.dataset.participantToggle;
+      if(e.target.checked){ if(!draft.participants.includes(pid)) draft.participants.push(pid); }
+      else{ draft.participants = draft.participants.filter(x=>x!==pid); delete draft.splitDetails[pid]; }
+      captureDraftFromForm();
+      rerenderExpenseModal();
+    };
+  });
+  overlay.querySelectorAll('[data-split-value]').forEach(inp=>{
+    inp.oninput = (e)=>{ draft.splitDetails[e.target.dataset.splitValue] = e.target.value; updateSplitTotalCheck(); };
+  });
+  document.getElementById('saveExpenseBtn').onclick = ()=> saveExpenseFromModal(editing);
+}
+function renderParticipantRows(people, draft, method){
+  return people.map(p=>{
+    const checked = draft.participants.includes(p.id);
+    let controlHtml = '';
+    if(checked){
+      if(method==='equal'){
+        const amt = draft.amount ? (Number(draft.amount) / draft.participants.length) : 0;
+        controlHtml = `<span class="equal-amt">${draft.amount ? fmt(amt) : '—'}</span>`;
+      } else if(method==='custom'){
+        controlHtml = `<input type="number" class="valinput" step="0.01" min="0" placeholder="0.00" data-split-value="${p.id}" value="${draft.splitDetails[p.id] ?? ''}" />`;
+      } else if(method==='percentage'){
+        controlHtml = `<input type="number" class="valinput" step="0.1" min="0" max="100" placeholder="%" data-split-value="${p.id}" value="${draft.splitDetails[p.id] ?? ''}" />`;
+      } else if(method==='shares'){
+        controlHtml = `<input type="number" class="valinput" step="1" min="0" placeholder="shares" data-split-value="${p.id}" value="${draft.splitDetails[p.id] ?? ''}" />`;
+      }
+    }
+    return `<label class="split-check ${checked?'checked':''}">
+      <input type="checkbox" data-participant-toggle="${p.id}" ${checked?'checked':''}/>
+      <span class="name">${escapeHtml(p.name)}</span>
+      ${controlHtml}
+    </label>`;
+  }).join('');
+}
+function captureDraftFromForm(){
+  const d = ui.expenseDraft; if(!d) return;
+  const g = id => document.getElementById(id);
+  if(g('f_description')) d.description = g('f_description').value;
+  if(g('f_amount')) d.amount = g('f_amount').value;
+  if(g('f_date')) d.date = g('f_date').value;
+  if(g('f_dueDate')) d.dueDate = g('f_dueDate').value;
+  if(g('f_category')) d.category = g('f_category').value;
+  if(g('f_note')) d.note = g('f_note').value;
+}
+function rerenderExpenseModal(){
+  const existing = document.getElementById('expenseModalOverlay');
+  if(existing) existing.remove();
+  renderExpenseModal();
+}
+function updateSplitTotalCheck(){
+  const draft = ui.expenseDraft; const method = ui.expenseTab;
+  const el = document.getElementById('splitTotalCheck');
+  if(!el || !draft) return;
+  const amount = Number(document.getElementById('f_amount')?.value || draft.amount || 0);
+  if(method==='equal'){ el.innerHTML=''; return; }
+  let sum = 0;
+  draft.participants.forEach(pid => { sum += Number(draft.splitDetails[pid]) || 0; });
+  if(method==='percentage'){
+    const ok = Math.abs(sum-100) < 0.05;
+    el.innerHTML = `<div class="split-total-check ${ok?'ok':'bad'}">Total: ${sum.toFixed(1)}% ${ok?'✓':'— must equal 100%'}</div>`;
+  } else if(method==='custom'){
+    const ok = amount>0 && Math.abs(sum-amount) < 0.01;
+    el.innerHTML = `<div class="split-total-check ${ok?'ok':'bad'}">Total: ${fmt(sum)} of ${fmt(amount)} ${ok?'✓':'— must match the expense amount'}</div>`;
+  } else if(method==='shares'){
+    const ok = sum > 0;
+    el.innerHTML = `<div class="split-total-check ${ok?'ok':'bad'}">${sum} total share${sum===1?'':'s'} ${ok?'✓':'— enter at least one share'}</div>`;
+  }
+}
+function closeExpenseModal(){
+  ui.showExpenseModal = false; ui.editingExpenseId = null; ui.expenseDraft = null;
+  ui.expenseTab = 'equal'; ui.expenseTabSetOnce = false; ui.formError = '';
+  const existing = document.getElementById('expenseModalOverlay'); if(existing) existing.remove();
+}
+function saveExpenseFromModal(editing){
+  captureDraftFromForm();
+  const d = ui.expenseDraft; const method = ui.expenseTab; const amount = Number(d.amount);
+  ui.formError = '';
+  if(!d.description.trim()){ ui.formError = 'Enter a description.'; rerenderExpenseModal(); return; }
+  if(!amount || amount <= 0){ ui.formError = 'Enter an amount greater than zero.'; rerenderExpenseModal(); return; }
+  if(!d.paidBy){ ui.formError = 'Choose who paid.'; rerenderExpenseModal(); return; }
+  if(d.participants.length === 0){ ui.formError = 'Select at least one participant.'; rerenderExpenseModal(); return; }
+
+  let splitDetails = {};
+  if(method==='custom'){
+    let sum = 0;
+    for(const pid of d.participants){
+      const v = Number(d.splitDetails[pid]);
+      if(!(v>=0)){ ui.formError = 'Enter a valid amount for every participant.'; rerenderExpenseModal(); return; }
+      splitDetails[pid] = v; sum += v;
+    }
+    if(Math.abs(sum-amount) > 0.01){ ui.formError = `Custom amounts total ${fmt(sum)} but the expense is ${fmt(amount)}.`; rerenderExpenseModal(); return; }
+  } else if(method==='percentage'){
+    let sum = 0;
+    for(const pid of d.participants){
+      const v = Number(d.splitDetails[pid]);
+      if(!(v>=0)){ ui.formError = 'Enter a valid percentage for every participant.'; rerenderExpenseModal(); return; }
+      splitDetails[pid] = v; sum += v;
+    }
+    if(Math.abs(sum-100) > 0.05){ ui.formError = `Percentages total ${sum.toFixed(1)}% — they must total 100%.`; rerenderExpenseModal(); return; }
+  } else if(method==='shares'){
+    let sum = 0;
+    for(const pid of d.participants){
+      const v = Number(d.splitDetails[pid]);
+      if(!(v>=0)){ ui.formError = 'Enter a valid share count for every participant.'; rerenderExpenseModal(); return; }
+      splitDetails[pid] = v; sum += v;
+    }
+    if(sum <= 0){ ui.formError = 'Enter at least one share.'; rerenderExpenseModal(); return; }
+  } else {
+    d.participants.forEach(pid => splitDetails[pid] = 1);
+  }
+
+  const nowIso = new Date().toISOString();
+  const actorName = currentAccount ? (currentAccount.isDemo ? 'Demo' : (currentAccount.name || '')) : '';
+  const expenseObj = {
+    id: editing ? editing.id : uid(),
+    groupId: state.id,
+    createdBy: editing ? (editing.createdBy || actorName) : actorName,
+    status: editing ? (editing.status || 'active') : 'active',
+    description: d.description.trim(),
+    amount: round2(amount),
+    currency: state.currency,
+    date: d.date || todayISO(),
+    dueDate: d.dueDate || '',
+    category: d.category || '',
+    paidBy: d.paidBy,
+    participants: [...d.participants],
+    splitMethod: method,
+    splitDetails,
+    note: d.note.trim(),
+    comments: editing ? (editing.comments || []) : [],
+    createdAt: editing ? (editing.createdAt || nowIso) : nowIso,
+    updatedAt: nowIso
+  };
+  if(editing){
+    const idx = state.expenses.findIndex(e=>e.id===editing.id);
+    state.expenses[idx] = expenseObj;
+    showToast('Expense updated');
+    addNotification('expense_edited', `"${expenseObj.description}" was edited.`);
+  } else {
+    state.expenses.push(expenseObj);
+    showToast('Expense added');
+    addNotification('expense_added', `"${expenseObj.description}" (${fmt(expenseObj.amount)}) was added.`);
+  }
+  saveState(); closeExpenseModal(); render();
+}
+
+function renderDetailModal(){
+  const e = state.expenses.find(x=>x.id===ui.detailExpenseId);
+  if(!e){ ui.detailExpenseId = null; return; }
+  const shares = computeShares(e);
+  const payer = personById(e.paidBy);
+  const comments = e.comments || [];
+  const today = todayISO();
+  let dueLine = '';
+  if(e.dueDate){
+    const overdue = e.dueDate < today;
+    dueLine = `<p class="empty-note" style="margin-top:0.4rem;">${overdue?'⚠ Overdue since':'Due'} ${formatDate(e.dueDate)}</p>`;
+  }
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay'; overlay.id = 'detailModalOverlay';
+  overlay.innerHTML = `
+    <div class="modal">
+      <div class="modal-head"><h3>${escapeHtml(e.description)}</h3><button class="close-x" id="closeDetailModal">✕</button></div>
+      <div class="modal-body">
+        <p class="empty-note" style="margin-bottom:1rem;">${formatDate(e.date)} ${e.category?`· ${e.category}`:''} · Paid by ${escapeHtml(payer?.name||'—')}</p>
+        <div class="ledger-row"><div class="ledger-desc">Total</div><div class="ledger-amount">${fmt(e.amount)}</div><div></div></div>
+        ${e.participants.map(pid=>{
+          const p = personById(pid);
+          return `<div class="ledger-row"><div class="ledger-desc">${escapeHtml(p?.name||'—')}</div><div class="ledger-amount">${fmt(shares[pid])}</div><div></div></div>`;
+        }).join('')}
+        ${e.note ? `<p style="margin-top:1rem;font-size:0.85rem;color:var(--muted);font-style:italic;">${escapeHtml(e.note)}</p>` : ''}
+        ${dueLine}
+
+        <div class="panel-label" style="margin-top:1.2rem;">Comments</div>
+        <div class="comment-list">
+          ${comments.length ? comments.map(c=>`
+            <div class="comment-row">
+              <div class="comment-author">${escapeHtml(c.author||'')}</div>
+              <div class="comment-text">${escapeHtml(c.text)}</div>
+              <div class="comment-time">${formatDate((c.createdAt||'').slice(0,10))}</div>
+            </div>`).join('') : `<p class="empty-note">No comments yet.</p>`}
+        </div>
+        <div class="add-row" style="margin-top:0.6rem;">
+          <input type="text" id="commentInput" placeholder="Add a comment…" maxlength="200">
+          <button class="btn btn-sm" id="addCommentBtn">Post</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click',(ev)=>{ if(ev.target===overlay) closeDetailModal(); });
+  document.getElementById('closeDetailModal').onclick = closeDetailModal;
+  const commentInput = document.getElementById('commentInput');
+  const addCommentBtn = document.getElementById('addCommentBtn');
+  if(addCommentBtn) addCommentBtn.onclick = ()=> addCommentToExpense(e.id, commentInput.value);
+  if(commentInput) commentInput.onkeydown = (ev)=>{ if(ev.key==='Enter') addCommentToExpense(e.id, commentInput.value); };
+}
+function addCommentToExpense(expenseId, text){
+  text = (text||'').trim();
+  if(!text) return;
+  const e = state.expenses.find(x=>x.id===expenseId);
+  if(!e) return;
+  if(!e.comments) e.comments = [];
+  const author = currentAccount && !currentAccount.isDemo ? currentAccount.name : 'You';
+  e.comments.push({id: uid(), text, author, createdAt: new Date().toISOString()});
+  saveState();
+  addNotification('expense_commented', `New comment on "${e.description}".`);
+  const existing = document.getElementById('detailModalOverlay'); if(existing) existing.remove();
+  renderDetailModal();
+}
+function closeDetailModal(){ ui.detailExpenseId = null; const el = document.getElementById('detailModalOverlay'); if(el) el.remove(); }
+
+function renderRemoveConfirmModal(){
+  const p = personById(ui.pendingRemovePerson);
+  if(!p){ ui.pendingRemovePerson = null; return; }
+  const hasHistory = personHasHistory(p.id);
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay'; overlay.id = 'removeModalOverlay';
+  overlay.innerHTML = `
+    <div class="modal">
+      <div class="modal-head"><h3>Remove ${escapeHtml(p.name)}?</h3><button class="close-x" id="closeRemoveModal">✕</button></div>
+      <div class="modal-body">
+        ${hasHistory ? `
+          <div class="warn-banner">
+            <b>${escapeHtml(p.name)} has expense history</b>
+            Deleting them would break historical calculations. Archive instead — this hides them from new expenses but keeps past records intact.
+          </div>
+          <div class="btn-row">
+            <button class="btn" id="archivePersonBtn">Archive ${escapeHtml(p.name)}</button>
+            <button class="btn btn-ghost" id="cancelRemoveBtn">Cancel</button>
+          </div>
+        ` : `
+          <p class="empty-note">${escapeHtml(p.name)} has no recorded expenses, so they can be removed cleanly.</p>
+          <div class="btn-row">
+            <button class="btn btn-danger" id="deletePersonBtn">Delete ${escapeHtml(p.name)}</button>
+            <button class="btn btn-ghost" id="cancelRemoveBtn">Cancel</button>
+          </div>
+        `}
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click',(ev)=>{ if(ev.target===overlay) closeRemoveModal(); });
+  document.getElementById('closeRemoveModal').onclick = closeRemoveModal;
+  document.getElementById('cancelRemoveBtn').onclick = closeRemoveModal;
+  const archiveBtn = document.getElementById('archivePersonBtn');
+  if(archiveBtn) archiveBtn.onclick = ()=>{ p.archived = true; p.updatedAt = new Date().toISOString(); saveState(); showToast(`${p.name} archived`); closeRemoveModal(); render(); };
+  const delBtn = document.getElementById('deletePersonBtn');
+  if(delBtn) delBtn.onclick = ()=>{ state.people = state.people.filter(x=>x.id!==p.id); saveState(); showToast(`${p.name} removed`); closeRemoveModal(); render(); };
+}
+function closeRemoveModal(){ ui.pendingRemovePerson = null; const el = document.getElementById('removeModalOverlay'); if(el) el.remove(); }
+
+
+/* ---------- PIN lock screen & settings ---------- */
+/* =========================================================
+   Auth screens — Homepage / Sign In / Sign Up / Demo
+   Shown instead of the main app whenever currentAccount is null.
+   ========================================================= */
+function renderAuthShell(){
+  let inner;
+  if(authScreen==='signup') inner = renderSignUpScreen();
+  else if(authScreen==='signin') inner = renderSignInScreen();
+  else inner = renderHomepageScreen();
+  appEl.innerHTML = inner;
+  bindAuthEvents();
+}
+
+function renderHomepageScreen(){
+  return `
+    <div class="lock-screen" style="max-width:420px;">
+      <div class="eyebrow" style="justify-content:center;">SplitZK</div>
+      <h1>Split bills, <em>not friendships</em></h1>
+      <p class="subtitle" style="margin:0 auto 0.5rem;">Offline-first shared expenses. Your data stays on this device.</p>
+      <div class="home-options">
+        <button class="btn btn-block" id="homeSignInBtn">Sign In</button>
+        <button class="btn btn-ghost btn-block" id="homeSignUpBtn">Create Account</button>
+        <button class="btn btn-ghost btn-block" id="homeDemoBtn">Try the Demo</button>
+      </div>
+    </div>`;
+}
+
+function renderSignUpScreen(){
+  return `
+    <div class="lock-screen" style="max-width:380px;">
+      <div class="eyebrow" style="justify-content:center;">SplitZK</div>
+      <h1>Create <em>Account</em></h1>
+      <p class="subtitle" style="margin:0 auto 1.2rem;">Choose a name and a six-digit PIN. Your PIN is hashed and never leaves this device.</p>
+      <div class="field full" style="text-align:left;"><label>Your Name</label><input type="text" id="suNameInput" maxlength="24" placeholder="e.g. Chanda" /></div>
+      <div class="field full" style="text-align:left;margin-top:0.8rem;"><label>Create PIN</label><input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" id="suPinInput" placeholder="6-digit PIN" /></div>
+      <div class="field full" style="text-align:left;margin-top:0.8rem;"><label>Confirm PIN</label><input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" id="suPinConfirmInput" placeholder="Re-enter PIN" /></div>
+      ${authError ? `<div class="field-error">${escapeHtml(authError)}</div>` : ''}
+      <button class="btn btn-block" id="suSubmitBtn" style="margin-top:1.2rem;">Create Account</button>
+      <button class="btn btn-ghost btn-block" id="authBackBtn" style="margin-top:0.6rem;">← Back</button>
+    </div>`;
+}
+
+function renderSignInScreen(){
+  if(accountsCache.length===0){
+    return `
+      <div class="lock-screen" style="max-width:380px;">
+        <div class="eyebrow" style="justify-content:center;">SplitZK</div>
+        <h1>Sign <em>In</em></h1>
+        <p class="subtitle" style="margin:0 auto;">No accounts exist on this device yet.</p>
+        <button class="btn btn-block" id="siGoSignUpBtn" style="margin-top:1.2rem;">Create an Account</button>
+        <button class="btn btn-ghost btn-block" id="authBackBtn" style="margin-top:0.6rem;">← Back</button>
+      </div>`;
+  }
+  const acctId = signInSelectedAccountId || (accountsCache.length===1 ? accountsCache[0].id : null);
+  if(!acctId){
+    return `
+      <div class="lock-screen" style="max-width:380px;">
+        <div class="eyebrow" style="justify-content:center;">SplitZK</div>
+        <h1>Sign <em>In</em></h1>
+        <p class="subtitle" style="margin:0 auto 1rem;">Which account is this?</p>
+        <div class="account-picker">
+          ${accountsCache.map(a=>`<button class="btn btn-ghost btn-block" data-pick-account="${a.id}" style="margin-bottom:0.6rem;">${escapeHtml(a.name)}</button>`).join('')}
+        </div>
+        <button class="btn btn-ghost btn-block" id="authBackBtn" style="margin-top:0.6rem;">← Back</button>
+      </div>`;
+  }
+  const acct = accountsCache.find(a=>a.id===acctId);
+  return `
+    <div class="lock-screen" style="max-width:360px;">
+      <div class="eyebrow" style="justify-content:center;">SplitZK</div>
+      <h1>Welcome <em>back</em></h1>
+      <p class="subtitle" style="margin:0 auto;">Signing in as <b>${escapeHtml(acct.name)}</b></p>
+      <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" id="siPinInput" class="pin-input" placeholder="••••••" />
+      ${authError ? `<div class="field-error">${escapeHtml(authError)}</div>` : ''}
+      <button class="btn btn-block" id="siSubmitBtn" style="margin-top:1rem;">Sign In</button>
+      ${accountsCache.length>1 ? `<button class="btn btn-ghost btn-block" id="siChangeAccountBtn" style="margin-top:0.6rem;">Not you? Switch account</button>` : ''}
+      <button class="btn btn-ghost btn-block" id="authBackBtn" style="margin-top:0.6rem;">← Back</button>
+    </div>`;
+}
+
+function bindAuthEvents(){
+  const homeSignIn = document.getElementById('homeSignInBtn');
+  if(homeSignIn) homeSignIn.onclick = ()=>{ authScreen='signin'; authError=''; signInSelectedAccountId=null; render(); };
+  const homeSignUp = document.getElementById('homeSignUpBtn');
+  if(homeSignUp) homeSignUp.onclick = ()=>{ authScreen='signup'; authError=''; render(); };
+  const homeDemo = document.getElementById('homeDemoBtn');
+  if(homeDemo) homeDemo.onclick = ()=> enterDemo();
+
+  const backBtn = document.getElementById('authBackBtn');
+  if(backBtn) backBtn.onclick = ()=>{ authScreen='homepage'; authError=''; signInSelectedAccountId=null; render(); };
+
+  const goSignUp = document.getElementById('siGoSignUpBtn');
+  if(goSignUp) goSignUp.onclick = ()=>{ authScreen='signup'; authError=''; render(); };
+
+  document.querySelectorAll('[data-pick-account]').forEach(el=> el.onclick = ()=>{
+    signInSelectedAccountId = el.dataset.pickAccount; authError=''; render();
+  });
+  const changeAcct = document.getElementById('siChangeAccountBtn');
+  if(changeAcct) changeAcct.onclick = ()=>{ signInSelectedAccountId=null; authError=''; render(); };
+
+  const siPin = document.getElementById('siPinInput');
+  const siSubmit = document.getElementById('siSubmitBtn');
+  if(siSubmit) siSubmit.onclick = ()=>{
+    const acctId = signInSelectedAccountId || (accountsCache.length===1 ? accountsCache[0].id : null);
+    performSignIn(acctId, siPin ? siPin.value.trim() : '');
+  };
+  if(siPin){
+    siPin.addEventListener('keydown', (e)=>{ if(e.key==='Enter' && siSubmit) siSubmit.click(); });
+    siPin.focus();
+  }
+
+  const suSubmit = document.getElementById('suSubmitBtn');
+  if(suSubmit) suSubmit.onclick = ()=>{
+    const name = document.getElementById('suNameInput').value.trim();
+    const pin = document.getElementById('suPinInput').value.trim();
+    const pin2 = document.getElementById('suPinConfirmInput').value.trim();
+    performSignUp(name, pin, pin2);
+  };
+  const suNameInput = document.getElementById('suNameInput');
+  if(suNameInput) suNameInput.focus();
+}
+
+/* =========================================================
+   Events
+   ========================================================= */
+function bindEvents(balances, settlePlan, totalExpenses){
+  document.querySelectorAll('[data-nav]').forEach(el=> el.onclick = ()=>{ ui.activeScreen = el.dataset.nav; render(); });
+
+  const signOutBtn = document.getElementById('signOutBtn');
+  if(signOutBtn) signOutBtn.onclick = ()=>{ signOut('manual'); };
+  const demoSignUpBtn = document.getElementById('demoSignUpBtn');
+  if(demoSignUpBtn) demoSignUpBtn.onclick = ()=>{ currentAccount=null; authScreen='signup'; authError=''; render(); };
+
+  const splitNameInput = document.getElementById('splitNameInput');
+  if(splitNameInput) splitNameInput.onchange = (e)=>{ state.splitName = e.target.value.trim() || 'Untitled Group'; saveState(); render(); };
+  const currencySelect = document.getElementById('currencySelect');
+  if(currencySelect) currencySelect.onchange = (e)=>{ state.currency = e.target.value; saveState(); render(); };
+
+  const loadDemoBtn = document.getElementById('loadDemoDataBtn');
+  if(loadDemoBtn) loadDemoBtn.onclick = loadDemoData;
+
+  const addPersonBtn = document.getElementById('addPersonBtn');
+  if(addPersonBtn) addPersonBtn.onclick = addPersonHandler;
+  const nameInput = document.getElementById('nameInput');
+  if(nameInput) nameInput.onkeydown = (e)=>{ if(e.key==='Enter') addPersonHandler(); };
+
+  document.querySelectorAll('[data-remove-person]').forEach(el=> el.onclick = ()=>{ ui.pendingRemovePerson = el.dataset.removePerson; render(); });
+  document.querySelectorAll('[data-restore-person]').forEach(el=> el.onclick = ()=>{
+    const p = personById(el.dataset.restorePerson); p.archived=false; p.updatedAt = new Date().toISOString(); saveState(); showToast(`${p.name} restored`); render();
+  });
+  document.querySelectorAll('[data-toggle-me]').forEach(el=> el.onclick = ()=>{
+    const pid = el.dataset.toggleMe; state.youId = (state.youId===pid) ? null : pid; saveState(); render();
+  });
+  const youSel = document.getElementById('youIdSelect');
+  if(youSel) youSel.onchange = (e)=>{ state.youId = e.target.value || null; saveState(); render(); };
+
+  const viewAllBtn = document.getElementById('viewAllExpensesBtn');
+  if(viewAllBtn) viewAllBtn.onclick = ()=> document.getElementById('ledgerPanel')?.scrollIntoView({behavior:'smooth', block:'start'});
+
+  const backToGroupsBtn = document.getElementById('backToGroupsBtn');
+  if(backToGroupsBtn) backToGroupsBtn.onclick = ()=>{ ui.activeScreen = 'groups'; render(); };
+  const goToActivitiesBtn = document.getElementById('goToActivitiesBtn');
+  if(goToActivitiesBtn) goToActivitiesBtn.onclick = ()=>{ ui.activeScreen = 'activities'; ui.activitiesTab = 'expenses'; render(); };
+
+  const newSplitBtn = document.getElementById('newSplitBtn');
+  if(newSplitBtn) newSplitBtn.onclick = ()=> createNewSplit();
+  const newDemoSplitBtn = document.getElementById('newDemoSplitBtn');
+  if(newDemoSplitBtn) newDemoSplitBtn.onclick = ()=> createDemoSplit();
+  const toggleArchivedSplits = document.getElementById('toggleArchivedSplits');
+  if(toggleArchivedSplits) toggleArchivedSplits.onclick = ()=>{ ui.showArchivedSplits = !ui.showArchivedSplits; render(); };
+  document.querySelectorAll('[data-open-group]').forEach(el=> el.onclick = ()=> switchToSplit(el.dataset.openGroup));
+  document.querySelectorAll('[data-dup-split]').forEach(el=> el.onclick = ()=> duplicateSplit(el.dataset.dupSplit));
+  document.querySelectorAll('[data-archive-split]').forEach(el=> el.onclick = ()=> archiveSplitToggle(el.dataset.archiveSplit, el.dataset.archived!=='1'));
+  document.querySelectorAll('[data-delete-split]').forEach(el=> el.onclick = ()=>{
+    if(confirm('Permanently delete this group and all its data? This cannot be undone.')) deleteSplitPermanently(el.dataset.deleteSplit);
+  });
+
+  document.querySelectorAll('[data-activities-tab]').forEach(el=> el.onclick = ()=>{ ui.activitiesTab = el.dataset.activitiesTab; render(); });
+
+  const addFriendBtn = document.getElementById('addFriendBtn');
+  if(addFriendBtn) addFriendBtn.onclick = ()=> addFriendHandler(document.getElementById('friendNameInput').value);
+  const friendNameInput = document.getElementById('friendNameInput');
+  if(friendNameInput) friendNameInput.onkeydown = (e)=>{ if(e.key==='Enter') addFriendHandler(friendNameInput.value); };
+  document.querySelectorAll('[data-remove-friend]').forEach(el=> el.onclick = ()=> removeFriendHandler(el.dataset.removeFriend));
+
+  const acctSignOutBtn = document.getElementById('acctSignOutBtn');
+  if(acctSignOutBtn) acctSignOutBtn.onclick = ()=> signOut('manual');
+  const acctSignUpBtn = document.getElementById('acctSignUpBtn');
+  if(acctSignUpBtn) acctSignUpBtn.onclick = ()=>{ currentAccount=null; authScreen='signup'; authError=''; render(); };
+  const markAllReadBtn = document.getElementById('markAllReadBtn');
+  if(markAllReadBtn) markAllReadBtn.onclick = async ()=>{ await markAllNotificationsRead(); render(); };
+
+  const installBtn = document.getElementById('installBtn');
+  if(installBtn) installBtn.onclick = async ()=>{
+    if(!deferredInstallPrompt) return;
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null; render();
+  };
+
+  const openAdd = document.getElementById('openAddExpenseBtn');
+  if(openAdd) openAdd.onclick = ()=>{ ui.showExpenseModal = true; ui.editingExpenseId = null; ui.expenseDraft = null; ui.expenseTab='equal'; ui.expenseTabSetOnce=false; render(); };
+
+  document.querySelectorAll('[data-view-expense]').forEach(el=> el.onclick = ()=>{ ui.detailExpenseId = el.dataset.viewExpense; render(); });
+  document.querySelectorAll('[data-edit-expense]').forEach(el=> el.onclick = ()=>{
+    ui.showExpenseModal = true; ui.editingExpenseId = el.dataset.editExpense; ui.expenseDraft = null; ui.expenseTabSetOnce=false; render();
+  });
+  document.querySelectorAll('[data-dup-expense]').forEach(el=> el.onclick = ()=>{
+    const orig = state.expenses.find(x=>x.id===el.dataset.dupExpense);
+    if(!orig) return;
+    const now = new Date().toISOString();
+    const actorName = currentAccount ? (currentAccount.isDemo ? 'Demo' : (currentAccount.name || '')) : '';
+    const copy = Object.assign({}, orig, {
+      id: uid(), date: todayISO(), splitDetails: Object.assign({}, orig.splitDetails),
+      status: 'active', createdBy: actorName, createdAt: now, updatedAt: now, comments: []
+    });
+    state.expenses.push(copy); saveState(); showToast('Expense duplicated'); render();
+  });
+  document.querySelectorAll('[data-del-expense]').forEach(el=> el.onclick = ()=>{
+    // Soft delete — the record stays (with status:'deleted') so a future sync layer
+    // can tell "removed here" apart from "never existed on another device".
+    const removed = state.expenses.find(x=>x.id===el.dataset.delExpense);
+    if(removed){ removed.status = 'deleted'; removed.updatedAt = new Date().toISOString(); }
+    saveState(); showToast('Expense removed');
+    if(removed) addNotification('expense_deleted', `"${removed.description}" was removed.`);
+    render();
+  });
+
+  document.querySelectorAll('[data-settle-tab]').forEach(el=> el.onclick = ()=>{ ui.settleFilter = el.dataset.settleTab; render(); });
+  document.querySelectorAll('[data-mark-paid]').forEach(el=> el.onclick = ()=>{
+    state.settlements.push({ id: uid(), from: el.dataset.from, to: el.dataset.to, amount: Number(el.dataset.amount), paidAt: todayISO() });
+    saveState(); showToast('Marked as paid');
+    const fromName = personById(el.dataset.from)?.name || '—';
+    const toName = personById(el.dataset.to)?.name || '—';
+    addNotification('expense_paid', `${fromName} paid ${toName} ${fmt(Number(el.dataset.amount))}.`);
+    render();
+  });
+
+  const copyShareBtn = document.getElementById('copyShareBtn');
+  if(copyShareBtn) copyShareBtn.onclick = ()=>{
+    const text = document.getElementById('sharePreviewText').textContent;
+    navigator.clipboard?.writeText(text).then(()=>showToast('Copied to clipboard')).catch(()=>showToast('Could not copy'));
+  };
+  const nativeShareBtn = document.getElementById('nativeShareBtn');
+  if(nativeShareBtn) nativeShareBtn.onclick = ()=>{
+    const text = document.getElementById('sharePreviewText').textContent;
+    if(navigator.share){ navigator.share({title: state.splitName, text}).catch(()=>{}); }
+    else { navigator.clipboard?.writeText(text).then(()=>showToast('Copied — sharing not supported here')); }
+  };
+
+  const exportCsvBtn = document.getElementById('exportCsvBtn');
+  if(exportCsvBtn) exportCsvBtn.onclick = ()=> exportCSV(balances, settlePlan, totalExpenses);
+  const exportXlsxBtn = document.getElementById('exportXlsxBtn');
+  if(exportXlsxBtn) exportXlsxBtn.onclick = ()=> exportXLSX(balances, settlePlan, totalExpenses);
+  const exportPdfBtn = document.getElementById('exportPdfBtn');
+  if(exportPdfBtn) exportPdfBtn.onclick = ()=> exportPDF(balances, settlePlan, totalExpenses);
+  const exportJsonBtn = document.getElementById('exportJsonBtn');
+  if(exportJsonBtn) exportJsonBtn.onclick = exportJSONBackup;
+  const importJsonBtn = document.getElementById('importJsonBtn');
+  if(importJsonBtn) importJsonBtn.onclick = ()=> document.getElementById('importJsonFile').click();
+  const importJsonFile = document.getElementById('importJsonFile');
+  if(importJsonFile) importJsonFile.onchange = (e)=>{ const f = e.target.files[0]; if(f) importJSONBackup(f); e.target.value = ''; };
+
+  const resetBtn = document.getElementById('resetBtn');
+  if(resetBtn) resetBtn.onclick = ()=>{
+    if(confirm('This will permanently clear members, expenses and settlements for this group. Continue?')){
+      const keepId = state.id, keepCreated = state.createdAt;
+      state = Object.assign(defaultState(currentAccount.id), {id: keepId, createdAt: keepCreated});
+      saveState(); showToast('Group reset'); render();
+    }
+  };
+
+  const activateFreePassBtn = document.getElementById('activateFreePassBtn');
+  if(activateFreePassBtn) activateFreePassBtn.onclick = ()=> activateFreePass();
+}
+function addPersonHandler(){
+  const input = document.getElementById('nameInput');
+  const name = input.value.trim();
+  ui.peopleError = '';
+  if(!name){ ui.peopleError = 'Enter a name.'; render(); return; }
+  if(nameExists(name)){ ui.peopleError = `${name} is already in this group.`; render(); return; }
+  const now = new Date().toISOString();
+  state.people.push({ id: uid(), name, archived: false, createdAt: now, updatedAt: now });
+  saveState();
+  ensureFriendExists(name).then(render);
+  const el = document.getElementById('nameInput'); if(el) el.focus();
+}
+
+/* =========================================================
+   Export
+   ========================================================= */
+function buildExportRows(balances, settlePlan){
+  const peopleRows = state.people.map(p=>({
+    Name: p.name, Status: p.archived ? 'Archived' : 'Active',
+    Paid: balances[p.id].paid, Share: balances[p.id].share, Balance: balances[p.id].balance
+  }));
+  const expenseRows = activeExpenses().map(e=>({
+    Date: e.date, Description: e.description, Category: e.category||'',
+    Amount: e.amount, PaidBy: personById(e.paidBy)?.name||'',
+    Participants: e.participants.map(id=>personById(id)?.name).join(', '), SplitMethod: e.splitMethod,
+    Status: e.status || 'active', CreatedBy: e.createdBy || '', CreatedDate: (e.createdAt||'').slice(0,10)
+  }));
+  const settlementRows = state.settlements.map(s=>({
+    From: personById(s.from)?.name||'', To: personById(s.to)?.name||'', Amount: s.amount, Status: 'Paid', Date: s.paidAt
+  })).concat(settlePlan.map(t=>({
+    From: personById(t.from)?.name||'', To: personById(t.to)?.name||'', Amount: t.amount, Status: 'Outstanding', Date: ''
+  })));
+  return {peopleRows, expenseRows, settlementRows};
+}
+function exportCSV(balances, settlePlan, totalExpenses){
+  const {peopleRows, expenseRows, settlementRows} = buildExportRows(balances, settlePlan);
+  let csv = `SplitZK export — ${state.splitName}\nTotal expenses,${totalExpenses}\n\nPEOPLE\n`;
+  csv += toCSVBlock(peopleRows);
+  csv += `\nEXPENSES\n` + toCSVBlock(expenseRows);
+  csv += `\nSETTLEMENTS\n` + toCSVBlock(settlementRows);
+  downloadFile(csv, `${slug(state.splitName)}-splitzk.csv`, 'text/csv');
+  showToast('CSV exported');
+}
+function toCSVBlock(rows){
+  if(rows.length===0) return '(none)\n';
+  const headers = Object.keys(rows[0]);
+  const lines = [headers.join(',')];
+  rows.forEach(r=> lines.push(headers.map(h=> csvEscape(r[h])).join(',')));
+  return lines.join('\n') + '\n';
+}
+function csvEscape(v){ const s = String(v ?? ''); return /[",\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s; }
+function downloadFile(content, filename, mime){
+  const blob = new Blob([content], {type: mime});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function slug(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') || 'split'; }
+function exportXLSX(balances, settlePlan){
+  if(typeof XLSX === 'undefined'){ showToast('Excel export unavailable offline'); return; }
+  const {peopleRows, expenseRows, settlementRows} = buildExportRows(balances, settlePlan);
+  const totalExpenses = state.expenses.reduce((a,e)=>a+e.amount,0);
+  const balanceRows = state.people.map(p=>({
+    Person: p.name, 'Total Paid': balances[p.id].paid, 'Total Share': balances[p.id].share,
+    'Net Balance': balances[p.id].balance, Status: balances[p.id].balance > 0.001 ? 'Owed' : balances[p.id].balance < -0.001 ? 'Owes' : 'Settled'
+  }));
+  const startHereRows = [
+    { Field: 'Split name', Value: state.splitName },
+    { Field: 'Currency', Value: state.currency },
+    { Field: 'Exported', Value: todayISO() },
+    { Field: 'SplitZK Calculation Model', Value: CALC_MODEL_VERSION },
+    { Field: 'Total expenses', Value: totalExpenses },
+    { Field: 'People', Value: activePeople().length },
+    { Field: 'Outstanding payments', Value: settlePlan.length },
+    { Field: '', Value: '' },
+    { Field: 'This is a user data export from SplitZK Web — not the developer reference model.', Value: '' }
+  ];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(startHereRows), 'START HERE');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(peopleRows.length?peopleRows:[{Name:''}]), 'PEOPLE');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(expenseRows.length?expenseRows:[{Description:''}]), 'EXPENSES');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(balanceRows.length?balanceRows:[{Person:''}]), 'BALANCES');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(settlementRows.length?settlementRows:[{From:''}]), 'SETTLE UP');
+  XLSX.writeFile(wb, `${slug(state.splitName)}-splitzk.xlsx`);
+  showToast('Excel exported');
+}
+function exportPDF(balances, settlePlan, totalExpenses){
+  if(typeof window.jspdf === 'undefined'){ showToast('PDF export unavailable offline'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  let y = 18;
+  doc.setFont('helvetica','bold'); doc.setFontSize(16);
+  doc.text(`${state.splitName} — SplitZK`, 14, y); y+=8;
+  doc.setFont('helvetica','normal'); doc.setFontSize(10);
+  doc.text(`Total expenses: ${fmt(totalExpenses)}`, 14, y); y+=10;
+  doc.setFont('helvetica','bold'); doc.text('Balances', 14, y); y+=6;
+  doc.setFont('helvetica','normal');
+  state.people.forEach(p=>{
+    const b = balances[p.id];
+    doc.text(`${p.name}: paid ${fmt(b.paid)}, share ${fmt(b.share)}, balance ${fmt(b.balance)}`, 14, y); y+=6;
+    if(y>270){ doc.addPage(); y=18; }
+  });
+  y+=4;
+  doc.setFont('helvetica','bold'); doc.text('Settlement instructions', 14, y); y+=6;
+  doc.setFont('helvetica','normal');
+  if(settlePlan.length===0){ doc.text('Everyone is settled up.', 14, y); y+=6; }
+  settlePlan.forEach(t=>{
+    doc.text(`${personById(t.from)?.name} pays ${personById(t.to)?.name}: ${fmt(t.amount)}`, 14, y); y+=6;
+    if(y>270){ doc.addPage(); y=18; }
+  });
+  y+=4;
+  doc.setFont('helvetica','bold'); doc.text('Expenses', 14, y); y+=6;
+  doc.setFont('helvetica','normal'); doc.setFontSize(9);
+  state.expenses.forEach(e=>{
+    doc.text(`${e.date}  ${e.description}  ${fmt(e.amount)}  paid by ${personById(e.paidBy)?.name}`, 14, y); y+=5.5;
+    if(y>280){ doc.addPage(); y=18; }
+  });
+  doc.save(`${slug(state.splitName)}-splitzk.pdf`);
+  showToast('PDF exported');
+}
+
+/* ---------- JSON backup / restore ---------- */
+function exportJSONBackup(){
+  downloadFile(JSON.stringify(state, null, 2), `${slug(state.splitName)}-splitzk-backup.json`, 'application/json');
+  showToast('Backup downloaded');
+}
+function importJSONBackup(file){
+  const reader = new FileReader();
+  reader.onload = async ()=>{
+    try{
+      const parsed = JSON.parse(reader.result);
+      if(!Array.isArray(parsed.people) || !Array.isArray(parsed.expenses)){
+        showToast('That file doesn\'t look like a SplitZK backup'); return;
+      }
+      const restored = Object.assign(defaultState(currentAccount.id), parsed, {
+        id: uid(), accountId: currentAccount.id, archived: false,
+        splitName: (parsed.splitName || 'Restored Split') + ' (restored)'
+      });
+      if(dbReady){ await idbPut(STORE_SPLITS, restored); await refreshSplitsCache(); }
+      else splitsCache.push(restored);
+      await switchToSplit(restored.id);
+      showToast('Backup restored as a new split');
+    }catch(e){ showToast('Could not read that backup file'); }
+  };
+  reader.readAsText(file);
+}
+
+/* =========================================================
+   Utilities
+   ========================================================= */
+function escapeHtml(s){ return String(s ?? '').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function escapeAttr(s){ return escapeHtml(s); }
+function formatDate(iso){
+  if(!iso) return '';
+  const d = new Date(iso+'T00:00:00');
+  if(isNaN(d)) return iso;
+  return d.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+}
+
+/* =========================================================
+   Offline / online status
+   ========================================================= */
+window.addEventListener('online', ()=> render());
+window.addEventListener('offline', ()=> render());
+
+/* =========================================================
+   PWA install prompt
+   ========================================================= */
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', (e)=>{
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  render();
+});
+window.addEventListener('appinstalled', ()=>{ deferredInstallPrompt = null; showToast('SplitZK installed'); render(); });
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('service-worker.js').catch(()=>{ /* offline core still works without it */ });
+  });
+}
+
+initApp();
+</script>
+
+</body>
+</html>
