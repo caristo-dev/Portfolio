@@ -470,7 +470,7 @@ section{
 
 .features-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
   gap:1px;
   background:var(--line);
   border:1px solid var(--line);
@@ -663,7 +663,7 @@ section{
 /* ── STRENGTHS ── */
 .strengths-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
   gap:1.5rem;
 }
 .strength-card{
@@ -737,7 +737,7 @@ section{
 
 .vision-goals{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
   gap:1px;
   background:rgba(255,255,255,0.08);
   border:1px solid rgba(255,255,255,0.08);
@@ -966,6 +966,7 @@ footer a:hover{color:var(--copper)}
 
 /* ── RESPONSIVE ── */
 @media(max-width:768px){
+  .features-grid{grid-template-columns:1fr !important}
   .sidebar-line{display:none}
   nav{padding:1rem 1.5rem}
   .nav-toggle{display:flex}
@@ -1209,7 +1210,7 @@ footer a:hover{color:var(--copper)}
         The trigger was a mismatch between the number of sales recorded and the balances that should have resulted from them, discovered while reviewing the cost-accounting sheets we use ahead of bookkeeping. The gap traced back further than expected, so I had to go back to January 2023 and correct the figures systematically from there. Along the way, errors surfaced across twelve separate categories, the kind that compound quietly until closing balances stop making sense. I audited the entire workbook month by month, traced each error back to its source, and rebuilt it into a clean, reconciled file with verified closing balances.
       </p>
 
-      <div class="features-grid">
+      <div class="features-grid" style="grid-template-columns:repeat(4,1fr)">
         <div class="feature-item">
           <div class="f-icon">🔗</div>
           <div class="f-title">Cross-Sheet References</div>
@@ -1266,7 +1267,7 @@ footer a:hover{color:var(--copper)}
         A full year of payroll needed to be checked across three independent sources (the payroll register, the cash book, and individual payslips) to confirm every employee had been paid correctly and every entry was properly tagged. Discrepancies between the three don't announce themselves; they have to be hunted down line by line.
       </p>
 
-      <div class="features-grid">
+      <div class="features-grid" style="grid-template-columns:repeat(4,1fr)">
         <div class="feature-item">
           <div class="f-icon">📋</div>
           <div class="f-title">Three-Way Cross-Check</div>
@@ -1330,7 +1331,7 @@ footer a:hover{color:var(--copper)}
         The Assistant Accountant position had sat vacant for roughly two years before I started, so the company's records were significantly behind on everything: payroll, bookkeeping, petty cash vouchers, purchases, feed expenses, and statutory payments like NAPSA and ZRA. I had never worked as an accountant before, so I started by working closely with the Managing Director while I learned the processes, then took the backlog on directly.
       </p>
 
-      <div class="features-grid">
+      <div class="features-grid" style="grid-template-columns:repeat(4,1fr)">
         <div class="feature-item">
           <div class="f-icon">🗂️</div>
           <div class="f-title">2023–2024 Records</div>
@@ -1466,7 +1467,7 @@ footer a:hover{color:var(--copper)}
         <div class="screenshot-caption">SplitZK's demo group: running balances, settle-up status, and spending by category, live at the link below.</div>
       </div>
 
-      <div class="features-grid">
+      <div class="features-grid" style="grid-template-columns:repeat(4,1fr)">
         <div class="feature-item">
           <div class="f-icon">👥</div>
           <div class="f-title">Multi-Person Splitting</div>
@@ -1560,7 +1561,7 @@ footer a:hover{color:var(--copper)}
         NyumbaNi is a <strong>free, direct-from-owner property platform</strong> built for the Zambian rental market. It cuts property agents out entirely: landlords post listings themselves, and tenants browse and contact owners directly, at <strong>no cost, with no fee to unlock anything</strong>.
       </p>
       <p class="project-desc">
-        In Zambia, the usual system runs tenants through a <strong>K100 non-refundable viewing fee</strong> per property visit, then a <strong>K1,000+ commission</strong> if they proceed. NyumbaNi removes all of it, no agent, no fee to NyumbaNi either. Every successful contact saves a tenant roughly <strong>K1,100</strong> outright.
+        In Zambia, the rental process often involves a <strong>non-refundable viewing fee</strong> charged by agents for property visits, followed by a <strong>commission of half the rent</strong> if the tenant proceeds with the property. NyumbaNi removes all of this, with no agents and no fees at all.
       </p>
 
       <div class="project-screenshot">
@@ -1568,7 +1569,7 @@ footer a:hover{color:var(--copper)}
         <div class="screenshot-caption">NyumbaNi's listings page: free contact-owner buttons, city and type filters, and the K0 platform fees stat up top.</div>
       </div>
 
-      <div class="features-grid">
+      <div class="features-grid" style="grid-template-columns:repeat(3,1fr)">
         <div class="feature-item">
           <div class="f-icon">🏘️</div>
           <div class="f-title">Property Listings</div>
@@ -1662,7 +1663,7 @@ footer a:hover{color:var(--copper)}
       </div>
 
       <p class="project-desc" style="font-style:italic;font-size:0.85rem;">Planned feature set. Items marked (Excel) already work in Budget Tracker Pro today; everything else is a future idea for the app version and hasn't been started.</p>
-      <div class="features-grid">
+      <div class="features-grid" style="grid-template-columns:repeat(3,1fr)">
         <div class="feature-item">
           <div class="f-icon">📊</div>
           <div class="f-title">Financial Dashboard (Excel)</div>
