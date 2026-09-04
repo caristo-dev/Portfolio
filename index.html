@@ -1017,6 +1017,25 @@ footer a:hover{color:var(--copper)}
   height:100%;
   object-fit:cover;
 }
+
+/* Two-photo side-by-side variant */
+.outreach-margin-photo.outreach-margin-photos{
+  width:340px;
+}
+.outreach-photo-row{
+  display:flex;
+  gap:0.4rem;
+  flex:1 1 auto;
+  min-height:0;
+}
+.outreach-photo-row img{
+  flex:1 1 50%;
+  width:50%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
 @media(max-width:1050px){
   .outreach-margin-photo{
     position:static;
@@ -1030,6 +1049,16 @@ footer a:hover{color:var(--copper)}
   .outreach-margin-photo img{
     height:auto;
     object-fit:initial;
+  }
+  .outreach-margin-photo.outreach-margin-photos{
+    max-width:420px;
+  }
+  .outreach-margin-photo.outreach-margin-photos .outreach-photo-row{
+    height:260px;
+  }
+  .outreach-margin-photo.outreach-margin-photos .outreach-photo-row img{
+    height:100%;
+    object-fit:cover;
   }
 }
 </style>
@@ -1157,9 +1186,12 @@ footer a:hover{color:var(--copper)}
           <li>Reporting intensifies ahead of each outreach, when the organisation needs an accurate picture of funds and member participation before committing to it.</li>
         </ul>
       </div>
-      <div class="project-screenshot outreach-margin-photo">
-        <img src="images/sharing-cohorts-outreach.jpg" alt="Caristo handing donated supplies to hospital staff during a Sharing Cohorts Foundation outreach" loading="lazy">
-        <div class="screenshot-caption">Handing over donated supplies during one of our outreaches, this is hands-on, not just paperwork.</div>
+      <div class="project-screenshot outreach-margin-photo outreach-margin-photos">
+        <div class="outreach-photo-row">
+          <img src="images/sharing-cohorts-handoff.jpg" alt="Caristo handing over a donated phone to a beneficiary during a Sharing Cohorts Foundation outreach" loading="lazy">
+          <img src="images/sharing-cohorts-notes.jpg" alt="Caristo taking notes as Vice Secretary during a Sharing Cohorts Foundation outreach" loading="lazy">
+        </div>
+        <div class="screenshot-caption">Hands-on during outreach, and documenting it as Vice Secretary, this is real work, not just paperwork.</div>
       </div>
     </div>
   </div>
