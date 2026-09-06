@@ -1,0 +1,23 @@
+# Caristo Mulenga
+
+> Assistant Accountant and self-taught front-end developer based in Ndola, Zambia. Builds practical finance tools and offers bookkeeping, payroll, and reconciliation support.
+
+Caristo Mulenga works as an Assistant Accountant in HR & Admin at Ultimate Farms Ltd. (Zambia), handling payroll, cost accounting, and reconciliation. He is pursuing a ZICA Diploma in Accountancy and serves as Vice Secretary at Sharing Cohorts Foundation. He is a self-taught front-end developer working in HTML, CSS, and JavaScript (not React or Firebase).
+
+## Pages
+
+- [Homepage](https://caristo-dev.github.io/Portfolio/): Accounting case studies, software projects, skills, and contact information.
+- [NyumbaNi](https://caristo-dev.github.io/Portfolio/nyumbani.html): Concept demo for a free, direct-from-owner property listing platform for Zambia.
+- [SplitZK](https://caristo-dev.github.io/Portfolio/splitzk/): Offline-first bill-splitting progressive web app demo.
+
+## Projects
+
+- Budget Tracker Pro: An Excel-based personal budgeting tool with dashboard, category tracking, savings goals, and annual summary. Not publicly downloadable.
+- SplitZK: An offline-first bill-splitting PWA for recording shared expenses and settling balances with the fewest payments.
+- NyumbaNi: A concept for a free property listing platform for Zambia, removing agent viewing fees and commission.
+
+## Contact
+
+- LinkedIn: https://www.linkedin.com/in/caristo-mulenga/
+- GitHub: https://github.com/caristo-dev
+- Location: Ndola, Zambia
