@@ -3,20 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Caristo Mulenga | Accountant & Front-End Developer</title>
-<meta name="description" content="Caristo Mulenga is an Assistant Accountant and self-taught front-end developer based in Ndola, Zambia, offering bookkeeping, Excel, payroll and reconciliation support, and practical web development.">
+<title>Caristo Mulenga | Finance Professional & Front-End Developer</title>
+<meta name="description" content="Caristo Mulenga is a Finance Professional and self-taught Front-End Developer based in Ndola, Zambia, offering CV writing, Excel tools, and WhatsApp and LinkedIn profile setup.">
 <meta name="theme-color" content="#F7F3ED">
 <link rel="canonical" href="https://caristo-dev.github.io/Portfolio/">
 <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="Caristo Mulenga | Accountant & Front-End Developer">
-<meta property="og:description" content="Assistant Accountant and self-taught front-end developer based in Ndola, Zambia. Bookkeeping, Excel, payroll, reconciliation, and web development.">
+<meta property="og:title" content="Caristo Mulenga | Finance Professional & Front-End Developer">
+<meta property="og:description" content="Finance Professional and self-taught Front-End Developer based in Ndola, Zambia. CV writing, Excel tools, profile setup, and web development.">
 <meta property="og:image" content="images/caristo-profile.jpg">
 <meta property="og:url" content="https://caristo-dev.github.io/Portfolio/">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Caristo Mulenga | Accountant & Front-End Developer">
-<meta name="twitter:description" content="Assistant Accountant and self-taught front-end developer based in Ndola, Zambia. Bookkeeping, Excel, payroll, reconciliation, and web development.">
+<meta name="twitter:title" content="Caristo Mulenga | Finance Professional & Front-End Developer">
+<meta name="twitter:description" content="Finance Professional and self-taught Front-End Developer based in Ndola, Zambia. CV writing, Excel tools, profile setup, and web development.">
 <meta name="twitter:image" content="images/caristo-profile.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -25,7 +25,7 @@
   "@context": "https://schema.org",
   "@type": "Person",
   "name": "Caristo Mulenga",
-  "jobTitle": "Assistant Accountant & Front-End Developer",
+  "jobTitle": "Finance Professional & Front-End Developer",
   "url": "https://caristo-dev.github.io/Portfolio/",
   "sameAs": [
     "https://www.linkedin.com/in/caristo-mulenga/",
@@ -1020,7 +1020,10 @@ footer a:hover{color:var(--copper)}
 
 /* Two-photo side-by-side variant */
 .outreach-margin-photo.outreach-margin-photos{
-  width:340px;
+  width:clamp(340px,28vw,420px);
+}
+.outreach-margin-photo.outreach-margin-photos .outreach-photo-row{
+  min-height:340px;
 }
 .outreach-photo-row{
   display:flex;
@@ -1036,7 +1039,7 @@ footer a:hover{color:var(--copper)}
   display:block;
 }
 
-@media(max-width:1050px){
+@media(max-width:1199px){
   .outreach-margin-photo{
     position:static;
     width:100%;
@@ -1086,7 +1089,7 @@ footer a:hover{color:var(--copper)}
 <!-- ── HERO ── -->
 <section class="hero" id="top">
   <div class="hero-deco">C</div>
-  <div class="hero-eyebrow">Front-End Developer × Accountant · Ndola, Zambia</div>
+  <div class="hero-eyebrow">Front-End Developer × Finance Professional · Ndola, Zambia</div>
   <h1>Caristo<span class="hero-sub-name">Mulenga</span></h1>
   <p class="hero-desc">
     I spend my days reconciling ledgers and my evenings writing code, and the overlap is the point. I build interfaces shaped by someone who has actually worked the numbers side of a business.
@@ -1113,7 +1116,7 @@ footer a:hover{color:var(--copper)}
   <div class="about-grid reveal">
     <div class="about-text">
       <p>
-        I'm an <strong>Assistant Accountant at Ultimate Farms Ltd</strong> in Ndola, Zambia, and a self-taught front-end developer. Most days I'm reconciling payroll and cost data by hand, which is exactly why I build software the way I do: methodically, with an eye for where numbers, and code, quietly go wrong.
+        I'm a <strong>Finance Professional and self-taught Front-End Developer</strong> in Ndola, Zambia. From November 2024 to October 2026 I was an <strong>Assistant Accountant at Ultimate Farms Ltd</strong>, and my accounting work centred on payroll and cost data, which is exactly why I build software the way I do: methodically, with an eye for where numbers, and code, quietly go wrong.
       </p>
       <p>
         I chose the harder, more deliberate path into tech: <strong>learning by building</strong>, not by credential. I write every line manually, read documentation before watching tutorials, and don't move to the next step until I understand the current one. Every project here is designed to teach me something real and solve an actual problem, not fill space in a portfolio.
@@ -1159,31 +1162,35 @@ footer a:hover{color:var(--copper)}
     <div class="timeline-item reveal">
       <div class="timeline-marker"></div>
       <div class="timeline-content">
-        <div class="timeline-role">Assistant Accountant</div>
-        <div class="timeline-org">Ultimate Farms Ltd · Ndola, Zambia · Nov 2024 - Present</div>
+        <div class="timeline-role">Assistant Accountant (HR &amp; Administration)</div>
+        <div class="timeline-org">Ultimate Farms Ltd · Ndola, Zambia · Nov 2024 – Oct 2026</div>
         <p class="timeline-desc">
-          I handle payroll for roughly <strong>30 employees</strong>, plus cost accounting, bookkeeping, and cashbook management and reconciliation for a <strong>13,500-bird layer (egg-production) operation</strong> that also sells bananas, oranges, and vegetables. In practice the role runs wider than the title: I'm one of three people in the company's administrative management structure alongside the Managing Director and his wife, I supervise around <strong>26 employees</strong> at the farm directly, and when the Managing Director is unavailable I take on operational decisions, recommendations, and reporting in his place.
+          I processed monthly payroll for <strong>28 farm staff</strong> and kept the cost accounting, daily sales and cashbook records in Excel, supporting the Managing Director with monthly management accounts.
         </p>
         <ul class="timeline-list">
-          <li>Rebuilt roughly <strong>two years of backlogged company records</strong> after the position sat vacant, bringing 2023 and 2024 payroll, bookkeeping, petty cash, purchases, feed expenses, and statutory records (NAPSA, ZRA) up to date, then repeated the process for 2025.</li>
-          <li>Led a full calendar-year payroll reconciliation across three independent data sources (payroll register, cash book, and individual payslips), surfacing untagged entries and per-employee rollup errors.</li>
-          <li>Traced a cost-accounting sales discrepancy back to January 2023, correcting figures month by month across a 12-category audit of the workbook.</li>
-          <li>Currently pursuing the <strong>ZiCA Diploma in Accountancy</strong> as a self-study programme, running Jan 2026 to Dec 2028.</li>
+          <li>Processed monthly payroll using Dove Payroll, calculating PAYE, NAPSA and NHIMA deductions.</li>
+          <li>Maintained cost accounting records, daily sales records and cashbooks in Excel, and prepared and reconciled accounts payable and receivable.</li>
+          <li>Supported the preparation of monthly financial reports and management accounts, liaising with the Managing Director on financial performance.</li>
+          <li>Administered HR records for 28 farm employees, including leave, disciplinary documentation, contracts and personnel files.</li>
+          <li>Rebuilt the company's payroll, bookkeeping and cost-accounting records after the position had been vacant.</li>
+          <li>Audited the full-year cost-accounting workbook, tracing and correcting errors at source.</li>
+          <li>Shared responsibility with my manager for preparing company tax returns.</li>
+          <li>Studying for the <strong>ZICA Diploma in Accountancy</strong> (January 2026 to December 2028, in progress).</li>
         </ul>
       </div>
     </div>
     <div class="timeline-item reveal" style="position:relative;">
       <div class="timeline-marker"></div>
       <div class="timeline-content">
-        <div class="timeline-role">Vice Secretary</div>
-        <div class="timeline-org">Sharing Cohorts Foundation · Community Charity · Jul 2025 - Present</div>
+        <div class="timeline-role">Vice Secretary (Acting Secretary)</div>
+        <div class="timeline-org">Sharing Cohorts Foundation · Volunteer · Jul 2025 – Present</div>
         <p class="timeline-desc">
-          I handle documentation and records for a community organisation of roughly <strong>90 members</strong>. We meet <strong>every two weeks</strong>, and I'm responsible for the member register, meeting minutes, and financial reports that go with each meeting. Reporting matters most in the run-up to an outreach: with one coming up in the next two weeks, that's when I prepare and present the financial and activity reports the organisation relies on before it goes ahead.
+          I maintain the organisation's records and document archive, including minutes, the constitution and outreach records, in a shared digital drive that leadership can access.
         </p>
         <ul class="timeline-list">
-          <li>Maintain a register of roughly <strong>90 members</strong>, including names, birthdays, and the photo and video documentation gathered at outreach events.</li>
-          <li>Prepare and present financial reports and meeting minutes on a <strong>biweekly</strong> schedule.</li>
-          <li>Reporting intensifies ahead of each outreach, when the organisation needs an accurate picture of funds and member participation before committing to it.</li>
+          <li>Produced the organisation's Constitution and By-Laws.</li>
+          <li>Maintain the records and document archive, including minutes, the constitution and outreach records.</li>
+          <li>Support coordination of outreach activities across Lusaka, Kitwe and Ndola.</li>
         </ul>
       </div>
       <div class="project-screenshot outreach-margin-photo outreach-margin-photos">
@@ -1242,7 +1249,7 @@ footer a:hover{color:var(--copper)}
       <div class="tech-pills">
         <span class="tech-pill current">Payroll &amp; Cost Accounting</span>
         <span class="tech-pill current">Financial Reconciliation</span>
-        <span class="tech-pill current">Excel / Data Modeling</span>
+        <span class="tech-pill current">Excel</span>
       </div>
     </div>
   </div>
@@ -1253,10 +1260,10 @@ footer a:hover{color:var(--copper)}
   <div class="section-label">Where the Numbers Are Real</div>
   <h2 class="section-title">Financial work built on<br><em>accuracy, not guesswork.</em></h2>
   <p class="projects-intro">
-    Alongside development, I take on freelance and remote work in bookkeeping, accounting support, Excel, payroll, data entry, and administrative work. It's the same discipline shown in the case studies below, applied to your books. This work is separate from my full-time role; nothing here involves confidential employer data.
+    Alongside development, I run <strong>CayTech Digital Solutions</strong>, a side business launched in September 2026. It offers CV writing, Excel tools, and WhatsApp Business and LinkedIn profile setup, all handled over WhatsApp. The case studies below come from my accounting work as an Assistant Accountant (November 2024 to October 2026). Specific figures and company details are left out to protect confidential records.
   </p>
 
-  <!-- Case Study: Cost Accounting Audit -->
+  <!-- Case Study 01 -->
   <div class="project-card reveal">
     <div class="project-header">
       <div class="project-number">01</div>
@@ -1265,41 +1272,41 @@ footer a:hover{color:var(--copper)}
           <span class="dot"></span> Completed
         </div>
         <div class="project-name">Cost Accounting <em>Workbook Audit</em></div>
-        <div class="project-type">Full-Year Financial Workbook Audit · Excel &amp; Cost Accounting</div>
+        <div class="project-type">Full-Year Workbook Audit · Excel &amp; Cost Accounting</div>
       </div>
     </div>
     <div class="project-body">
       <p class="project-desc">
-        The trigger was a mismatch between the number of sales recorded and the balances that should have resulted from them, discovered while reviewing the cost-accounting sheets we use ahead of bookkeeping. The gap traced back further than expected, so I had to go back to January 2023 and correct the figures systematically from there. Along the way, errors surfaced across twelve separate categories, the kind that compound quietly until closing balances stop making sense. I audited the entire workbook month by month, traced each error back to its source, and rebuilt it into a clean, reconciled file with verified closing balances.
+        A cost-accounting workbook showed a mismatch between recorded sales and the balances that should have followed from them. The gap reached back through earlier periods, so I audited the workbook month by month, starting from the earliest error, and corrected each one at its source. Each month was reconciled before the next was trusted, so the closing balances could be carried forward as reliable opening figures.
       </p>
 
       <div class="features-grid" style="grid-template-columns:repeat(4,1fr)">
         <div class="feature-item">
           <div class="f-icon">🔗</div>
           <div class="f-title">Cross-Sheet References</div>
-          <div class="f-desc">Traced and repaired broken formula links between monthly sheets that had silently stopped updating.</div>
+          <div class="f-desc">Traced and repaired formula links between monthly sheets that had stopped updating.</div>
         </div>
         <div class="feature-item">
           <div class="f-icon">📉</div>
           <div class="f-title">Cascading Errors</div>
-          <div class="f-desc">Identified a pricing mistake in one month that had been carrying forward and compounding across several others.</div>
+          <div class="f-desc">Identified a pricing error that had carried forward and compounded into later months.</div>
         </div>
         <div class="feature-item">
           <div class="f-icon">🧾</div>
           <div class="f-title">Missing Source Data</div>
-          <div class="f-desc">Located and reintegrated purchase records that had been left out of the original entries.</div>
+          <div class="f-desc">Located purchase records that had been left out of the original entries.</div>
         </div>
         <div class="feature-item">
           <div class="f-icon">✅</div>
           <div class="f-title">Verified Closing Balances</div>
-          <div class="f-desc">Reconciled every month so the final balances could be trusted as the following period's opening figures.</div>
+          <div class="f-desc">Reconciled every month so the final balances could be trusted as the following period’s opening figures.</div>
         </div>
       </div>
 
       <div class="challenge-note">
         <h4>The Hard Part</h4>
         <p>
-          None of the twelve error categories existed in isolation. Several fed into each other across months, so fixing one in place without tracing its downstream effect would have just relocated the mistake. I was still new to accounting at the time, so the audit had to move chronologically, verifying each month was clean before trusting the next.
+          Several errors fed into each other across months, so fixing one in place without tracing its downstream effect would only have moved the mistake. The audit therefore had to run in order, verifying each month before trusting the next.
         </p>
       </div>
 
@@ -1313,7 +1320,7 @@ footer a:hover{color:var(--copper)}
     </div>
   </div>
 
-  <!-- Case Study: Payroll Reconciliation -->
+  <!-- Case Study 02 -->
   <div class="project-card reveal">
     <div class="project-header">
       <div class="project-number">02</div>
@@ -1322,48 +1329,41 @@ footer a:hover{color:var(--copper)}
           <span class="dot"></span> Completed
         </div>
         <div class="project-name">Payroll <em>Reconciliation</em></div>
-        <div class="project-type">Full Calendar-Year Payroll Audit · Payroll &amp; Reconciliation</div>
+        <div class="project-type">Full-Year Payroll Reconciliation · Payroll &amp; Reconciliation</div>
       </div>
     </div>
     <div class="project-body">
       <p class="project-desc">
-        A full year of payroll needed to be checked across three independent sources (the payroll register, the cash book, and individual payslips) to confirm every employee had been paid correctly and every entry was properly tagged. Discrepancies between the three don't announce themselves; they have to be hunted down line by line.
+        A full year of payroll was checked across three independent sources (the payroll register, the cash book, and individual payslips) to confirm that each employee had been paid correctly and that every entry was properly categorised. Discrepancies between sources rarely announce themselves, so each one had to be traced line by line.
       </p>
 
       <div class="features-grid" style="grid-template-columns:repeat(4,1fr)">
         <div class="feature-item">
           <div class="f-icon">📋</div>
           <div class="f-title">Three-Way Cross-Check</div>
-          <div class="f-desc">Matched payroll register, cash book, and payslips against each other for a full calendar year.</div>
+          <div class="f-desc">Matched the payroll register, cash book and payslips against each other across the full year.</div>
         </div>
         <div class="feature-item">
           <div class="f-icon">🏷️</div>
-          <div class="f-title">Untagged Entries</div>
-          <div class="f-desc">Surfaced cash book entries that had never been properly categorized against payroll.</div>
+          <div class="f-title">Uncategorised Entries</div>
+          <div class="f-desc">Found cash book entries that had not been categorised against payroll.</div>
         </div>
         <div class="feature-item">
           <div class="f-icon">👤</div>
           <div class="f-title">Per-Employee Rollups</div>
-          <div class="f-desc">Corrected individual employee totals that had drifted from the source records over time.</div>
+          <div class="f-desc">Corrected individual totals that had drifted from the source records.</div>
         </div>
         <div class="feature-item">
           <div class="f-icon">📆</div>
           <div class="f-title">Full-Year Coverage</div>
-          <div class="f-desc">Verified every month, not a sample, so no quarter was assumed clean without being checked.</div>
+          <div class="f-desc">Checked every month rather than a sample, so no period was assumed clean.</div>
         </div>
       </div>
 
       <div class="challenge-note">
         <h4>The Hard Part</h4>
         <p>
-          Three sources rarely disagree in an obvious way. A mismatch usually shows up as a small rounding-looking gap that's actually a missed entry. Finding those meant reconciling employee by employee, month by month, rather than trusting that totals which looked close enough were actually correct.
-        </p>
-      </div>
-
-      <div class="challenge-note">
-        <h4>The Real Find</h4>
-        <p>
-          While cross-checking cash book entries against current staff, I found a salary payment that didn't match anyone on the active roster. Tracing it back showed an employee who had already left the company was still being paid. Confirming it took about three days of tracing transactions and checking names against employee records, and it's the clearest case for why payroll has to be checked against independent sources rather than trusted on its own.
+          Three sources rarely disagree in an obvious way. A mismatch usually looks like a small gap that is actually a missed entry, so the check ran employee by employee and month by month, rather than trusting totals that looked close enough.
         </p>
       </div>
 
@@ -1377,7 +1377,7 @@ footer a:hover{color:var(--copper)}
     </div>
   </div>
 
-  <!-- Case Study: Rebuilding Backlogged Records -->
+  <!-- Case Study 03 -->
   <div class="project-card reveal">
     <div class="project-header">
       <div class="project-number">03</div>
@@ -1385,42 +1385,42 @@ footer a:hover{color:var(--copper)}
         <div class="project-status">
           <span class="dot"></span> Completed
         </div>
-        <div class="project-name">Rebuilding <em>Two Years of Records</em></div>
+        <div class="project-name">Rebuilding a <em>Records Backlog</em></div>
         <div class="project-type">Backlog Recovery · Bookkeeping, Payroll &amp; Statutory Compliance</div>
       </div>
     </div>
     <div class="project-body">
       <p class="project-desc">
-        The Assistant Accountant position had sat vacant for roughly two years before I started, so the company's records were significantly behind on everything: payroll, bookkeeping, petty cash vouchers, purchases, feed expenses, and statutory payments like NAPSA and ZRA. I had never worked as an accountant before, so I started by working closely with the Managing Director while I learned the processes, then took the backlog on directly.
+        The accounts role had been vacant for a period before I joined, so the company’s records were behind across payroll, bookkeeping, petty cash, purchases and statutory payments. I worked closely with the Managing Director to set priorities, then cleared the backlog one period at a time, checking each against source documents before moving on.
       </p>
 
       <div class="features-grid" style="grid-template-columns:repeat(4,1fr)">
         <div class="feature-item">
           <div class="f-icon">🗂️</div>
-          <div class="f-title">2023–2024 Records</div>
-          <div class="f-desc">Brought two full years of backlogged payroll, bookkeeping, and statutory records up to date from scratch.</div>
+          <div class="f-title">Historical Records</div>
+          <div class="f-desc">Brought the backlogged payroll, bookkeeping and statutory records up to date, one period at a time.</div>
         </div>
         <div class="feature-item">
-          <div class="f-icon">⏱️</div>
-          <div class="f-title">6–7 Months</div>
-          <div class="f-desc">Time it took to bring the 2024 records current, given the volume of historical information to review and correct.</div>
+          <div class="f-icon">🔍</div>
+          <div class="f-title">Source Checks</div>
+          <div class="f-desc">Checked entries against source documents before treating any period as complete.</div>
         </div>
         <div class="feature-item">
-          <div class="f-icon">📅</div>
-          <div class="f-title">2025 Records</div>
-          <div class="f-desc">A further 4–5 months to bring 2025 up to date; now largely complete, pending the auditors' review.</div>
+          <div class="f-icon">🏛️</div>
+          <div class="f-title">Statutory Records</div>
+          <div class="f-desc">Brought statutory records for NAPSA and ZRA up to date during the catch-up.</div>
         </div>
         <div class="feature-item">
           <div class="f-icon">🔄</div>
           <div class="f-title">Ongoing Maintenance</div>
-          <div class="f-desc">2026 records are currently accurate and maintained, with the usual year-end audit and finalisation process taking place before moving fully into next year's records.</div>
+          <div class="f-desc">Current records are kept up to date each month, with year-end finalisation handled before the new year begins.</div>
         </div>
       </div>
 
       <div class="challenge-note">
         <h4>The Hard Part</h4>
         <p>
-          I was learning accounting itself while clearing a two-year backlog under it, with no prior professional experience to fall back on. The two had to happen together: I couldn't wait to be fully trained before starting, and I couldn't fix the records without first understanding what correct looked like. Leaning on the Managing Director's guidance early on, and working through the volume systematically rather than rushing it, was what made the backlog closeable instead of just endless.
+          I was still learning accounting while clearing the backlog. I could not wait to be fully trained before starting, and I could not fix the records without first understanding what correct looked like. Early guidance from the Managing Director, and working through the material methodically, made both possible.
         </p>
       </div>
 
@@ -1437,7 +1437,7 @@ footer a:hover{color:var(--copper)}
   <div class="section-label" style="margin-top:-1.5rem;">Try It Yourself</div>
   <h2 class="section-title" style="font-size:clamp(1.6rem,3vw,2.2rem);margin-bottom:1.5rem;">Sample templates,<br><em>built from scratch.</em></h2>
   <p class="projects-intro" style="margin-bottom:2rem;">
-    Built with fictional data and no connection to real employer records, so you can see the structure and formulas behind the case studies above.
+    Built with fictional data and no connection to real employer records, so you can see the layout and structure behind the case studies above.
   </p>
 
   <div class="template-downloads reveal">
@@ -1474,7 +1474,7 @@ footer a:hover{color:var(--copper)}
       <div class="strength-icon">📊</div>
       <div class="strength-title">Excel &amp; Payroll</div>
       <div class="tech-pills">
-        <span class="tech-pill current">Excel / Data Modeling</span>
+        <span class="tech-pill current">Excel</span>
         <span class="tech-pill current">Payroll Administration</span>
       </div>
     </div>
@@ -1484,7 +1484,9 @@ footer a:hover{color:var(--copper)}
       <div class="tech-pills">
         <span class="tech-pill current">Sage Pastel 50</span>
         <span class="tech-pill current">Dove Payroll</span>
-        <span class="tech-pill">QuickBooks (in progress)</span>
+        <span class="tech-pill">QuickBooks Online (Intuit, in progress)</span>
+        <span class="tech-pill">Bookkeeping (Intuit, in progress)</span>
+        <span class="tech-pill">Level 1 Xero Associate (in progress)</span>
       </div>
     </div>
     <div class="strength-card">
@@ -1848,7 +1850,7 @@ footer a:hover{color:var(--copper)}
 <div class="contact-strip reveal" id="contact">
   <div>
     <h2>Let's build something<br>worth building.</h2>
-    <p>Open to freelance bookkeeping, Excel, and payroll support work, as well as collaborations and opportunities in front-end development.</p>
+    <p>Open to freelance CV writing, Excel tools, and profile setup work, as well as collaborations and opportunities in front-end development.</p>
   </div>
   <div class="contact-cta">
     <a href="mailto:caristomulenga99@gmail.com" class="btn-white">Get in Touch</a>
